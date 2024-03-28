@@ -1,3 +1,7 @@
+A team project that showcases how to build a static website for a music platform as web developer. This project showcases React.
+
+Created by Joe, Ayana, Issac
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
