@@ -2,11 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Nopage from "./pages/Nopage";
 import Links from "./pages/Links";
-import Footer from "./pages/Footer";
-import { useState } from "react";
-import Musicdisplay from "./pages/components/Musicdisplay";
-import Artistdisplay from "./pages/components/Artistdisplay";
-import Displayblock from "./pages/components/Displayblock";
+import { useEffect, useState } from "react";
+import FileService from "./services/FileService";
 function App() {
   const [key, setKey] = useState(null);
   const authMenu = [
@@ -15,6 +12,20 @@ function App() {
     { url: "/logout", text: "Log out" },
   ];
   const noAuthMenu = [{ url: "/login", text: "login" }];
+
+  const [music, setMusic] = useState([]);
+  useEffect(() => {
+    FileService.read("music").then(
+      (response) => {
+        console.log(response.data);
+        setMusic(response.data);
+        console.log(music);
+      },
+      (rej) => {
+        console.log(rej);
+      }
+    );
+  }, []);
   return (
     <BrowserRouter>
       <Routes>
@@ -22,11 +33,8 @@ function App() {
           path="/"
           element={<Links menu={key !== null ? authMenu : noAuthMenu} />}
         >
-          <Route index element={<Home />} />
+          <Route index element={<Home music={music} />} />
           <Route path="*" element={<Nopage />} />
-          <Route path="musicdisplay" element={<Musicdisplay />} />
-          <Route path="artistdisplay" element={<Artistdisplay />} />
-          <Route path="displayblock" element={<Displayblock />} />
         </Route>
       </Routes>
     </BrowserRouter>

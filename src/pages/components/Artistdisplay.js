@@ -5,10 +5,10 @@ export default function Artistdisplay(props) {
   useEffect(() => {
     const artist = FileService.read("music").then(
       (response) => {
-        console.log(response);
+        // console.log(response);
       },
       (rej) => {
-        console.log(rej);
+        // console.log(rej);
       }
     );
   }, []);

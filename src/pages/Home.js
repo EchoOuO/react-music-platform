@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import FileService from "../services/FileService";
 import Footer from "./Footer";
 import Musicdisplay from "./components/Musicdisplay";
 import Artistdisplay from "./components/Artistdisplay";
@@ -8,7 +10,7 @@ export default function Home(props) {
   return (
     <>
       <h1>Home</h1>
-      <Musicdisplay />
+      <Musicdisplay music={props.music} />
       <Artistdisplay />
       <Footer />
     </>
