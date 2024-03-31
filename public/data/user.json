@@ -6,7 +6,7 @@
     "password": "admin",
     "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
     "user": true,
-    "artist": false,
+    "artist": true,
     "admin": true
   },
   {
@@ -16,7 +16,7 @@
     "password": "admin",
     "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
     "user": true,
-    "artist": false,
+    "artist": true,
     "admin": true
   },
   {
@@ -26,7 +26,7 @@
     "password": "admin",
     "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
     "user": true,
-    "artist": false,
+    "artist": true,
     "admin": true
   },
   {
