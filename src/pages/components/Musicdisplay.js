@@ -5,7 +5,7 @@ export default function Musicdisplay(props) {
   return (
     <>
       <h1>Musicdisplay</h1>
-      <Displayblock music={props.music} />
+      <Displayblock music={props.music} addToPlayList={props.addToPlayList} />
     </>
   );
 }

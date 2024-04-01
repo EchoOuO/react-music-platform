@@ -17,15 +17,34 @@ function App() {
   useEffect(() => {
     FileService.read("music").then(
       (response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setMusic(response.data);
-        console.log(music);
+        // console.log(music);
       },
       (rej) => {
         console.log(rej);
       }
     );
   }, []);
+
+  const [playlist, setPlaylist] = useState(new Map());
+  const [mid, setMid] = useState(null);
+
+  const addToPlayList = (e) => {
+    const tmpmid = e.target.attributes.mid.value;
+    const tmpdata = music.find((obj) => {
+      // console.log(obj.mid);
+      return obj.mid == tmpmid;
+    });
+
+    const tmpplaylist = new Map(playlist);
+    tmpplaylist.set(tmpmid, tmpdata);
+    setPlaylist(tmpplaylist);
+    setMid(tmpmid);
+
+    console.log(playlist);
+  };
+
   return (
     <BrowserRouter>
       <Routes>
@@ -33,7 +52,17 @@ function App() {
           path="/"
           element={<Links menu={key !== null ? authMenu : noAuthMenu} />}
         >
-          <Route index element={<Home music={music} />} />
+          <Route
+            index
+            element={
+              <Home
+                music={music}
+                addToPlayList={addToPlayList}
+                playlist={playlist}
+                mid={mid}
+              />
+            }
+          />
           <Route path="*" element={<Nopage />} />
         </Route>
       </Routes>

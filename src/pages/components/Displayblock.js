@@ -1,6 +1,6 @@
 import Displaywindow from "./Displaywindow";
+import Musicplayer from "./Musicplayer";
 export default function Displayblock(props) {
-  console.log(props);
   return (
     <>
       <div className="row">
@@ -18,6 +18,22 @@ export default function Displayblock(props) {
                     />
                     <h3 className="card-title">{musicObj.mname}</h3>
                     <p className="card-text">{musicObj.artist}</p>
+                    <button
+                      type="button"
+                      mid={musicObj.mid}
+                      mname={musicObj.mname}
+                      artist={musicObj.artist}
+                      album={musicObj.album}
+                      address={musicObj.address}
+                      image={musicObj.image}
+                      onClick={props.addToPlayList}
+                    >
+                      Add to Playlist!
+                    </button>
+                    {/* <audio
+                      src={`/data/music/${musicObj.address}.mp3`}
+                      controls
+                    ></audio> */}
                   </div>
                 </div>
               </div>
