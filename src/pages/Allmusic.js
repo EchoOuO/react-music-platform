@@ -1,4 +1,4 @@
-import Displayblock from "./components/Musicdisplayblock";
+import Displayblock from "./components/Displayblock";
 export default function Allmusic(props) {
   return (
     <>

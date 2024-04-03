@@ -1,9 +1,9 @@
-import Displayblock from "./components/Musicdisplayblock";
+import Displayblock from "./components/Displayblock";
 export default function Allartist(props) {
   return (
     <>
       <h1>All artist page</h1>
-      <Displayblock musicdisplay={props.music} />
+      <Displayblock artistdisplay={props.artist} />
     </>
   );
 }

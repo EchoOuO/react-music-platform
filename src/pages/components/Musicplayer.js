@@ -19,21 +19,22 @@ export default function Musicplayer(props) {
   const playNext = () => {};
   const playPrev = () => {};
   return (
-    // Show music player only if playlist is not empty
+    // Show music player and play music only if mid is not null
     <>
-      {props.mid ? (
+      {props.currentMid ? (
         <div className="playercontainer">
+          <button>Prev</button>
+          <button>Next</button>
           <audio
             ref={audioRef}
             className="player"
-            src={`/data/music/${props.playlist.get(props.mid).address}.mp3`}
+            src={`/data/music/${
+              props.currentPlay.get(props.currentMid).address
+            }.mp3`}
             controls
             autoPlay
           ></audio>
-          <button>Prev</button>
-          <button>Next</button>
-
-          <p>{curremtMusicDuration}</p>
+          {/* <p>{curremtMusicDuration}</p> */}
         </div>
       ) : null}
     </>
