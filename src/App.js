@@ -4,7 +4,11 @@ import Nopage from "./pages/Nopage";
 import Links from "./pages/Links";
 import { useEffect, useState } from "react";
 import FileService from "./services/FileService";
+import Musicpage from "./pages/Allmusic";
+import Allmusic from "./pages/Allmusic";
+import Allartist from "./pages/Allartist";
 function App() {
+  // Log in & display links in nav bar
   const [key, setKey] = useState(null);
   const authMenu = [
     { url: "/", text: "Home" },
@@ -13,13 +17,31 @@ function App() {
   ];
   const noAuthMenu = [{ url: "/login", text: "login" }];
 
+  // import "music.json" data
   const [music, setMusic] = useState([]);
+  const [musicdisplay, setMusicdisplay] = useState([]);
   useEffect(() => {
     FileService.read("music").then(
       (response) => {
         // console.log(response.data);
         setMusic(response.data);
-        // console.log(music);
+
+        // create 6 random and different numbers
+        let randomNumber = [];
+        let randomMusic = [];
+
+        while (randomNumber.length < 6) {
+          const tmpNumber = Math.floor(Math.random() * 49.99);
+          if (!randomNumber.includes(randomNumber)) {
+            randomNumber.push(tmpNumber);
+          }
+        }
+        // console.log(randomNumber);
+        for (let idx of randomNumber) {
+          // console.log(idx);
+          randomMusic.push(response.data[idx]);
+        }
+        setMusicdisplay(randomMusic);
       },
       (rej) => {
         console.log(rej);
@@ -27,6 +49,7 @@ function App() {
     );
   }, []);
 
+  // Playlist management
   const [playlist, setPlaylist] = useState(new Map());
   const [mid, setMid] = useState(null);
 
@@ -42,7 +65,7 @@ function App() {
     setPlaylist(tmpplaylist);
     setMid(tmpmid);
 
-    console.log(playlist);
+    // console.log(playlist);
   };
 
   return (
@@ -60,9 +83,12 @@ function App() {
                 addToPlayList={addToPlayList}
                 playlist={playlist}
                 mid={mid}
+                musicdisplay={musicdisplay}
               />
             }
           />
+          <Route path="allmusic" element={<Allmusic music={music} />}></Route>
+          <Route path="allartist" element={<Allartist music={music} />}></Route>
           <Route path="*" element={<Nopage />} />
         </Route>
       </Routes>

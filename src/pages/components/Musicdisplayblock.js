@@ -1,12 +1,11 @@
 import Displaywindow from "./Displaywindow";
 import Musicplayer from "./Musicplayer";
-export default function Displayblock(props) {
+export default function Musicdisplayblock(props) {
   return (
     <>
       <div className="row">
-        {/* if props.music get data then print it out */}
-        {props.music &&
-          props.music.map((musicObj, idx) => {
+        {props.musicdisplay &&
+          props.musicdisplay.map((musicObj, idx) => {
             return (
               <div className="col-4" key={idx}>
                 <div className="card">
@@ -30,10 +29,6 @@ export default function Displayblock(props) {
                     >
                       Add to Playlist!
                     </button>
-                    {/* <audio
-                      src={`/data/music/${musicObj.address}.mp3`}
-                      controls
-                    ></audio> */}
                   </div>
                 </div>
               </div>
