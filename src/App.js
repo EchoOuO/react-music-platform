@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 function App() {
   // Log in & display links in nav bar
   const [key, setKey] = useState(null);
+
   const authMenu = [
     { url: "/", text: "Home" },
     { url: "/userpage", text: "User Page" },
@@ -79,7 +80,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Links menu={key !== null ? authMenu : noAuthMenu} />}
+          element={<Links menu={(key !== null )? authMenu : noAuthMenu} />}
         >
           <Route
             index

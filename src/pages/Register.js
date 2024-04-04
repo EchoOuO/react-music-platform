@@ -1,4 +1,5 @@
 import Formcompo from "./components/Formcompo";
+import PostService from "../services/PostService";
 
 export default function Register() {
   const elements = [
@@ -8,21 +9,38 @@ export default function Register() {
     { name: "pass", type: "password", text: "Password", req: true },
   ];
 
-  const userType = [
-    {value: "user"},
-    {value: "staff"},
-    {value: "admin"},
-  ]
+  const userType = [{ value: "user" }, { value: "artist" }];
 
   const buttons = [{ type: "submit", text: "Register" }];
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+    const regData = new FormData(e.target);
+    PostService.reg(regData).then(
+      (response) => {
+        if (response.status === 200) {
+          console.log(regData);
+        }
+      },
+      (rej) => {
+        console.log(rej);
+      }
+    );
+  };
+  
 
   return (
     <>
       <div className="row justify-content-center align-items-center g-2 m-3">
         <div className="col-6 ">
           <h1 className="text-center">Sign Up</h1>
-          <Formcompo elements={elements} type={userType} buttons={buttons}/>
+          <Formcompo
+            elements={elements}
+            type={userType}
+            buttons={buttons}
+            submit={submitHandler}
+          />
+          
         </div>
       </div>
     </>
