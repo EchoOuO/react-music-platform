@@ -6,6 +6,7 @@ import "./Home.css";
 import "./Footer.css";
 import Musicplayer from "./components/Musicplayer";
 import { useNavigate } from "react-router-dom";
+import Displaywindow from "./components/Displaywindow";
 
 export default function Home(props) {
   const navigate = useNavigate();
@@ -34,7 +35,8 @@ export default function Home(props) {
       // console.log(obj.mid);
       return obj.mid == tmpmid;
     });
-
+    // console.log(tmpmid);
+    // console.log(tmpdata);
     const tmpplaylist = new Map(playlist);
     tmpplaylist.set(tmpmid, tmpdata);
     setPlaylist(tmpplaylist);
@@ -60,6 +62,9 @@ export default function Home(props) {
 
     // console.log(playlist);
   };
+
+  
+
   return (
     <>
       <h1>Home</h1>
@@ -68,14 +73,25 @@ export default function Home(props) {
         addToPlayList={addToPlayList}
         playMusic={playMusic}
         musicdisplay={props.musicdisplay}
+        displayInfo={props.displayInfo}
       />
-      <button onClick={toAllMusic}>More Music</button>
+      <button
+        className="btn btn-primary btn-lg morebutton"
+        onClick={toAllMusic}
+      >
+        More Music
+      </button>
 
       <Indexartistdisplay
         music={props.music}
         artistdisplay={props.artistdisplay}
       />
-      <button onClick={toAllArtist}>More Artists</button>
+      <button
+        className="btn btn-primary btn-lg morebutton"
+        onClick={toAllArtist}
+      >
+        More Artists
+      </button>
 
       <Musicplayer
         music={props.music}
@@ -84,6 +100,8 @@ export default function Home(props) {
         currentPlay={currentPlay}
         currentMid={currentMid}
       />
+
+      <Displaywindow musicdisplay={props.musicdisplay} window={props.window} />
       <Footer />
     </>
   );

@@ -10,6 +10,7 @@ export default function Indexmusicdisplay(props) {
         addToPlayList={props.addToPlayList}
         playMusic={props.playMusic}
         musicdisplay={props.musicdisplay}
+        displayInfo={props.displayInfo}
       />
     </>
   );

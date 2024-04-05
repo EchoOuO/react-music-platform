@@ -49,6 +49,7 @@ function App() {
       }
     );
 
+    // import "artist" data
     FileService.read("artist").then(
       (response) => {
         // console.log(response.data);
@@ -77,6 +78,18 @@ function App() {
     );
   }, []);
 
+  // dispaly window 
+  const [window, setWindow] = useState([])
+  const displayInfo = (e) => {
+    const tmpmid = e.target.attributes.mid.value;
+    const tmpdata = music.find((obj) => {
+      // console.log(obj.mid);
+      return obj.mid == tmpmid;
+    });
+    setWindow(tmpdata)
+    // console.log(window)
+  };
+
   return (
     <BrowserRouter>
       <Routes>
@@ -92,6 +105,8 @@ function App() {
                 musicdisplay={musicdisplay}
                 artist={artist}
                 artistdisplay={artistdisplay}
+                displayInfo={displayInfo}
+                window={window}
               />
             }
           />
