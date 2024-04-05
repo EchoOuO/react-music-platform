@@ -29,7 +29,7 @@ export default function Displayblock(props) {
                     <h5 className="card-title">{musicObj.mname}</h5>
                     <p className="card-text">{musicObj.artist}</p>
                     <div className="d-grid gap-2 col-6 mx-auto">
-                      <button
+                      {/* <button
                         className="btn btn-outline-primary"
                         type="button"
                         mid={musicObj.mid}
@@ -54,7 +54,7 @@ export default function Displayblock(props) {
                         onClick={props.addToPlayList}
                       >
                         Add to Playlist!
-                      </button>
+                      </button> */}
 
                       {/* <!-- Button trigger modal --> */}
                       <button
@@ -69,10 +69,7 @@ export default function Displayblock(props) {
                         album={musicObj.album}
                         address={musicObj.address}
                         image={musicObj.image}
-                        onClick={props.displayInfo}
-                      >
-                        More Detail
-                      </button>
+                        onClick={props.displayInfo}>Detail</button>
                     </div>
                   </div>
                 </div>
@@ -84,7 +81,7 @@ export default function Displayblock(props) {
         {props.artistdisplay &&
           props.artistdisplay.map((artistObj, idx) => {
             return (
-              <div className="col-2" key={idx}>
+              <div className="col-4" key={idx}>
                 <div className="card h-100 border-light text-center">
                   <div className="card-body">
                     <img
@@ -94,15 +91,12 @@ export default function Displayblock(props) {
                     />
                     <h5 className="card-title">{artistObj.artist}</h5>
                     <button
-                      className="btn btn-outline-primary"
+                      className="btn btn-outline-primary col-6"
                       type="button"
                       mid={artistObj.aid}
                       artist={artistObj.artist}
-                      image={artistObj.image}
-                      // onClick={props.addToPlayList}
-                    >
-                      More Detail
-                    </button>
+                      image={artistObj.image}        
+                    >Learn More</button>
                   </div>
                 </div>
               </div>

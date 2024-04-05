@@ -82,10 +82,12 @@ function App() {
   const [window, setWindow] = useState([])
   const displayInfo = (e) => {
     const tmpmid = e.target.attributes.mid.value;
+    // console.log(typeof tmpmid)
     const tmpdata = music.find((obj) => {
-      // console.log(obj.mid);
-      return obj.mid == tmpmid;
+      // console.log(typeof obj.mid);
+      return obj.mid === Number(tmpmid);
     });
+    // console.log(tmpdata)
     setWindow(tmpdata)
     // console.log(window)
   };

@@ -1,8 +1,10 @@
-export default function Displaywindow(props) {
+import "./css/Displaywindow.css"
 
+export default function Displaywindow(props) {
+  // console.log(props.window)
   return (
     <>
-      {/* <!-- Modal --> */}
+    {(props.window) ? 
       <div
         className="modal fade"
         id="modalId"
@@ -28,27 +30,45 @@ export default function Displaywindow(props) {
               ></button>
             </div> */}
             <div className="modal-body text-center">
+              <button 
+                type="button"
+                className="btn btn-close window-close-btn"
+                data-bs-dismiss="modal"></button>
               <img src={props.window.image} alt=""/>
-              <h4>{props.window.mname}</h4>
-              <h6>{props.window.artist}  「{props.window.album}」</h6>
+              <h3>{props.window.mname}</h3>
+              <h5>Artist: {props.window.artist}</h5>
+              <h5>Album:「{props.window.album}」</h5>
+              <p>{props.window.description}</p>
             </div>
             <div className="modal-footer mx-auto">
-              {/* <button
+        
+
+              <button
+                className="btn btn-outline-primary"
                 type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button> */}
-              <button type="button" className="btn btn-outline-primary">Play Music</button>
-              <button type="button" className="btn btn-outline-primary">
-                Add to Playlist
-              </button>
-         
+                mid={props.window.mid}
+                mname={props.window.mname}
+                artist={props.window.artist}
+                album={props.window.album}
+                address={props.window.address}
+                image={props.window.image}
+                onClick={props.playMusic}>Play music!</button>
+
+              <button 
+                className="btn btn-outline-primary" 
+                type="button"    
+                mid={props.window.mid}
+                mname={props.window.mname}
+                artist={props.window.artist}
+                album={props.window.album}
+                address={props.window.address}
+                image={props.window.image}
+                onClick={props.addToPlayList}>Add to Playlist!</button>
+      
             </div>
           </div>
         </div>
-      </div>
+      </div> : null}
     </>
   );
 }

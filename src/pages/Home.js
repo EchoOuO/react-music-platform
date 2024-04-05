@@ -25,7 +25,8 @@ export default function Home(props) {
     window.scrollTo(0, 0);
   }
 
-  // Add to playlist
+  // ---- 搬到App.js ----
+  // Add to playlist 
   const [playlist, setPlaylist] = useState(new Map());
   const [mid, setMid] = useState(null);
 
@@ -41,10 +42,10 @@ export default function Home(props) {
     tmpplaylist.set(tmpmid, tmpdata);
     setPlaylist(tmpplaylist);
     setMid(tmpmid);
-
-    // console.log(playlist);
+    console.log(playlist);
   };
 
+  // ---- 搬到App.js，如何讓player即使轉換頁面也仍存在?? ----
   // Current playing music management & Play music function
   const [currentPlay, setCurrentPlay] = useState(new Map());
   const [currentMid, setCurrentMid] = useState(null);
@@ -79,7 +80,7 @@ export default function Home(props) {
         className="btn btn-primary btn-lg morebutton"
         onClick={toAllMusic}
       >
-        More Music
+        Explore All Music
       </button>
 
       <Indexartistdisplay
@@ -90,7 +91,7 @@ export default function Home(props) {
         className="btn btn-primary btn-lg morebutton"
         onClick={toAllArtist}
       >
-        More Artists
+        Explore All Artists
       </button>
 
       <Musicplayer
@@ -101,7 +102,7 @@ export default function Home(props) {
         currentMid={currentMid}
       />
 
-      <Displaywindow musicdisplay={props.musicdisplay} window={props.window} />
+      <Displaywindow window={props.window} playMusic={playMusic} addToPlayList={addToPlayList} />
       <Footer />
     </>
   );
