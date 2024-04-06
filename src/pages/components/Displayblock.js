@@ -2,8 +2,8 @@ import Displaywindow from "./Displaywindow";
 import Musicplayer from "./Musicplayer";
 import "./css/Displayblock.css";
 export default function Displayblock(props) {
+  // console.log(props.musicdisplay)
 
-  
   return (
     <>
       <div className="row">
@@ -91,12 +91,15 @@ export default function Displayblock(props) {
                     />
                     <h5 className="card-title">{artistObj.artist}</h5>
                     <button
-                      className="btn btn-outline-primary col-6"
                       type="button"
-                      mid={artistObj.aid}
+                      className="btn btn-outline-primary col-6"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modalId"
+                   
+                      aid={artistObj.aid}
                       artist={artistObj.artist}
-                      image={artistObj.image}        
-                    >Learn More</button>
+                      image={artistObj.image}   
+                      onClick={props.displayInfo}>Learn More</button>
                   </div>
                 </div>
               </div>

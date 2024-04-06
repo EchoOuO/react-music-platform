@@ -25,45 +25,6 @@ export default function Home(props) {
     window.scrollTo(0, 0);
   }
 
-  // ---- 搬到App.js ----
-  // Add to playlist 
-  const [playlist, setPlaylist] = useState(new Map());
-  const [mid, setMid] = useState(null);
-
-  const addToPlayList = (e) => {
-    const tmpmid = e.target.attributes.mid.value;
-    const tmpdata = props.music.find((obj) => {
-      // console.log(obj.mid);
-      return obj.mid == tmpmid;
-    });
-    // console.log(tmpmid);
-    // console.log(tmpdata);
-    const tmpplaylist = new Map(playlist);
-    tmpplaylist.set(tmpmid, tmpdata);
-    setPlaylist(tmpplaylist);
-    setMid(tmpmid);
-    console.log(playlist);
-  };
-
-  // ---- 搬到App.js，如何讓player即使轉換頁面也仍存在?? ----
-  // Current playing music management & Play music function
-  const [currentPlay, setCurrentPlay] = useState(new Map());
-  const [currentMid, setCurrentMid] = useState(null);
-  const playMusic = (e) => {
-    const tmpmid = e.target.attributes.mid.value;
-    const tmpdata = props.music.find((obj) => {
-      // console.log(obj.mid);
-      return obj.mid == tmpmid;
-    });
-
-    const tmpplaylist = new Map();
-    tmpplaylist.set(tmpmid, tmpdata);
-    setCurrentPlay(tmpplaylist);
-    setCurrentMid(tmpmid);
-
-    // console.log(playlist);
-  };
-
   
 
   return (
@@ -71,10 +32,12 @@ export default function Home(props) {
       <h1>Home</h1>
       <Indexmusicdisplay
         music={props.music}
-        addToPlayList={addToPlayList}
-        playMusic={playMusic}
+        addToPlayList={props.addToPlayList}
+        playMusic={props.playMusic}
         musicdisplay={props.musicdisplay}
         displayInfo={props.displayInfo}
+        window={props.window} 
+        artistMusicData={props.artistMusicData}
       />
       <button
         className="btn btn-primary btn-lg morebutton"
@@ -85,7 +48,11 @@ export default function Home(props) {
 
       <Indexartistdisplay
         music={props.music}
+        window={props.window}
+        playMusic={props.playMusic} 
         artistdisplay={props.artistdisplay}
+        displayInfo={props.displayInfo}
+        artistMusicData={props.artistMusicData}
       />
       <button
         className="btn btn-primary btn-lg morebutton"
@@ -96,13 +63,18 @@ export default function Home(props) {
 
       <Musicplayer
         music={props.music}
-        mid={mid}
-        playlist={playlist}
-        currentPlay={currentPlay}
-        currentMid={currentMid}
+        mid={props.mid}
+        playlist={props.playlist}
+        currentPlay={props.currentPlay}
+        currentMid={props.currentMid}
       />
 
-      <Displaywindow window={props.window} playMusic={playMusic} addToPlayList={addToPlayList} />
+      <Displaywindow 
+        music={props.music}
+        window={props.window} 
+        playMusic={props.playMusic} 
+        addToPlayList={props.addToPlayList}
+        artistMusicData={props.artistMusicData} />
       <Footer />
     </>
   );

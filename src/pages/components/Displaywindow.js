@@ -1,7 +1,11 @@
+import { useState } from "react";
 import "./css/Displaywindow.css"
 
 export default function Displaywindow(props) {
   // console.log(props.window)
+  // console.log(props.music)
+  // console.log(props.artistMusicData)
+  
   return (
     <>
     {(props.window) ? 
@@ -29,43 +33,74 @@ export default function Displaywindow(props) {
                 aria-label="Close"
               ></button>
             </div> */}
-            <div className="modal-body text-center">
-              <button 
-                type="button"
-                className="btn btn-close window-close-btn"
-                data-bs-dismiss="modal"></button>
-              <img src={props.window.image} alt=""/>
-              <h3>{props.window.mname}</h3>
-              <h5>Artist: {props.window.artist}</h5>
-              <h5>Album:「{props.window.album}」</h5>
-              <p>{props.window.description}</p>
-            </div>
-            <div className="modal-footer mx-auto">
-        
 
-              <button
-                className="btn btn-outline-primary"
-                type="button"
-                mid={props.window.mid}
-                mname={props.window.mname}
-                artist={props.window.artist}
-                album={props.window.album}
-                address={props.window.address}
-                image={props.window.image}
-                onClick={props.playMusic}>Play music!</button>
+            {(props.window.mid) ? 
+              <>
+              <div className="modal-body text-center">
+                <button 
+                  type="button"
+                  className="btn btn-close window-close-btn"
+                  data-bs-dismiss="modal"></button>
+                <img src={props.window.image} alt=""/>
+                <h3>{props.window.mname}</h3>
+                <h5>Artist: {props.window.artist}</h5>
+                <h5>Album:「{props.window.album}」</h5>
+                <p>{props.window.description}</p>
+              </div>
+              <div className="modal-footer mx-auto">
+                <button
+                  className="btn btn-outline-primary"
+                  type="button"
+                  mid={props.window.mid}
+                  mname={props.window.mname}
+                  artist={props.window.artist}
+                  album={props.window.album}
+                  address={props.window.address}
+                  image={props.window.image}
+                  onClick={props.playMusic}>Play music!</button>
+                <button 
+                  className="btn btn-outline-primary" 
+                  type="button"    
+                  mid={props.window.mid}
+                  mname={props.window.mname}
+                  artist={props.window.artist}
+                  album={props.window.album}
+                  address={props.window.address}
+                  image={props.window.image}
+                  onClick={props.addToPlayList}>Add to Playlist!</button>
+              </div>
+              </> : null}
 
-              <button 
-                className="btn btn-outline-primary" 
-                type="button"    
-                mid={props.window.mid}
-                mname={props.window.mname}
-                artist={props.window.artist}
-                album={props.window.album}
-                address={props.window.address}
-                image={props.window.image}
-                onClick={props.addToPlayList}>Add to Playlist!</button>
-      
-            </div>
+            {(props.window.aid) ? 
+              <>
+              <div className="modal-body text-center">
+                <button 
+                  type="button"
+                  className="btn btn-close window-close-btn"
+                  data-bs-dismiss="modal"></button>
+                <img src={props.window.image} alt=""/>
+                <h3>Artist: {props.window.artist}</h3>
+                <p>{props.window.description}</p>
+              </div>
+
+              {(props.artistMusicData) ? 
+                <div className="modal-footer mx-auto">
+                <img className="artist-music-img" src={props.artistMusicData.image} alt=""/>
+                <p>「{props.artistMusicData.album}」</p>
+                <p>{props.artistMusicData.mname}</p>
+                <button
+                  className="btn btn-outline-primary"
+                  type="button"
+                  mid={props.artistMusicData.mid}
+                  mname={props.artistMusicData.mname}
+                  artist={props.artistMusicData.artist}
+                  album={props.artistMusicData.album}
+                  address={props.artistMusicData.address}
+                  image={props.artistMusicData.image}
+                  onClick={props.playMusic}>Play music!</button>
+                </div> : null}
+         
+            </> : null}
           </div>
         </div>
       </div> : null}

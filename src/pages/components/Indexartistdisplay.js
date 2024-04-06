@@ -4,7 +4,7 @@ export default function Indexartistdisplay(props) {
   return (
     <>
       <h1>Artistdisplay</h1>
-      <Displayblock artist={props.artist} artistdisplay={props.artistdisplay} />
+      <Displayblock artist={props.artist} artistdisplay={props.artistdisplay} displayInfo={props.displayInfo} />
     </>
   );
 }
