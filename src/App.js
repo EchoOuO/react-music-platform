@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AES, enc } from "crypto-js";
-
 import Home from "./pages/Home";
 import Nopage from "./pages/Nopage";
 import Links from "./pages/Links";
@@ -126,7 +125,7 @@ function App() {
           <Route index element={<Home music={music} addToPlayList={addToPlayList} playlist={playlist} mid={mid}  musicdisplay={musicdisplay}/>}/>
           <Route path="allmusic" element={<Allmusic music={music} />}></Route>
           <Route path="allartist" element={<Allartist music={music} />}></Route>
-          <Route path="userpage" element={<Userpage/>}></Route>
+          <Route path="userpage" element={<Userpage loginUser={loginUser}/>}></Route>
           <Route path="reg" element={<Register />}></Route>
           <Route path="login" element={<Login auth={Auth} loginKey={loginKey}/>}></Route>
           <Route path="logout" element={<Logout logout={logout}/>}></Route>

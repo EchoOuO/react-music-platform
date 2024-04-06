@@ -23,7 +23,7 @@ export default function Login(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("Submitted User Data:", user);
+    // console.log(user);
     props.auth(user);
     navigate("/userpage");
   };
