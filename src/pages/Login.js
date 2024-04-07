@@ -14,7 +14,7 @@ export default function Login(props) {
 
   const buttons = [
     { type: "submit", text: "Login" },
-    { type: "button", text: "Show Pass" }
+    { type: "button", text: "Show Password" }
   ];
 
   const changeHandler = (e) => {

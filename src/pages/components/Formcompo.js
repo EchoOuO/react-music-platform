@@ -26,10 +26,10 @@ export default function Formcompo(props) {
 
       {/* button */}
       {props.buttons.map((btnElement, idx) => {
-        const btnClassName = (btnElement.text === "Show Pass") ? 'btn btn-outline-dark mt-3' : 'btn btn-outline-primary w-25 mt-3 btn-lg';
+        const btnClassName = (btnElement.text === "Show Password") ? 'btn btn-outline-dark mt-3' : 'btn btn-outline-primary w-25 mt-3 btn-lg';
 
         return (
-          <button type={btnElement.type} className={btnClassName} key={idx} onClick={btnElement.text === "Show Pass" ? props.showPass : null}> {btnElement.text} </button>
+          <button type={btnElement.type} className={btnClassName} key={idx} onClick={btnElement.text === "Show Password" ? props.showPass : null}> {btnElement.text} </button>
         );
       })}
 
