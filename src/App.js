@@ -210,51 +210,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={<Links menu={key !== null ? authMenu : noAuthMenu} />}
-        >
-          <Route
-            index
-            element={<Home
-              music={music}
-              musicdisplay={musicdisplay}
-              artist={artist}
-              artistdisplay={artistdisplay}
-              displayInfo={displayInfo}
-              window={window}
-              currentPlay={currentPlay}
-              currentMid={currentMid}
-              playMusic={playMusic}
-              playlist={playlist}
-              mid={mid}
-              addToPlayList={addToPlayList}
-              artistMusicData={artistMusicData}
-              />}/>
-          <Route 
-            path="allmusic" 
-            element={<Allmusic      
-              music={music}
-              addToPlayList={addToPlayList}
-              playMusic={playMusic}
-              window={window}
-              currentPlay={currentPlay}
-              currentMid={currentMid}
-              musicdisplay={musicdisplay}
-              displayInfo={displayInfo}
-              artistMusicData={artistMusicData} />}/>
-          <Route
-            path="allartist"
-            element={<Allartist 
-              artist={artist}     
-              music={music}
-              window={window}
-              currentPlay={currentPlay}
-              currentMid={currentMid}
-              playMusic={playMusic}
-              artistdisplay={artistdisplay}
-              displayInfo={displayInfo}
-              artistMusicData={artistMusicData} />}/>
+        <Route path="/" element={<Links menu={key !== null ? authMenu : noAuthMenu} />} >
+          <Route index element={<Home music={music} musicdisplay={musicdisplay} artist={artist} artistdisplay={artistdisplay} displayInfo={displayInfo} window={window} currentPlay={currentPlay} currentMid={currentMid} playMusic={playMusic}playlist={playlist} mid={mid} addToPlayList={addToPlayList} artistMusicData={artistMusicData}/>}/>
+          <Route path="allmusic" element={<Allmusic  music={music} addToPlayList={addToPlayList} playMusic={playMusic} window={window} currentPlay={currentPlay} currentMid={currentMid} musicdisplay={musicdisplay} displayInfo={displayInfo} artistMusicData={artistMusicData} />}/>
+          <Route path="allartist" element={<Allartist  artist={artist}  music={music} window={window} currentPlay={currentPlay}currentMid={currentMid} playMusic={playMusic} artistdisplay={artistdisplay} displayInfo={displayInfo} artistMusicData={artistMusicData} />}/>
           <Route index element={<Home music={music} addToPlayList={addToPlayList} playlist={playlist} mid={mid}  musicdisplay={musicdisplay}/>}/>
           <Route path="allmusic" element={<Allmusic music={music} />}></Route>
           <Route path="allartist" element={<Allartist music={music} />}></Route>

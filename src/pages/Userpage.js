@@ -1,5 +1,6 @@
 import { AES, enc } from "crypto-js";
 import { useEffect, useState } from "react";
+import Displaywindow from "./components/Displaywindow"
 
 export default function Userpage(props) {
   const [userName, setUserName] = useState(null); // state to hold user name
@@ -17,13 +18,15 @@ export default function Userpage(props) {
       console.log(error);
     }
   }, []);
+
+  console.log(props);
   
   return(
       <>
       <div className="row justify-content-center align-items-center g-2 m-3">
         <div className="col-6 ">
           <h1 className="text-center">{userName}'s Playlist</h1>
-          
+          <Displaywindow/>
         </div>
       </div>
     </>

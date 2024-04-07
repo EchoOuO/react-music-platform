@@ -9,8 +9,7 @@ export default function Displaywindow(props) {
   return (
     <>
     {(props.window) ? 
-      <div
-        className="modal fade"
+      <div className="modal fade"
         id="modalId"
         tabindex="-1"
         role="dialog"

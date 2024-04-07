@@ -1,11 +1,12 @@
 export default function Formcompo(props) {
+
   return (
-    <form onSubmit={props.submit}>
+    <form onSubmit={props.submit} className="d-flex flex-column align-items-center">
       {props.elements.map((element, idx) => {
         return (
           // input
-          <div className="form-floating m-3" key={idx}>
-            <input type={element.type} className="form-control" name={element.name} placeholder={element.text} required={element.req} onChange={props.onChange}/>
+          <div className="form-floating m-3 w-75" key={idx}>
+            <input ref={element.name === "password" ? props.passInput : null} type={element.type} className="form-control" name={element.name} placeholder={element.text} required={element.req} onChange={props.onChange} />
             <label htmlFor={element.name}>{element.text}</label>
           </div>
         );
@@ -25,10 +26,14 @@ export default function Formcompo(props) {
 
       {/* button */}
       {props.buttons.map((btnElement, idx) => {
+        const btnClassName = (btnElement.text === "Show Pass") ? 'btn btn-outline-dark mt-3' : 'btn btn-outline-primary w-25 mt-3 btn-lg';
+
         return (
-          <button type={btnElement.type} className="btn btn-outline-primary" key={idx}> {btnElement.text} </button>
+          <button type={btnElement.type} className={btnClassName} key={idx} onClick={btnElement.text === "Show Pass" ? props.showPass : null}> {btnElement.text} </button>
         );
       })}
+
     </form>
   );
 }
+
