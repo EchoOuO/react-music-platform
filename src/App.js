@@ -52,6 +52,7 @@ function App() {
       if (user.email === userObj.email && user.password === userObj.password) {
         const cipherUser = AES.encrypt(JSON.stringify(user),'groupc').toString(); //AESkey = groupc
         sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
+        // console.log(user)
         setLoginUser(user);
         loginKey(user.email);
         return true; // Returns true if login succeeds
@@ -198,8 +199,14 @@ function App() {
     const tmpplaylist = new Map(playlist);
     tmpplaylist.set(tmpmid, tmpdata);
     setPlaylist(tmpplaylist);
+    // console.log(loginUser.uid)
+    const tmpArray = []
+    for (let data of tmpplaylist){
+      tmpArray.push(data)
+    }
+    localStorage.setItem(loginUser.uid,JSON.stringify(tmpArray))
     setMid(tmpmid);
-    console.log(playlist);
+    // console.log(playlist);
   };
 
   const logout = ()=>{

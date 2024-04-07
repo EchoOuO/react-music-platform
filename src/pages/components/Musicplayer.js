@@ -33,6 +33,7 @@ export default function Musicplayer(props) {
             }.mp3`}
             controls
             autoPlay
+
           ></audio>
           {/* <p>{curremtMusicDuration}</p> */}
         </div>
