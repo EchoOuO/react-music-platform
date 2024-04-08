@@ -1,5 +1,5 @@
 export default function Playlistmodal(props) {
-  const modalId = `exampleModal${props.idx}`; 
+  const modalId = `${props.idx}`; 
 
   return (
     <>
