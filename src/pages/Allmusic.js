@@ -18,13 +18,13 @@ export default function Allmusic(props) {
         playMusic={props.playMusic} 
         addToPlayList={props.addToPlayList}
         artistMusicData={props.artistMusicData} />
-      <Musicplayer
+      {/* <Musicplayer
         music={props.music}
         mid={props.mid}
         playlist={props.playlist}
         currentPlay={props.currentPlay}
         currentMid={props.currentMid}
-      />
+      /> */}
     </>
   );
 }

@@ -3,7 +3,7 @@ import { AES, enc } from "crypto-js";
 import Home from "./pages/Home";
 import Nopage from "./pages/Nopage";
 import Links from "./pages/Links";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import FileService from "./services/FileService";
 import Allmusic from "./pages/Allmusic";
 import Allartist from "./pages/Allartist";
@@ -12,6 +12,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Userpage from "./pages/Userpage";
+import MusicPlayerClass from "./classes/MusicPlayerClass";
 
 function App() {
   // Log in & display links in nav bar
@@ -155,6 +156,7 @@ function App() {
       // console.log(window)
     }
   };
+  
   // show artist's music in display window
   useEffect(()=>{
     if(window.artist) {
@@ -165,7 +167,6 @@ function App() {
     }
   },[window.artist])
 
-  // ---- 如何讓player即使轉換頁面也仍存在?? ----
   // Current playing music management & Play music function
   const [currentPlay, setCurrentPlay] = useState(new Map());
   const [currentMid, setCurrentMid] = useState(null);
@@ -178,17 +179,58 @@ function App() {
 
     const tmpplaylist = new Map();
     tmpplaylist.set(tmpmid, tmpdata);
+    // console.log(tmpplaylist)
     setCurrentPlay(tmpplaylist);
     setCurrentMid(tmpmid);
 
     // console.log(playlist);
+
+    // const tmpArray = []
+    // for (let data of tmpplaylist){
+    //   tmpArray.push(data)
+    // }
+
+    localStorage.setItem((loginUser) ? `${loginUser.uid} curMusic` : "Guest curMusic", JSON.stringify(Object.fromEntries(tmpplaylist)))
+    localStorage.setItem((loginUser) ? `${loginUser.uid} curMusicID` : "Guest curMusicID", tmpmid)
+    // remove current play time
+    localStorage.removeItem("Guest curMusicTime")
+
+  
   };
+
+  // retrieve current play music from local storage
+  useEffect(()=>{
+    // for guests
+    if(!loginUser){
+      if(localStorage.getItem("Guest curMusic") && localStorage.getItem("Guest curMusicID")){
+        const tmpdata = localStorage.getItem("Guest curMusic");
+        const tmpmid = localStorage.getItem("Guest curMusicID");
+        // console.log(tmpmid)
+        const tmpplaylist = new Map(Object.entries(JSON.parse(tmpdata)));
+        // console.log(tmpplaylist)
+        setCurrentPlay(tmpplaylist);
+        setCurrentMid(tmpmid);
+        // console.log(currentPlay);
+        // console.log(currentMid);
+    }}  
+    // for login users
+    if(loginUser){
+      if(localStorage.getItem(`${loginUser.uid} curMusic`) && localStorage.getItem(`${loginUser.uid} curMusicID`)){
+        const tmpdata = localStorage.getItem(`${loginUser.uid} curMusic`);
+        const tmpmid = localStorage.getItem(`${loginUser.uid} curMusicID`);
+        const tmpplaylist = new Map(Object.entries(JSON.parse(tmpdata)));
+        // console.log(tmpplaylist)
+        setCurrentPlay(tmpplaylist);
+        setCurrentMid(tmpmid);
+    }}
+  },[loginUser])
 
   // Add to playlist 
   const [playlist, setPlaylist] = useState(new Map());
   const [mid, setMid] = useState(null);
 
   const addToPlayList = (e) => {
+    // get data from button's arrtributes
     const tmpmid = e.target.attributes.mid.value;
     const tmpdata = music.find((obj) => {
       // console.log(obj.mid);
@@ -199,14 +241,22 @@ function App() {
     const tmpplaylist = new Map(playlist);
     tmpplaylist.set(tmpmid, tmpdata);
     setPlaylist(tmpplaylist);
-    // console.log(loginUser.uid)
-    const tmpArray = []
-    for (let data of tmpplaylist){
-      tmpArray.push(data)
+    console.log(playlist)
+
+    if (loginUser) {
+      // Save playlist in local storage with key = login user id
+      const tmpArray = []
+      for (let data of tmpplaylist){
+        tmpArray.push(data)
+      }
+      localStorage.setItem(loginUser.uid,JSON.stringify(tmpArray))
+      setMid(tmpmid);
+    }else {
+      alert("Please log in!")
     }
-    localStorage.setItem(loginUser.uid,JSON.stringify(tmpArray))
-    setMid(tmpmid);
+    
     // console.log(playlist);
+
   };
 
   const logout = ()=>{
@@ -272,6 +322,16 @@ function App() {
           <Route path="*" element={<Nopage />} />
         </Route>
       </Routes>
+
+      {/* music player won't be stoped even user being navigated to another browser */}
+      <Musicplayer
+        music={music}
+        mid={mid}
+        playlist={playlist}
+        currentPlay={currentPlay}
+        currentMid={currentMid}
+        loginUser={loginUser}
+       />
     </BrowserRouter>
   );
 }
