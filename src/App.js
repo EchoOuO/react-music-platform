@@ -194,8 +194,6 @@ function App() {
     localStorage.setItem((loginUser) ? `${loginUser.uid} curMusicID` : "Guest curMusicID", tmpmid)
     // remove current play time
     localStorage.removeItem("Guest curMusicTime")
-
-  
   };
 
   // retrieve current play music from local storage
@@ -254,9 +252,7 @@ function App() {
     }else {
       alert("Please log in!")
     }
-    
     // console.log(playlist);
-
   };
 
   const logout = ()=>{

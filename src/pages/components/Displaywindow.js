@@ -1,10 +1,16 @@
 import { useState } from "react";
 import "./css/Displaywindow.css"
-
+import { useNavigate } from "react-router-dom";
 export default function Displaywindow(props) {
   // console.log(props.window)
   // console.log(props.music)
   // console.log(props.artistMusicData)
+
+  const navigate = useNavigate()
+
+  const toPlaylist = () => {
+    navigate("/login")
+  }
   
   return (
     <>
@@ -68,6 +74,8 @@ export default function Displaywindow(props) {
                   address={props.window.address}
                   image={props.window.image}
                   onClick={props.addToPlayList}>Add to Playlist!</button>
+          
+                <img onClick={toPlaylist} className="window-playlist-img" data-bs-toggle="modal" data-bs-target="#modalId" src="./icon/playlist.png" />
               </div>
               </> : null}
 

@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import "./css/Musicplayer.css";
 export default function Musicplayer(props) {
   // console.log(props.playlist);
-  // console.log(audioRef);
+  // console.log(props.currentMid);
   // console.log(curremtMusicDuration);
 
   const audioRef = useRef();
   const [playerStatus, setPlayerStatus] = useState({play:true, pause:false, curTime:null, end:false})
+
 
   // Music player conctrol
   const pause = () => {
@@ -15,6 +16,7 @@ export default function Musicplayer(props) {
   }
 
   // 怎麼讓playmusic button按下去後，就自動trigger play function???
+  // 現在會一直print line 5，不知道邏輯是啥
   const play = () => {
     audioRef.current.play()
     setPlayerStatus((prev)=>({...prev, pause: false, play:true}))

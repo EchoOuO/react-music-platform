@@ -4,6 +4,12 @@
     right: 10px;
 }
 
+.window-playlist-img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
 .artist-music-img {
     width: 50px;
 }
