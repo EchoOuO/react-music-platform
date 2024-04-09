@@ -12,6 +12,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Userpage from "./pages/Userpage";
+import Playlistcompo from "./pages/components/Playlistcompo";
 
 function App() {
   // Log in & display links in nav bar
@@ -36,6 +37,14 @@ function App() {
   ];
 
   useEffect(() => {
+    // Check if there's a logged in user in session storage
+    const storedUser = sessionStorage.getItem("LoginUser");
+    if (storedUser) {
+      const decryptedUser = AES.decrypt(storedUser, 'groupc').toString(enc.Utf8);
+      setLoginUser(JSON.parse(decryptedUser));
+      setKey(JSON.parse(decryptedUser).email); // Assuming email can uniquely identify a user
+    }
+    
     //import user json data
     FileService.read("user").then(
       (response) => {
@@ -45,7 +54,7 @@ function App() {
         console.log(rej);
       }
     );
-  }, []); 
+  }, []);
 
   const Auth = (userObj) => {   //userObj = Information entered by users
     for (let user of users) {
@@ -209,10 +218,11 @@ function App() {
   };
 
 
-  const logout = ()=>{
+  const logout = () => {
+    sessionStorage.removeItem("LoginUser"); // Remove user from session storage on logout
     setLoginUser(null);
-    loginKey(null);
-  }
+    setKey(null);
+  };
 
   return (
     <BrowserRouter>
@@ -224,7 +234,7 @@ function App() {
           <Route index element={<Home music={music} addToPlayList={addToPlayList} playlist={playlist} mid={mid}  musicdisplay={musicdisplay}/>}/>
           <Route path="allmusic" element={<Allmusic music={music} />}></Route>
           <Route path="allartist" element={<Allartist music={music} />}></Route>
-          <Route path="userpage" element={<Userpage loginUser={loginUser}/>}></Route>
+          <Route path="userpage" element={<Userpage loginUser={loginUser}><Playlistcompo loginUser={loginUser}/></Userpage>} />
           <Route path="reg" element={<Register />}></Route>
           <Route path="login" element={<Login auth={Auth} loginKey={loginKey}/>}></Route>
           <Route path="logout" element={<Logout logout={logout}/>}></Route>

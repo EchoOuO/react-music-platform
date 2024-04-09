@@ -18,7 +18,7 @@ export default function Playlistmodal(props) {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-primary">Play</button>
-              <button type="button" className="btn btn-danger">Delete</button>
+              <button type="button" className="btn btn-danger" onClick={props.delete}>Delete</button>
             </div>
           </div>
         </div>
