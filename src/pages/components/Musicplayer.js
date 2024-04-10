@@ -4,22 +4,19 @@ export default function Musicplayer(props) {
   // console.log(props.playlist);
   // console.log(props.currentMid);
   // console.log(curremtMusicDuration);
+  // console.log(props.playerStatus)
 
   const audioRef = useRef();
-  const [playerStatus, setPlayerStatus] = useState({play:true, pause:false, curTime:null, end:false})
-
 
   // Music player conctrol
   const pause = () => {
     audioRef.current.pause()
-    setPlayerStatus((prev)=>({...prev, pause: true, play:false}))
+    props.setPlayerStatus((prev)=>({...prev, play:false}))
   }
 
-  // 怎麼讓playmusic button按下去後，就自動trigger play function???
-  // 現在會一直print line 5，不知道邏輯是啥
   const play = () => {
     audioRef.current.play()
-    setPlayerStatus((prev)=>({...prev, pause: false, play:true}))
+    props.setPlayerStatus((prev)=>({...prev, play:true}))
   }
 
   const replay = () => {
@@ -27,34 +24,49 @@ export default function Musicplayer(props) {
     play()
   }
 
-  // 要先達成 可以按照playlist撥放歌曲，才來做next / previous
+  // 要先達成 可以按照playlist撥放歌曲，  才來做next / previous
   const next = () => {}
 
   // Save current play time to local storage
   const saveCurrentTime = () => {
-    // console.log(audioRef.current.pause)
     // console.log(playerStatus.curTime)
-    setPlayerStatus((prev)=>({...prev, curTime: audioRef.current.currentTime}))
-    localStorage.setItem((props.loginUser) ? `${props.loginUser.uid} curMusicTime` : "Guest curMusicTime", playerStatus.curTime)
+    const curTime = audioRef.current.currentTime
+
+    localStorage.setItem((props.loginUser) ? `${props.loginUser.uid} curMusicTime` : "Guest curMusicTime", curTime)
   }
   // console.log(audioRef.current)
-  // console.log(!playerStatus.pause)
   // console.log(props.currentMid)
-  if (audioRef.current) {
-    if(props.currentMid && !playerStatus.pause) {
-      setTimeout(() => {
-        saveCurrentTime()
-      }, 500);
-    }
-  }
+  
 
-  // get current time from local sturage and play from that moment
+  // get current time from local storage and play from that moment
+  // 這邊重複登入登出會抓不到使用者的音樂 (在)
   useEffect(() => {
+    console.log(audioRef.current)
     if (audioRef.current) {
-      const currentTime = localStorage.getItem("Guest curMusicTime")
+      console.log(123)
+      let currentTime
+      if(props.loginUser){
+        currentTime = localStorage.getItem(`${props.loginUser.uid} curMusicTime`)
+      }else if(!props.loginUser) {
+        currentTime = localStorage.getItem("Guest curMusicTime")
+      }
       audioRef.current.currentTime = currentTime
     }
-  }, [props.currentMid]);
+  }, [props.loginUser]);
+
+  // play music based on playerStatus
+  useEffect(()=>{
+    if (audioRef.current) {
+      console.log(props.playerStatus.play)
+      if (props.playerStatus.play) {
+        audioRef.current.play()
+        // console.log("play!")
+      }else if(!props.playerStatus.play) {
+        audioRef.current.pause()
+        // console.log("pause!")
+      }
+    }
+  },[props.playerStatus])
 
   return (
     // Show music player and play music only if mid is not null
@@ -63,7 +75,7 @@ export default function Musicplayer(props) {
         <div className="player-container">
           <div className="player-button-container">
              <button className="player-button" ><img className="player-icon" src="./icon/previous.png"></img></button>
-            {playerStatus.play ? 
+            {props.playerStatus.play ? 
               <button className="player-button" onClick={pause}><img className="player-icon" src="./icon/pause.png"></img></button>
               : <button className="player-button" onClick={play}><img className="player-icon" src="./icon/play.png"></img></button>
               }
@@ -77,7 +89,8 @@ export default function Musicplayer(props) {
             src={`/data/music/${
               props.currentPlay.get(props.currentMid).address}.mp3`}
             controls
-            autoPlay
+            // autoPlay
+            onTimeUpdate={() => saveCurrentTime()}
           ></audio>
           {/* <p>{curremtMusicDuration}</p> */}
         </div>

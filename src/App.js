@@ -56,6 +56,7 @@ function App() {
         // console.log(user)
         setLoginUser(user);
         loginKey(user.email);
+        setPlayerStatus({play:false, end:false})
         return true; // Returns true if login succeeds
       }
     }
@@ -170,30 +171,37 @@ function App() {
   // Current playing music management & Play music function
   const [currentPlay, setCurrentPlay] = useState(new Map());
   const [currentMid, setCurrentMid] = useState(null);
+  const [playerStatus, setPlayerStatus] = useState({play:false, end:false})
+  
+  // console.log(playerStatus)
+  
   const playMusic = (e) => {
     const tmpmid = e.target.attributes.mid.value;
     const tmpdata = music.find((obj) => {
       // console.log(obj.mid);
       return obj.mid == tmpmid;
     });
-
     const tmpplaylist = new Map();
-    tmpplaylist.set(tmpmid, tmpdata);
-    // console.log(tmpplaylist)
-    setCurrentPlay(tmpplaylist);
-    setCurrentMid(tmpmid);
+    tmpplaylist.set(tmpmid, tmpdata); 
 
-    // console.log(playlist);
+    if(tmpplaylist == currentPlay) {
+      alert('Playing now!')
+    }else {
+      // console.log(tmpplaylist)
+      setCurrentPlay(tmpplaylist);
+      setCurrentMid(tmpmid);
+      setPlayerStatus({play:true, end:false})
 
-    // const tmpArray = []
-    // for (let data of tmpplaylist){
-    //   tmpArray.push(data)
-    // }
+      // console.log(playlist);
 
-    localStorage.setItem((loginUser) ? `${loginUser.uid} curMusic` : "Guest curMusic", JSON.stringify(Object.fromEntries(tmpplaylist)))
-    localStorage.setItem((loginUser) ? `${loginUser.uid} curMusicID` : "Guest curMusicID", tmpmid)
-    // remove current play time
-    localStorage.removeItem("Guest curMusicTime")
+      // save music data in local storage
+      localStorage.setItem((loginUser) ? `${loginUser.uid} curMusic` : "Guest curMusic", JSON.stringify(Object.fromEntries(tmpplaylist)))
+      localStorage.setItem((loginUser) ? `${loginUser.uid} curMusicID` : "Guest curMusicID", tmpmid)
+      // remove current play time
+      // localStorage.removeItem("Guest curMusicTime")
+
+      // change playstatus to control music player
+    }
   };
 
   // retrieve current play music from local storage
@@ -210,7 +218,12 @@ function App() {
         setCurrentMid(tmpmid);
         // console.log(currentPlay);
         // console.log(currentMid);
-    }}  
+      }else {
+        setCurrentPlay(new Map());
+        setCurrentMid(null);
+        setPlayerStatus({play:false, end:false})
+      }
+    }  
     // for login users
     if(loginUser){
       if(localStorage.getItem(`${loginUser.uid} curMusic`) && localStorage.getItem(`${loginUser.uid} curMusicID`)){
@@ -220,7 +233,12 @@ function App() {
         // console.log(tmpplaylist)
         setCurrentPlay(tmpplaylist);
         setCurrentMid(tmpmid);
-    }}
+      }else {
+        setCurrentPlay(new Map());
+        setCurrentMid(null);
+        setPlayerStatus({play:false, end:false})
+      }
+    }
   },[loginUser])
 
   // Add to playlist 
@@ -239,7 +257,7 @@ function App() {
     const tmpplaylist = new Map(playlist);
     tmpplaylist.set(tmpmid, tmpdata);
     setPlaylist(tmpplaylist);
-    console.log(playlist)
+    // console.log(playlist)
 
     if (loginUser) {
       // Save playlist in local storage with key = login user id
@@ -258,6 +276,7 @@ function App() {
   const logout = ()=>{
     setLoginUser(null);
     loginKey(null);
+    setPlayerStatus({play:false, end:false})
   }
 
   return (
@@ -327,6 +346,8 @@ function App() {
         currentPlay={currentPlay}
         currentMid={currentMid}
         loginUser={loginUser}
+        playerStatus={playerStatus}
+        setPlayerStatus={setPlayerStatus}
        />
     </BrowserRouter>
   );
