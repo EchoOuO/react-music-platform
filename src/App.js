@@ -14,20 +14,28 @@ import Logout from "./pages/Logout";
 import Userpage from "./pages/Userpage";
 import Playlistcompo from "./pages/components/Playlistcompo";
 import MusicPlayerClass from "./classes/MusicPlayerClass";
+import Adminpage from "./pages/Adminpage";
+import Uploadmusic from "./pages/Uploadmusic";
+import Artistpage from "./pages/Artistpage";
 
 function App() {
   // Log in & display links in nav bar
   const [key, setKey] = useState(null);
   const [users, setUsers] = useState(null);
   const [loginUser, setLoginUser] = useState(null);
+  const [uploadedMusic, setUploadedMusic] = useState([]);
 
-  const loginKey = (newKey) =>{     //loginKey = null = not logged in
+  const loginKey = (newKey) => {
+    //loginKey = null = not logged in
     setKey(newKey);
-  }
+  };
 
   const authMenu = [
     { url: "/", text: "Home" },
     { url: "/userpage", text: "User Page" },
+    { url: "/upload", text: "Upload Music" },
+    { url: "/artist", text: "Artist Page" },
+    { url: "/admin", text: "Admin Page" },
     { url: "/logout", text: "Log out" },
   ];
 
@@ -56,11 +64,16 @@ function App() {
       }
     );
   }, []);
+  }, []);
 
-  const Auth = (userObj) => {   //userObj = Information entered by users
+  const Auth = (userObj) => {
+    //userObj = Information entered by users
     for (let user of users) {
       if (user.email === userObj.email && user.password === userObj.password) {
-        const cipherUser = AES.encrypt(JSON.stringify(user),'groupc').toString(); //AESkey = groupc
+        const cipherUser = AES.encrypt(
+          JSON.stringify(user),
+          "groupc"
+        ).toString(); //AESkey = groupc
         sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
         // console.log(user)
         setLoginUser(user);
@@ -71,7 +84,6 @@ function App() {
     }
     return false; // Returns false if login fails
   };
-  
 
   // import "music.json" data
   const [music, setMusic] = useState([]);
@@ -137,9 +149,9 @@ function App() {
     );
   }, []);
 
-  // get data from button attributes for music/artist dispaly window 
-  const [window, setWindow] = useState([])
-  const [artistMusicData, setartistMusicData] = useState([])
+  // get data from button attributes for music/artist dispaly window
+  const [window, setWindow] = useState([]);
+  const [artistMusicData, setartistMusicData] = useState([]);
   const displayInfo = (e) => {
     // display music
     if (e.target.attributes.mid) {
@@ -150,7 +162,7 @@ function App() {
         return obj.mid === Number(tmpmid);
       });
       // console.log(tmpdata)
-      setWindow(tmpdata)
+      setWindow(tmpdata);
       // console.log(window)
     }
     // display artist
@@ -162,20 +174,22 @@ function App() {
         return obj.aid === Number(tmpaid);
       });
       // console.log(tmpdata)
-      setWindow(tmpdata)
+      setWindow(tmpdata);
       // console.log(window)
     }
   };
-  
+
   // show artist's music in display window
-  useEffect(()=>{
-    if(window.artist) {
-      const tmpArtistMusicData = music.find((obj) => {return obj.artist === window.artist})
+  useEffect(() => {
+    if (window.artist) {
+      const tmpArtistMusicData = music.find((obj) => {
+        return obj.artist === window.artist;
+      });
       // console.log(tmpArtistMusicData)
-      setartistMusicData(tmpArtistMusicData)
+      setartistMusicData(tmpArtistMusicData);
       // console.log(artistMusicData)
     }
-  },[window.artist])
+  }, [window.artist]);
 
   // Current playing music management & Play music function
   const [currentPlay, setCurrentPlay] = useState(new Map());
@@ -214,10 +228,13 @@ function App() {
   };
 
   // retrieve current play music from local storage
-  useEffect(()=>{
+  useEffect(() => {
     // for guests
-    if(!loginUser){
-      if(localStorage.getItem("Guest curMusic") && localStorage.getItem("Guest curMusicID")){
+    if (!loginUser) {
+      if (
+        localStorage.getItem("Guest curMusic") &&
+        localStorage.getItem("Guest curMusicID")
+      ) {
         const tmpdata = localStorage.getItem("Guest curMusic");
         const tmpmid = localStorage.getItem("Guest curMusicID");
         // console.log(tmpmid)
@@ -234,8 +251,11 @@ function App() {
       }
     }  
     // for login users
-    if(loginUser){
-      if(localStorage.getItem(`${loginUser.uid} curMusic`) && localStorage.getItem(`${loginUser.uid} curMusicID`)){
+    if (loginUser) {
+      if (
+        localStorage.getItem(`${loginUser.uid} curMusic`) &&
+        localStorage.getItem(`${loginUser.uid} curMusicID`)
+      ) {
         const tmpdata = localStorage.getItem(`${loginUser.uid} curMusic`);
         const tmpmid = localStorage.getItem(`${loginUser.uid} curMusicID`);
         const tmpplaylist = new Map(Object.entries(JSON.parse(tmpdata)));
@@ -250,7 +270,7 @@ function App() {
     }
   },[loginUser])
 
-  // Add to playlist 
+  // Add to playlist
   const [playlist, setPlaylist] = useState(new Map());
   const [mid, setMid] = useState(null);
 
@@ -270,14 +290,14 @@ function App() {
 
     if (loginUser) {
       // Save playlist in local storage with key = login user id
-      const tmpArray = []
-      for (let data of tmpplaylist){
-        tmpArray.push(data)
+      const tmpArray = [];
+      for (let data of tmpplaylist) {
+        tmpArray.push(data);
       }
-      localStorage.setItem(loginUser.uid,JSON.stringify(tmpArray))
+      localStorage.setItem(loginUser.uid, JSON.stringify(tmpArray));
       setMid(tmpmid);
-    }else {
-      alert("Please log in!")
+    } else {
+      alert("Please log in!");
     }
     // console.log(playlist);
   };
@@ -292,17 +312,88 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Links menu={key !== null ? authMenu : noAuthMenu} />} >
-          <Route index element={<Home music={music} musicdisplay={musicdisplay} artist={artist} artistdisplay={artistdisplay} displayInfo={displayInfo} window={window} currentPlay={currentPlay} currentMid={currentMid} playMusic={playMusic}playlist={playlist} mid={mid} addToPlayList={addToPlayList} artistMusicData={artistMusicData}/>}/>
-          <Route path="allmusic" element={<Allmusic  music={music} addToPlayList={addToPlayList} playMusic={playMusic} window={window} currentPlay={currentPlay} currentMid={currentMid} musicdisplay={musicdisplay} displayInfo={displayInfo} artistMusicData={artistMusicData} />}/>
-          <Route path="allartist" element={<Allartist  artist={artist}  music={music} window={window} currentPlay={currentPlay}currentMid={currentMid} playMusic={playMusic} artistdisplay={artistdisplay} displayInfo={displayInfo} artistMusicData={artistMusicData} />}/>
-          <Route index element={<Home music={music} addToPlayList={addToPlayList} playlist={playlist} mid={mid}  musicdisplay={musicdisplay}/>}/>
+        <Route
+          path="/"
+          element={<Links menu={key !== null ? authMenu : noAuthMenu} />}
+        >
+          <Route
+            index
+            element={
+              <Home
+                music={music}
+                musicdisplay={musicdisplay}
+                artist={artist}
+                artistdisplay={artistdisplay}
+                displayInfo={displayInfo}
+                window={window}
+                currentPlay={currentPlay}
+                currentMid={currentMid}
+                playMusic={playMusic}
+                playlist={playlist}
+                mid={mid}
+                addToPlayList={addToPlayList}
+                artistMusicData={artistMusicData}
+                setUploadedMusic={setUploadedMusic}
+                uploadedMusic={uploadedMusic}
+              />
+            }
+          />
+          <Route
+            path="allmusic"
+            element={
+              <Allmusic
+                music={music}
+                addToPlayList={addToPlayList}
+                playMusic={playMusic}
+                window={window}
+                currentPlay={currentPlay}
+                currentMid={currentMid}
+                musicdisplay={musicdisplay}
+                displayInfo={displayInfo}
+                artistMusicData={artistMusicData}
+              />
+            }
+          />
+          <Route
+            path="allartist"
+            element={
+              <Allartist
+                artist={artist}
+                music={music}
+                window={window}
+                currentPlay={currentPlay}
+                currentMid={currentMid}
+                playMusic={playMusic}
+                artistdisplay={artistdisplay}
+                displayInfo={displayInfo}
+                artistMusicData={artistMusicData}
+              />
+            }
+          />
+          
+          <Route
+            path="/upload"
+            element={<Uploadmusic setUploadedMusic={setUploadedMusic} />}
+          />
+          <Route path="/admin" element={<Adminpage />} />
+          <Route
+            path="/artist"
+            element={
+              <Artistpage
+                uploadedMusic={uploadedMusic}
+                setUploadedMusic={setUploadedMusic}
+              />
+            }
+          />
           <Route path="allmusic" element={<Allmusic music={music} />}></Route>
           <Route path="allartist" element={<Allartist music={music} />}></Route>
           <Route path="userpage" element={<Userpage loginUser={loginUser}><Playlistcompo loginUser={loginUser}/></Userpage>} />
           <Route path="reg" element={<Register />}></Route>
-          <Route path="login" element={<Login auth={Auth} loginKey={loginKey}/>}></Route>
-          <Route path="logout" element={<Logout logout={logout}/>}></Route>
+          <Route
+            path="login"
+            element={<Login auth={Auth} loginKey={loginKey} />}
+          ></Route>
+          <Route path="logout" element={<Logout logout={logout} />}></Route>
           <Route path="*" element={<Nopage />} />
         </Route>
       </Routes>

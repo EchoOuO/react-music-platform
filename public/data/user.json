@@ -11,7 +11,7 @@
   },
   {
     "uid": 1001,
-    "uname": "Issac",
+    "uname": "Isaac",
     "email": "isaacchapermannneto@gmail.com",
     "password": "admin",
     "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
@@ -53,7 +53,7 @@
     "uid": 1005,
     "uname": "Nancey Sellen",
     "email": "nsellen2@godaddy.com",
-    "password": "k6o77d8~{$39",
+    "password": "test12",
     "image": "http://dummyimage.com/250x250.png/5fa2dd/ffffff",
     "user": true,
     "artist": true,
