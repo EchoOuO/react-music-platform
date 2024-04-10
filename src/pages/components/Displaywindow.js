@@ -9,7 +9,9 @@ export default function Displaywindow(props) {
   const navigate = useNavigate()
 
   const toPlaylist = () => {
-    navigate("/login")
+    if (props.loginUser) {
+      navigate("/userpage")
+    }
   }
   
   return (
@@ -46,13 +48,13 @@ export default function Displaywindow(props) {
                   type="button"
                   className="btn btn-close window-close-btn"
                   data-bs-dismiss="modal"></button>
-                <img src={props.window.image} alt=""/>
+                <img className="window-img" src={props.window.image} alt=""/>
                 <h3>{props.window.mname}</h3>
                 <h5>Artist: {props.window.artist}</h5>
                 <h5>Album:「{props.window.album}」</h5>
                 <p>{props.window.description}</p>
               </div>
-              <div className="modal-footer mx-auto">
+              <div className="modal-footer mx-auto window-footer-btn-container">
                 <button
                   className="btn btn-outline-primary"
                   type="button"
@@ -63,18 +65,24 @@ export default function Displaywindow(props) {
                   address={props.window.address}
                   image={props.window.image}
                   onClick={props.playMusic}>Play music!</button>
-                <button 
-                  className="btn btn-outline-primary" 
-                  type="button"    
-                  mid={props.window.mid}
-                  mname={props.window.mname}
-                  artist={props.window.artist}
-                  album={props.window.album}
-                  address={props.window.address}
-                  image={props.window.image}
-                  onClick={props.addToPlayList}>Add to Playlist!</button>
           
-                <img onClick={toPlaylist} className="window-playlist-img" data-bs-toggle="modal" data-bs-target="#modalId" src="./icon/playlist.png" />
+                {props.loginUser ? 
+                  <>
+                   <button 
+                    className="btn btn-outline-primary" 
+                    type="button"    
+                    mid={props.window.mid}
+                    mname={props.window.mname}
+                    artist={props.window.artist}
+                    album={props.window.album}
+                    address={props.window.address}
+                    image={props.window.image}
+                    onClick={props.addToPlayList}>Add to Playlist!</button>
+
+                    <img onClick={toPlaylist} className="window-playlist-img" data-bs-toggle="modal" data-bs-target="#modalId" src="./icon/playlist.png" />
+                  </>
+        
+                : <p className="window-footer-text">Log in to get your own playlist!</p>}
               </div>
               </> : null}
 
@@ -85,26 +93,26 @@ export default function Displaywindow(props) {
                   type="button"
                   className="btn btn-close window-close-btn"
                   data-bs-dismiss="modal"></button>
-                <img src={props.window.image} alt=""/>
+                <img className="window-img" src={props.window.image} alt=""/>
                 <h3>Artist: {props.window.artist}</h3>
                 <p>{props.window.description}</p>
               </div>
 
               {(props.artistMusicData) ? 
                 <div className="modal-footer mx-auto">
-                <img className="artist-music-img" src={props.artistMusicData.image} alt=""/>
-                <p>「{props.artistMusicData.album}」</p>
-                <p>{props.artistMusicData.mname}</p>
-                <button
-                  className="btn btn-outline-primary"
-                  type="button"
-                  mid={props.artistMusicData.mid}
-                  mname={props.artistMusicData.mname}
-                  artist={props.artistMusicData.artist}
-                  album={props.artistMusicData.album}
-                  address={props.artistMusicData.address}
-                  image={props.artistMusicData.image}
-                  onClick={props.playMusic}>Play music!</button>
+                  <img className="artist-music-img" src={props.artistMusicData.image} alt=""/>
+                  <p>「{props.artistMusicData.album}」</p>
+                  <p>{props.artistMusicData.mname}</p>
+                  <button
+                    className="btn btn-outline-primary"
+                    type="button"
+                    mid={props.artistMusicData.mid}
+                    mname={props.artistMusicData.mname}
+                    artist={props.artistMusicData.artist}
+                    album={props.artistMusicData.album}
+                    address={props.artistMusicData.address}
+                    image={props.artistMusicData.image}
+                    onClick={props.playMusic}>Play music!</button>
                 </div> : null}
          
             </> : null}

@@ -1,10 +1,18 @@
 import Displayblock from "./components/Displayblock";
 import Displaywindow from "./components/Displaywindow";
-import Musicplayer from "./components/Musicplayer";
+import "./Allmusic.css";
 export default function Allmusic(props) {
   return (
     <>
-      <h1>All music page</h1>
+      <div className="header">
+        <div className="header-text-contianer">
+          <h1>Explore Our Amazing Music</h1>
+        </div>
+        <div className="header-img-contianer">
+          <img className="header-music-img" src="./img/header-img-3.jpg" />
+        </div>
+      </div>
+
       <Displayblock
         music={props.music}
         addToPlayList={props.addToPlayList}

@@ -6,7 +6,7 @@ export default function Userpage(props) {
   const [userName, setUserName] = useState(null); // state to hold user name
   const [musicData,setMusicData] = useState([])
 
-  console.log(props.loginUser);
+  // console.log(props.loginUser);
 
   const uid = props.loginUser ? props.loginUser.uid : null; // if user logged in or not
 
@@ -23,7 +23,7 @@ export default function Userpage(props) {
 
       // Get music data from local storage
 
-      console.log(musicData);
+      // console.log(musicData);
 
   
   return(
@@ -31,7 +31,7 @@ export default function Userpage(props) {
       <div className="row justify-content-center align-items-center g-2 m-3">
         <div className="col-6 ">
           <h1 className="text-center">{userName}'s Playlist</h1>
-          <Playlistcompo musicData={musicData} uid={uid}/>    
+          <Playlistcompo musicData={musicData} uid={uid} playMusic={props.playMusic}/>    
         </div>
       </div>
     </>

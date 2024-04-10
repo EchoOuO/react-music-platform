@@ -4,7 +4,7 @@ export default function Footer(props) {
   return (
     <>
       <footer>
-        <h1>Footer</h1>
+        <p>Copyright Free Music from Pixabay.com</p>
       </footer>
     </>
   );

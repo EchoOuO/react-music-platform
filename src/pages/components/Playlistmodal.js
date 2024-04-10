@@ -17,7 +17,16 @@ export default function Playlistmodal(props) {
               <p className="card-text">{props.musicInfo.artist}</p>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-primary">Play</button>
+              <button 
+                type="button" 
+                className="btn btn-primary"
+                mid={props.musicInfo.mid}
+                mname={props.musicInfo.mname}
+                artist={props.musicInfo.artist}
+                album={props.musicInfo.album}
+                address={props.musicInfo.address}
+                image={props.musicInfo.image}
+                onClick={props.playMusic}>Play</button>
               <button type="button" className="btn btn-danger" onClick={props.delete}>Delete</button>
             </div>
           </div>

@@ -32,6 +32,8 @@ function App() {
 
   const authMenu = [
     { url: "/", text: "Home" },
+    { url: "/allmusic", text: "All Music" },
+    { url: "/allartist", text: "All Artist" },
     { url: "/userpage", text: "User Page" },
     { url: "/upload", text: "Upload Music" },
     { url: "/artist", text: "Artist Page" },
@@ -41,6 +43,8 @@ function App() {
 
   const noAuthMenu = [
     { url: "/", text: "Home" },
+    { url: "/allmusic", text: "All Music" },
+    { url: "/allartist", text: "All Artist" },
     { url: "/login", text: "Login" },
     { url: "/reg", text: "Register" },
   ];
@@ -64,7 +68,6 @@ function App() {
       }
     );
   }, []);
-  }, []);
 
   const Auth = (userObj) => {
     //userObj = Information entered by users
@@ -78,7 +81,7 @@ function App() {
         // console.log(user)
         setLoginUser(user);
         loginKey(user.email);
-        setPlayerStatus({play:false, end:false})
+        setPlayerStatus({play:false})
         return true; // Returns true if login succeeds
       }
     }
@@ -103,7 +106,7 @@ function App() {
 
         while (randomNumber.length < 6) {
           const tmpNumber = Math.floor(Math.random() * 49.99);
-          if (!randomNumber.includes(randomNumber)) {
+          if (!randomNumber.includes(tmpNumber)) {
             randomNumber.push(tmpNumber);
           }
         }
@@ -199,6 +202,7 @@ function App() {
   // console.log(playerStatus)
   
   const playMusic = (e) => {
+    // console.log('play!!')
     const tmpmid = e.target.attributes.mid.value;
     const tmpdata = music.find((obj) => {
       // console.log(obj.mid);
@@ -207,13 +211,13 @@ function App() {
     const tmpplaylist = new Map();
     tmpplaylist.set(tmpmid, tmpdata); 
 
-    if(tmpplaylist == currentPlay) {
-      alert('Playing now!')
-    }else {
+    // if(tmpplaylist.values == currentPlay.values) {
+    //   alert('Playing now!')
+    // }else {
       // console.log(tmpplaylist)
       setCurrentPlay(tmpplaylist);
       setCurrentMid(tmpmid);
-      setPlayerStatus({play:true, end:false})
+      setPlayerStatus({play:true})
 
       // console.log(playlist);
 
@@ -224,7 +228,7 @@ function App() {
       // localStorage.removeItem("Guest curMusicTime")
 
       // change playstatus to control music player
-    }
+    
   };
 
   // retrieve current play music from local storage
@@ -335,6 +339,7 @@ function App() {
                 artistMusicData={artistMusicData}
                 setUploadedMusic={setUploadedMusic}
                 uploadedMusic={uploadedMusic}
+                loginUser={loginUser}
               />
             }
           />
@@ -387,7 +392,8 @@ function App() {
           />
           <Route path="allmusic" element={<Allmusic music={music} />}></Route>
           <Route path="allartist" element={<Allartist music={music} />}></Route>
-          <Route path="userpage" element={<Userpage loginUser={loginUser}><Playlistcompo loginUser={loginUser}/></Userpage>} />
+          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic}>
+              <Playlistcompo loginUser={loginUser}/></Userpage>} />
           <Route path="reg" element={<Register />}></Route>
           <Route
             path="login"
@@ -408,6 +414,7 @@ function App() {
         loginUser={loginUser}
         playerStatus={playerStatus}
         setPlayerStatus={setPlayerStatus}
+        artistMusicData={artistMusicData}
        />
     </BrowserRouter>
   );

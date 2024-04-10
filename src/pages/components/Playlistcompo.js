@@ -2,7 +2,7 @@ import { useState} from "react";
 import Playlistmodal from "./Playlistmodal";
 
 export default function Playlistcompo(props) {
-  console.log(props.musicData);
+  // console.log(props.musicData);
 
   const [modal, setModal] = useState(null); 
 
@@ -38,7 +38,7 @@ export default function Playlistcompo(props) {
                   <h5 className="card-title">{musicObj[1].mname}</h5>
                   <p className="card-text">{musicObj[1].artist}</p>
                   <div className="d-grid gap-2 col-6 mx-auto">
-                    <Playlistmodal modalHandler={modalHandler} musicInfo={musicObj[1]} modal={modal} idx={idx} delete={() => deleteHandler(musicObj[0])}/> 
+                    <Playlistmodal modalHandler={modalHandler} musicInfo={musicObj[1]} modal={modal} idx={idx} delete={() => deleteHandler(musicObj[0])} playMusic={props.playMusic}/> 
                   </div>
                 </div>
               </div>

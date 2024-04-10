@@ -1,3 +1,14 @@
 footer {
-  height: 300px;
+  height: 100px;
+  padding-bottom: 60px;
+  background-color: lightblue;
+  display: flex;
+  justify-content: center;
+}
+
+footer p {
+  position: relative;
+  top: 10px;
+  text-align: center;
+  color: white;
 }

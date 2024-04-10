@@ -1,10 +1,17 @@
 import Displayblock from "./components/Displayblock";
 import Displaywindow from "./components/Displaywindow";
-import Musicplayer from "./components/Musicplayer";
+import "./Allartist.css";
 export default function Allartist(props) {
   return (
     <>
-      <h1>All artist page</h1>
+      <div className="header">
+        <div className="header-text-contianer">
+          <h1>Talented Artists are Waiting for You</h1>
+        </div>
+        <div className="header-img-contianer">
+          <img className="header-artist-img" src="./img/header-img-4.jpg" />
+        </div>
+      </div>
       <Displayblock 
         artist={props.artist} 
         artistdisplay={props.artist} 

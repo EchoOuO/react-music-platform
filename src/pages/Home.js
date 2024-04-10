@@ -29,7 +29,16 @@ export default function Home(props) {
 
   return (
     <>
-      <h1>Home</h1>
+      <div className="header">
+        <div className="header-text-contianer">
+          <h1 className="header-text-1">Welcome to Join Us <span className="header-username"> {props.loginUser ? ", " + props.loginUser.uname : null}!</span></h1>
+          <h1 className="header-text-2">Let's Enjoy The World of Music</h1>
+        </div>
+        <div className="header-img-contianer">
+          <img src="./img/header-img-1.png" />
+          <img src="./img/header-img-2.png" />
+        </div>
+      </div>
       <Indexmusicdisplay
         music={props.music}
         addToPlayList={props.addToPlayList}
@@ -46,6 +55,8 @@ export default function Home(props) {
         Explore All Music
       </button>
 
+      <div className="space"></div>
+
       <Indexartistdisplay
         music={props.music}
         window={props.window}
@@ -61,6 +72,8 @@ export default function Home(props) {
         Explore All Artists
       </button>
 
+      <div className="space"></div>
+
       {/* <Musicplayer
         music={props.music}
         mid={props.mid}
@@ -74,7 +87,8 @@ export default function Home(props) {
         window={props.window} 
         playMusic={props.playMusic} 
         addToPlayList={props.addToPlayList}
-        artistMusicData={props.artistMusicData} />
+        artistMusicData={props.artistMusicData}
+        loginUser={props.loginUser} />
       <Footer />
     </>
   );

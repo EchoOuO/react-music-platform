@@ -27,6 +27,17 @@ export default function Musicplayer(props) {
   // 要先達成 可以按照playlist撥放歌曲，  才來做next / previous
   const next = () => {}
 
+  // if music reamining time = 0 , then change status
+
+  const end = () => {
+    if (audioRef.current) {
+      const remaintime = audioRef.current.duration - audioRef.current.currentTime
+      if (remaintime == 0) {
+        props.setPlayerStatus((prev)=>({...prev, play:false}))
+      }
+    }
+  }
+
   // Save current play time to local storage
   const saveCurrentTime = () => {
     // console.log(playerStatus.curTime)
@@ -41,9 +52,8 @@ export default function Musicplayer(props) {
   // get current time from local storage and play from that moment
   // 這邊重複登入登出會抓不到使用者的音樂 (在)
   useEffect(() => {
-    console.log(audioRef.current)
+    // console.log(audioRef.current)
     if (audioRef.current) {
-      console.log(123)
       let currentTime
       if(props.loginUser){
         currentTime = localStorage.getItem(`${props.loginUser.uid} curMusicTime`)
@@ -57,7 +67,7 @@ export default function Musicplayer(props) {
   // play music based on playerStatus
   useEffect(()=>{
     if (audioRef.current) {
-      console.log(props.playerStatus.play)
+      // console.log(props.playerStatus.play)
       if (props.playerStatus.play) {
         audioRef.current.play()
         // console.log("play!")
@@ -82,7 +92,7 @@ export default function Musicplayer(props) {
               <button className="player-button" ><img className="player-icon" src="./icon/next.png"></img></button>
               <button className="player-button" onClick={replay}><img className="player-icon" src="./icon/replay.png"></img></button>
           </div>
-         
+          
           <audio
             ref={audioRef}
             className="player"
@@ -90,9 +100,24 @@ export default function Musicplayer(props) {
               props.currentPlay.get(props.currentMid).address}.mp3`}
             controls
             // autoPlay
-            onTimeUpdate={() => saveCurrentTime()}
-          ></audio>
-          {/* <p>{curremtMusicDuration}</p> */}
+            controlsList="nodownload ratechange noplaybackrate"
+            onTimeUpdate={() => {saveCurrentTime(); end()}}
+          >
+            <source></source>
+          </audio>
+          <div className="player-info-container">
+            <img className="player-music-img" src={props.currentPlay.get(props.currentMid).image} alt=""/>
+            <div className="player-text-container">
+              <div className="player-text-small-container">
+                <p className="player-text player-text-music">{props.currentPlay.get(props.currentMid).mname}</p>
+                
+                {props.playerStatus.play ?
+                  <img className="player-icon-playing" src="./img/musicplaying.gif" />
+                : null}
+              </div>
+              <p className="player-text player-text-artist">{props.currentPlay.get(props.currentMid).artist}</p>
+            </div>
+          </div>
         </div>
       ) : null}
     </>

@@ -1,10 +1,11 @@
 import Displayblock from "./Displayblock";
+import "./css/Indexmusicdisplay.css"
 export default function Indexmusicdisplay(props) {
   // console.log(props.music);
   // console.log(props.musicdisplay);
   return (
     <>
-      <h1>Musicdisplay</h1>
+      <h2>Musicdisplay</h2>
       <Displayblock
         music={props.music}
         addToPlayList={props.addToPlayList}

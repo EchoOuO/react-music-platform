@@ -1,9 +1,13 @@
-.music-img {
-  opacity: 0.6;
-  cursor: pointer;
+.music-img, 
+.artist-img {
+  /* opacity: 0.6; */
+  width: 300px;
+  height: 300px;
+  overflow-y: hidden;
+  margin-bottom: 10px;
 }
 
-.music-img:hover {
+/* .music-img:hover {
   opacity: 1;
   transition: opacity 0.5s;
-}
+} */

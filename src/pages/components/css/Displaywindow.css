@@ -12,4 +12,21 @@
 
 .artist-music-img {
     width: 50px;
+    border: none;
+}
+
+.window-img {
+    width: 300px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.window-footer-btn-container {
+    display: flex;
+    gap: 15px;
+}
+
+.window-footer-text {
+    font-style: italic;
+    color:#777
 }

@@ -1,0 +1,11 @@
+.nav-bar {
+    z-index: 5;
+    width: 100%;
+    background-color: rgba(20, 88, 236, 0.8);
+    font-weight: 700;
+}
+
+.nav-bar-container {
+    padding-left: 50px;;
+}
+
