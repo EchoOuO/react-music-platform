@@ -1,43 +1,107 @@
 import React, { useState, useEffect } from "react";
 import FileService from "../services/FileService";
 import "../pages/Table.css";
+import { AES, enc } from "crypto-js";
+import { Button, Form, Table } from "react-bootstrap";
 
 function AdminPage() {
   const [users, setUsers] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [newUser, setNewUser] = useState({
+    id: "",
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [editingUser, setEditingUser] = useState(null);
 
   useEffect(() => {
-    //import user json data
-    FileService.read("user").then(
-      (response) => {
-        if (Array.isArray(response.data)) {
-          setUsers(
-            response.data.map((user) => ({
-              id: user.uid, // adjust the property name here
-              name: user.uname, // and here
+    const storedUser = sessionStorage.getItem("LoginUser");
+
+    if (storedUser) {
+      const decryptedUser = AES.decrypt(storedUser, "groupc").toString(
+        enc.Utf8
+      );
+      setUsers([JSON.parse(decryptedUser)]);
+    }
+
+    const localUsers = localStorage.getItem("users");
+
+    if (localUsers) {
+      setUsers(JSON.parse(localUsers));
+    } else {
+      FileService.read("user").then(
+        (response) => {
+          if (Array.isArray(response.data)) {
+            const loadedUsers = response.data.map((user) => ({
+              id: user.uid,
+              name: user.uname,
               email: user.email,
-              music: user.music,
-            }))
-          );
-        } else {
-          console.error("Error: response data is not an array");
+              password: user.password,
+            }));
+            setUsers(loadedUsers);
+            localStorage.setItem("users", JSON.stringify(loadedUsers));
+          } else {
+            console.error("Error: response data is not an array");
+          }
+        },
+        (rej) => {
+          console.log(rej);
         }
-      },
-      (rej) => {
-        console.log(rej);
-      }
-    );
+      );
+    }
   }, []);
+
+  const handleAddUser = () => {
+    setShowForm(true);
+    window.scrollTo(0, document.body.scrollHeight);
+  };
+
+  const handleEditUser = (user) => {
+    setEditingUser(user);
+    setNewUser(user);
+    setShowForm(true);
+    window.scrollTo(0, document.body.scrollHeight);
+  };
+
+  const handleDeleteUser = (userId) => {
+    const updatedUsers = users.filter((user) => user.id !== userId);
+
+    setUsers(updatedUsers);
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+  };
+
+  const handleInputChange = (event) => {
+    setNewUser({ ...newUser, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    let updatedUsers;
+    if (editingUser) {
+      updatedUsers = users.map((user) =>
+        user.id === editingUser.id ? newUser : user
+      );
+      setEditingUser(null);
+    } else {
+      updatedUsers = [...users, newUser];
+    }
+    setUsers(updatedUsers);
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    setNewUser({ id: "", name: "", email: "", password: "" });
+    setShowForm(false);
+  };
 
   return (
     <div>
       <h1>Admin Page</h1>
-      <table className="table">
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Songs</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -47,15 +111,70 @@ function AdminPage() {
               <td>{user.name}</td>
               <td>{user.email}</td>
               <td>
-                {Array.isArray(user.music) &&
-                  user.music.map((song, index) => (
-                    <p key={index}>{song.title}</p>
-                  ))}
+                <Button variant="success" onClick={handleAddUser}>
+                  Add
+                </Button>
+                <Button variant="warning" onClick={() => handleEditUser(user)}>
+                  Edit
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => handleDeleteUser(user.id)}
+                >
+                  Delete
+                </Button>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
+      {showForm && (
+        <Form onSubmit={handleSubmit}>
+          <Form.Group>
+            <Form.Label>ID</Form.Label>
+            <Form.Control
+              type="text"
+              name="id"
+              value={newUser.id}
+              onChange={handleInputChange}
+              required
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              value={newUser.name}
+              onChange={handleInputChange}
+              required
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              value={newUser.email}
+              onChange={handleInputChange}
+              required
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              name="password"
+              value={newUser.password}
+              onChange={handleInputChange}
+              required
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
+      )}
     </div>
   );
 }

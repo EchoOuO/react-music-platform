@@ -86,7 +86,6 @@ function App() {
         return true; // Returns true if login succeeds
       }
     }
-    return false; // Returns false if login fails
   };
 
   // import "music.json" data
