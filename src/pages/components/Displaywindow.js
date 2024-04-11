@@ -17,17 +17,8 @@ export default function Displaywindow(props) {
   return (
     <>
     {(props.window) ? 
-      <div className="modal fade"
-        id="modalId"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="modalTitleId"
-        aria-hidden="true"
-      >
-        <div
-          className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md"
-          role="document"
-        >
+      <div className="modal fade" id="modalId" tabIndex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md" role="document">
           <div className="modal-content">
             {/* <div className="modal-header">
               <h5 className="modal-title" id="modalTitleId">
