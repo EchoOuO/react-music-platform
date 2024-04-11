@@ -1,3 +1,4 @@
+// Playlistcompo.js
 import { useState} from "react";
 import Playlistmodal from "./Playlistmodal";
 
@@ -10,7 +11,6 @@ export default function Playlistcompo(props) {
     // console.log(musicInfo);
     setModal(musicInfo);
   };
-  
 
   const deleteHandler = (mid) => {
     const storedValue = JSON.parse(localStorage.getItem(props.uid));
@@ -23,6 +23,11 @@ export default function Playlistcompo(props) {
         storedValue.splice(index, 1); // Delete the element of the corresponding key
         localStorage.setItem(props.uid, JSON.stringify(storedValue)); // Store updated values in local storage
       }
+
+      // モーダルを閉じ、削除されたデータをフィルタリングする
+      setModal(null);
+      const updatedMusicData = props.musicData.filter((musicObj) => musicObj[0] !== mid);
+      props.onDelete(updatedMusicData); // Update musicData in Userpage component
     }
   };
 
@@ -31,7 +36,7 @@ export default function Playlistcompo(props) {
       <div className="row">
         {props.musicData && props.musicData.map((musicObj, idx) => {
           return (
-            <div className="col-4" key={idx}>
+            <div className="col" key={idx}>
               <div className="card h-100 border-light text-center">
                 <div className="card-body">
                   <img src={musicObj[1].image} alt={musicObj[1].mname} className="img-fluid rounded-to music-img" />

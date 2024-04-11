@@ -1,6 +1,17 @@
 import { Outlet, Link } from "react-router-dom";
+import React, { useState } from "react";
+import SearchList from "./components/Searchcompo";
 import "./Link.css";
+
 export default function Links(props) {
+  const [searchWord, setSearchWord] = useState("");
+
+  const changeHandler = (e) => {
+    e.preventDefault();
+    setSearchWord(e.target.value);
+  };
+
+
   return (
     <>
       <nav className="navbar navbar-expand-sm navbar-dark nav-bar">
@@ -16,9 +27,19 @@ export default function Links(props) {
               );
             })}
           </ul>
+          <form className="d-flex my-2 my-lg-0">
+          <input className="form-control me-sm-2" type="text" placeholder="Search music or artist" onChange={changeHandler}/>
+          <button className="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+          <SearchList searchWord={searchWord}/>
+        </form>
         </div>
       </nav>
       <Outlet className="container-fluid"></Outlet>
     </>
   );
 }
+
+
+
+
+

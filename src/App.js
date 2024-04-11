@@ -310,6 +310,7 @@ function App() {
   const logout = () => {
     sessionStorage.removeItem("LoginUser"); // Remove user from session storage on logout
     setLoginUser(null);
+    loginKey(null);
     setPlayerStatus({play:false, end:false})
   };
 
