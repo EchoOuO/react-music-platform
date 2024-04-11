@@ -340,6 +340,7 @@ function App() {
   const logout = () => {
     sessionStorage.removeItem("LoginUser"); // Remove user from session storage on logout
     setLoginUser(null);
+    loginKey(null);
     setPlayerStatus({play:false, end:false})
   };
 
@@ -348,7 +349,8 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Links menu={key !== null ? authMenu : noAuthMenu} />}
+          element={<Links menu={key !== null ? authMenu : noAuthMenu} displayInfo={displayInfo}
+          />}
         >
           <Route
             index

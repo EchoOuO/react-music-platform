@@ -9,3 +9,14 @@
     padding-left: 50px;;
 }
 
+.search-results {
+    position: absolute;
+    top: 100%;
+    right: 0; 
+    z-index: 999;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 0.5rem;
+    margin-right: 2rem;
+  }

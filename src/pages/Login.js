@@ -27,7 +27,7 @@ export default function Login(props) {
     e.preventDefault();
     // console.log(user);
     props.auth(user);
-    navigate("/userpage");
+    navigate("/");
   };
 
   const showPassHandler = () => {
