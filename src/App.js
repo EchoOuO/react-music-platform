@@ -319,7 +319,8 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Links menu={key !== null ? authMenu : noAuthMenu} />}
+          element={<Links menu={key !== null ? authMenu : noAuthMenu} displayInfo={displayInfo}
+          />}
         >
           <Route
             index
