@@ -5,7 +5,6 @@ export default function Musicplayer(props) {
   // console.log(props.currentMid);
   // console.log(curremtMusicDuration);
   // console.log(props.playerStatus)
-
   const audioRef = useRef();
 
   // Music player conctrol
@@ -26,12 +25,24 @@ export default function Musicplayer(props) {
 
   // 要先達成 可以按照playlist撥放歌曲，  才來做next / previous
   const next = () => {
-    console.log(props.curPlaylist)
-    if (props.curPlaylistIdx < props.curPlaylist.length) {
+    if (props.curPlaylistIdx < props.currentPlay.size -1) {
       props.setCurPlaylistIdx(props.curPlaylistIdx + 1)
       console.log(props.curPlaylistIdx)
+      props.setPlayerStatus({play:false})
+      // console.log(props.playerStatus)
     } else {
       props.setCurPlaylistIdx(0)
+    }
+  }
+
+  const prev = () => {
+    if (props.curPlaylistIdx > 0) {
+      props.setCurPlaylistIdx(props.curPlaylistIdx - 1)
+      console.log(props.curPlaylistIdx)
+      props.setPlayerStatus({play:false})
+    } else {
+      props.setCurPlaylistIdx(props.currentPlay.size -1)
+      props.setPlayerStatus({play:false})
     }
   }
 
@@ -41,7 +52,11 @@ export default function Musicplayer(props) {
     if (audioRef.current) {
       const remaintime = audioRef.current.duration - audioRef.current.currentTime
       if (remaintime == 0) {
-        props.setPlayerStatus((prev)=>({...prev, play:false}))
+        if(props.currentPlay.size < 2) {
+          props.setPlayerStatus((prev)=>({...prev, play:false}))
+        }else{
+          next()
+        }
       }
     }
   }
@@ -72,34 +87,49 @@ export default function Musicplayer(props) {
         // console.log(playlist)
       }else if(!props.loginUser) {
         currentTime = localStorage.getItem("Guest curMusicTime")
+        console.log(currentTime)
       }
       audioRef.current.currentTime = currentTime
     }
   }, [props.loginUser]);
   
-  // get user's playlist from local storage
+  // get user's playlist (key = uid) from local storage
   useEffect(() => {
     if (props.loginUser) {
-      let check = JSON.parse(localStorage.getItem(props.loginUser.uid))
-      // console.log(check)
-      if (check) {
-        props.setCurPlaylist(check)
+      let tmpdata = localStorage.getItem(props.loginUser.uid)
+      let tmpplaylist = new Map(JSON.parse(tmpdata));
+      let tmpplaylistkey = tmpplaylist.keys()
+      // console.log(tmpplaylist)
+      // console.log(tmpplaylistkey)
+      let tmpArray = []
+      for (let idx of tmpplaylistkey){
+        // console.log(idx)
+        tmpArray.push(idx)
+      }
+      // console.log(tmpArray)
+      let tmpplaymid
+      tmpplaymid = tmpArray[props.curPlaylistIdx]
+      if (tmpplaylist) {
+        props.setCurrentPlay(tmpplaylist)
+        props.setCurrentMid(tmpplaymid)
       }
     }
+    // console.log(props.currentPlay)
+    // console.log(props.currentMid)
     // console.log(curPlaylist)
-  },[props.loginUser])
+  },[props.loginUser, props.playlist, props.curPlaylistIdx])
 
   // 還有問題
-  useEffect(()=>{
-    let tmpData = new Map()
-    console.log(props.curPlaylist)
-    tmpData.set(props.curPlaylist[props.curPlaylistIdx][1].mid,props.curPlaylist[props.curPlaylistIdx][1])
-    console.log(tmpData)
-    if (props.curPlaylist != {}) {
-      props.setCurrentPlay(tmpData)
-      props.setCurrentMid(props.curPlaylist[props.curPlaylistIdx][1].mid)
-    }
-  },[props.curPlaylist])
+  // useEffect(()=>{
+  //   let tmpData = new Map()
+  //   console.log(props.curPlaylist)
+  //   tmpData.set(props.curPlaylist[props.curPlaylistIdx][1].mid,props.curPlaylist[props.curPlaylistIdx][1])
+  //   console.log(tmpData)
+  //   if (props.curPlaylist != {}) {
+  //     props.setCurrentPlay(tmpData)
+  //     props.setCurrentMid(props.curPlaylist[props.curPlaylistIdx][1].mid)
+  //   }
+  // },[props.curPlaylist])
 
 
   // play music based on playerStatus
@@ -122,12 +152,12 @@ export default function Musicplayer(props) {
       {props.currentMid ? (
         <div className="player-container">
           <div className="player-button-container">
-             <button className="player-button" ><img className="player-icon" src="./icon/previous.png"></img></button>
+             <button className="player-button" onClick={prev} disabled={props.currentPlay.size < 2}><img className="player-icon" src="./icon/previous.png"></img></button>
             {props.playerStatus.play ? 
               <button className="player-button" onClick={pause}><img className="player-icon" src="./icon/pause.png"></img></button>
               : <button className="player-button" onClick={play}><img className="player-icon" src="./icon/play.png"></img></button>
               }
-              <button className="player-button" onClick={next}><img className="player-icon" src="./icon/next.png"></img></button>
+              <button className="player-button" onClick={next} disabled={props.currentPlay.size < 2} ><img className="player-icon" src="./icon/next.png"></img></button>
               <button className="player-button" onClick={replay}><img className="player-icon" src="./icon/replay.png"></img></button>
           </div>
           

@@ -1,7 +1,7 @@
 import { AES, enc } from "crypto-js";
 import { useEffect, useState } from "react";
 import Playlistcompo from "./components/Playlistcompo";
-
+import "./Userpage.css"
 export default function Userpage(props) {
   const [userName, setUserName] = useState(null); // state to hold user name
   const [musicData,setMusicData] = useState([])
@@ -31,7 +31,7 @@ export default function Userpage(props) {
       <div className="row justify-content-center align-items-center g-2 m-3">
         <div className="col-6 ">
           <h1 className="text-center">{userName}'s Playlist</h1>
-          <button onClick={props.playplaylist}>Play this playlist</button>
+          <button className="btn btn-outline-primary playlist-btn" onClick={props.playplaylist}>Play this playlist</button>
           <Playlistcompo musicData={musicData} uid={uid} playMusic={props.playMusic}/>    
         </div>
       </div>

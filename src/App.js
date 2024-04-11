@@ -62,6 +62,7 @@ function App() {
     FileService.read("user").then(
       (response) => {
         setUsers(response.data);
+        // console.log(response.data)
       },
       (rej) => {
         console.log(rej);
@@ -228,7 +229,6 @@ function App() {
       // localStorage.removeItem("Guest curMusicTime")
 
       // change playstatus to control music player
-    
   };
 
   // retrieve current play music from local storage
@@ -296,6 +296,8 @@ function App() {
       // Save playlist in local storage with key = login user id
       const tmpArray = [];
       for (let data of tmpplaylist) {
+        console.log(tmpplaylist)
+        console.log(data)
         tmpArray.push(data);
       }
       localStorage.setItem(loginUser.uid, JSON.stringify(tmpArray));
@@ -310,18 +312,28 @@ function App() {
   const [curPlaylist, setCurPlaylist] = useState({})
   const [curPlaylistIdx, setCurPlaylistIdx] = useState(0)
   const playplaylist = () => {
-    console.log(playlist)
-    // console.log(curPlaylist)
-    // console.log(curPlaylist[curPlaylistIdx][1])
-    let tmpData = new Map()
-    tmpData.set(curPlaylist[curPlaylistIdx][1].mid,curPlaylist[curPlaylistIdx][1])
-    // console.log(tmpData)
-    if (curPlaylist != {}) {
-      setCurrentPlay(tmpData)
-      setCurrentMid(curPlaylist[curPlaylistIdx][1].mid)
-      setPlayerStatus({play:true})
+    if (loginUser) {
+      let tmpdata = localStorage.getItem(loginUser.uid)
+      let tmpplaylist = new Map(JSON.parse(tmpdata));
+      let tmpplaylistkey = tmpplaylist.keys()
+      // console.log(tmpplaylist)
+      // console.log(tmpplaylistkey)
+      let tmpArray = []
+      for (let idx of tmpplaylistkey){
+        // console.log(idx)
+        tmpArray.push(idx)
+      }
+      // console.log(tmpArray)
+      let tmpplaymid
+      tmpplaymid = tmpArray[curPlaylistIdx]
+      if (tmpplaylist) {
+        setCurrentPlay(tmpplaylist)
+        setCurrentMid(tmpplaymid)
+        setPlayerStatus({play:true})
+      }
     }
   }
+
 
   
 
@@ -440,6 +452,7 @@ function App() {
         setCurPlaylistIdx={setCurPlaylistIdx}
         setCurrentPlay={setCurrentPlay}
         setCurrentMid={setCurrentMid}
+        playplaylist={playplaylist}
        />
     </BrowserRouter>
   );
