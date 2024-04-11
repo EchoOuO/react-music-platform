@@ -16,34 +16,31 @@ function AdminPage() {
   const [editingUser, setEditingUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = sessionStorage.getItem("LoginUser");
+    let storedUsers = localStorage.getItem("users");
 
-    if (storedUser) {
-      const decryptedUser = AES.decrypt(storedUser, "groupc").toString(
-        enc.Utf8
-      );
-      setUsers([JSON.parse(decryptedUser)]);
-    }
-
-    FileService.read("user").then(
-      (response) => {
-        if (Array.isArray(response.data)) {
-          const loadedUsers = response.data.map((user) => ({
-            id: user.uid,
-            name: user.uname,
-            email: user.email,
-            password: user.password,
-          }));
-          setUsers(loadedUsers);
-          localStorage.setItem("users", JSON.stringify(loadedUsers));
-        } else {
-          console.error("Error: response data is not an array");
+    if (storedUsers) {
+      setUsers(JSON.parse(storedUsers));
+    } else {
+      FileService.read("user").then(
+        (response) => {
+          if (Array.isArray(response.data)) {
+            const loadedUsers = response.data.map((user) => ({
+              id: user.uid,
+              name: user.uname,
+              email: user.email,
+              password: user.password,
+            }));
+            setUsers(loadedUsers);
+            localStorage.setItem("users", JSON.stringify(loadedUsers));
+          } else {
+            console.error("Error: response data is not an array");
+          }
+        },
+        (rej) => {
+          console.log(rej);
         }
-      },
-      (rej) => {
-        console.log(rej);
-      }
-    );
+      );
+    }
   }, []);
 
   const handleAddUser = () => {
