@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import FileService from "../../services/FileService";
 import Displaywindow from "./Displaywindow";
-import SearchModal from "./Searchmodal"
-import "./css/Displaywindow.css"
-
+import SearchModal from "./Searchmodal";
 
 export default function SearchList(props) {
   const [searchMusic, setSearchMusic] = useState([]);
   const [searchArtist, setSearchArtist] = useState([]);
-  const [selectedItem, setSelectedItem] = useState("");
+  const [selectedItem, setSelectedItem] = useState([]);
 
   useEffect(() => {
     if (props.searchWord.length >= 2) {
@@ -44,10 +42,8 @@ export default function SearchList(props) {
   }, [props.searchWord]);
 
   const openModal = (item) => {
-    if (item) {
-      console.log(item);
-      setSelectedItem(item);
-    }
+    console.log(selectedItem);
+    setSelectedItem(item);
   };
 
   return props.searchWord.length >= 2 ? (
@@ -61,7 +57,6 @@ export default function SearchList(props) {
               className="btn btn-outline-primary btn-sm m-2" 
               data-bs-toggle="modal" 
               data-bs-target="#modalId" 
-              mid={music.mid} // Fixed the attribute to use the current item
               key={index}
               onClick={() => openModal(music)}
             >
@@ -79,18 +74,16 @@ export default function SearchList(props) {
               className="btn btn-outline-primary btn-sm m-2" 
               data-bs-toggle="modal" 
               data-bs-target="#modalId" 
-              aid={artist.aid} // Fixed the attribute to use the current item
               key={index}
-              onClick={() => openModal(artist)
-              }
+              onClick={() => openModal(artist)}
             >
               {artist.artist}
             </button>
           ))}
-          <Displaywindow selectedItem={selectedItem} />
-          <SearchModal selectedItem={selectedItem} />
         </div>
       </div>
+      <Displaywindow selectedItem={selectedItem} />
+      <SearchModal selectedItem={selectedItem} />
     </div>
   ) : null;
 }

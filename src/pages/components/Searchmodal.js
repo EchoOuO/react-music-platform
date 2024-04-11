@@ -15,9 +15,11 @@ export default function SearchModal(props) {
   };
 
   return (
-    <>
+    <>    
+    
+    
      {(props.selectedItem) ? 
-      <div className="modal fade" id="modalId" tabIndex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+      <div className="modal fade" id="modalId" tabIndex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true" data-bs-backdrop="false">
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md"role="document"
         >
           <div className="modal-content">
@@ -46,7 +48,7 @@ export default function SearchModal(props) {
                   image={props.selectedItem.image}
                   onClick={props.playMusic}>Play music!</button>
           
-                {props.loginUser ? 
+                {/* {props.loginUser ? 
                   <>
                    <button 
                     className="btn btn-outline-primary" 
@@ -62,7 +64,7 @@ export default function SearchModal(props) {
                     <img onClick={toPlaylist} className="window-playlist-img" data-bs-toggle="modal" data-bs-target="#modalId" src="./icon/playlist.png" />
                   </>
         
-                : <p className="window-footer-text">Log in to get your own playlist!</p>}
+                : <p className="window-footer-text">Log in to get your own playlist!</p>} */}
               </div>
               </> : null}
 
