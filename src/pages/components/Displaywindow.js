@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./css/Displaywindow.css"
 import { useNavigate } from "react-router-dom";
 export default function Displaywindow(props) {
-  // console.log(props.window)
+  // console.log(props.loginUser)
   // console.log(props.music)
   // console.log(props.artistMusicData)
 

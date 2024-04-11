@@ -36,8 +36,8 @@
   border-radius: 0;
 }
 
-audio::-webkit-media-controls-play-button,
-audio::-webkit-media-controls-fullscreen-button {
+.player::-webkit-media-controls-play-button,
+.player::-webkit-media-controls-fullscreen-button {
   display: none !important;
 }
 

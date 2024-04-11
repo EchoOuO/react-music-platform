@@ -21,6 +21,7 @@ export default function Allartist(props) {
         music={props.music}
         window={props.window} 
         playMusic={props.playMusic} 
+        loginUser={props.loginUser}
         addToPlayList={props.addToPlayList}
         artistMusicData={props.artistMusicData} />
       {/* <Musicplayer

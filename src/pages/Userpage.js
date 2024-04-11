@@ -11,14 +11,14 @@ export default function Userpage(props) {
   const uid = props.loginUser ? props.loginUser.uid : null; // if user logged in or not
 
   useEffect(() => {
-      //Get login user name from session storage 
-      let decUser = sessionStorage.getItem("LoginUser");
-      if (decUser) {
-        decUser = JSON.parse(AES.decrypt(decUser,'groupc').toString(enc.Utf8));
-        setUserName(decUser.uname);}
+    //Get login user name from session storage 
+    let decUser = sessionStorage.getItem("LoginUser");
+    if (decUser) {
+      decUser = JSON.parse(AES.decrypt(decUser,'groupc').toString(enc.Utf8));
+      setUserName(decUser.uname);}
 
-      const localStorageData = localStorage.getItem(uid);
-        setMusicData(JSON.parse(localStorageData));
+    const localStorageData = localStorage.getItem(uid);
+    setMusicData(JSON.parse(localStorageData));
   }, [uid]); 
 
       // Get music data from local storage
@@ -31,6 +31,7 @@ export default function Userpage(props) {
       <div className="row justify-content-center align-items-center g-2 m-3">
         <div className="col-6 ">
           <h1 className="text-center">{userName}'s Playlist</h1>
+          <button onClick={props.playplaylist}>Play this playlist</button>
           <Playlistcompo musicData={musicData} uid={uid} playMusic={props.playMusic}/>    
         </div>
       </div>

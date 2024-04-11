@@ -269,7 +269,7 @@ function App() {
       }else {
         setCurrentPlay(new Map());
         setCurrentMid(null);
-        setPlayerStatus({play:false, end:false})
+        setPlayerStatus({play:false})
       }
     }
   },[loginUser])
@@ -306,6 +306,24 @@ function App() {
     // console.log(playlist);
   };
 
+  // play music based on user's playlist
+  const [curPlaylist, setCurPlaylist] = useState({})
+  const [curPlaylistIdx, setCurPlaylistIdx] = useState(0)
+  const playplaylist = () => {
+    console.log(playlist)
+    // console.log(curPlaylist)
+    // console.log(curPlaylist[curPlaylistIdx][1])
+    let tmpData = new Map()
+    tmpData.set(curPlaylist[curPlaylistIdx][1].mid,curPlaylist[curPlaylistIdx][1])
+    // console.log(tmpData)
+    if (curPlaylist != {}) {
+      setCurrentPlay(tmpData)
+      setCurrentMid(curPlaylist[curPlaylistIdx][1].mid)
+      setPlayerStatus({play:true})
+    }
+  }
+
+  
 
   const logout = () => {
     sessionStorage.removeItem("LoginUser"); // Remove user from session storage on logout
@@ -340,6 +358,8 @@ function App() {
                 setUploadedMusic={setUploadedMusic}
                 uploadedMusic={uploadedMusic}
                 loginUser={loginUser}
+                CurPlaylist={curPlaylist}
+                setCurPlaylist={setCurPlaylist}
               />
             }
           />
@@ -356,6 +376,7 @@ function App() {
                 musicdisplay={musicdisplay}
                 displayInfo={displayInfo}
                 artistMusicData={artistMusicData}
+                loginUser={loginUser}
               />
             }
           />
@@ -390,9 +411,7 @@ function App() {
               />
             }
           />
-          <Route path="allmusic" element={<Allmusic music={music} />}></Route>
-          <Route path="allartist" element={<Allartist music={music} />}></Route>
-          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic}>
+          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist}>
               <Playlistcompo loginUser={loginUser}/></Userpage>} />
           <Route path="reg" element={<Register />}></Route>
           <Route
@@ -415,6 +434,12 @@ function App() {
         playerStatus={playerStatus}
         setPlayerStatus={setPlayerStatus}
         artistMusicData={artistMusicData}
+        curPlaylist={curPlaylist}
+        setCurPlaylist={setCurPlaylist}
+        curPlaylistIdx={curPlaylistIdx}
+        setCurPlaylistIdx={setCurPlaylistIdx}
+        setCurrentPlay={setCurrentPlay}
+        setCurrentMid={setCurrentMid}
        />
     </BrowserRouter>
   );

@@ -2,6 +2,7 @@ import Displayblock from "./components/Displayblock";
 import Displaywindow from "./components/Displaywindow";
 import "./Allmusic.css";
 export default function Allmusic(props) {
+  // console.log(props.loginUser)
   return (
     <>
       <div className="header">
@@ -24,6 +25,7 @@ export default function Allmusic(props) {
         music={props.music}
         window={props.window} 
         playMusic={props.playMusic} 
+        loginUser={props.loginUser}
         addToPlayList={props.addToPlayList}
         artistMusicData={props.artistMusicData} />
       {/* <Musicplayer

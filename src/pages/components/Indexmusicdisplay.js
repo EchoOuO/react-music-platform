@@ -5,7 +5,7 @@ export default function Indexmusicdisplay(props) {
   // console.log(props.musicdisplay);
   return (
     <>
-      <h2>Musicdisplay</h2>
+      <h2>Music display</h2>
       <Displayblock
         music={props.music}
         addToPlayList={props.addToPlayList}
