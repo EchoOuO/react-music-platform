@@ -58,6 +58,7 @@ function App() {
 
   const Auth = (userObj) => {
     //userObj = Information entered by users
+<<<<<<< Updated upstream
     for (let user of users) {
       if (user.email === userObj.email && user.password === userObj.password) {
         const cipherUser = AES.encrypt(
@@ -70,8 +71,28 @@ function App() {
         loginKey(user.email);
         return true; // Returns true if login succeeds
       }
+=======
+    const usersFromLocalStorage = JSON.parse(
+      localStorage.getItem("users") || "[]"
+    );
+    const user = usersFromLocalStorage.find(
+      (user) =>
+        user.email === userObj.email && user.password === userObj.password
+    );
+
+    if (user) {
+      const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
+      sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
+      setLoginUser(user);
+      loginKey(user.email);
+      setPlayerStatus({ play: false });
+      return true; // Returns true if login succeeds
+    } else {
+      // Invalid email or password
+      alert("Invalid email or password");
+      return false; // Returns false if login fails
+>>>>>>> Stashed changes
     }
-    return false; // Returns false if login fails
   };
 
   // import "music.json" data

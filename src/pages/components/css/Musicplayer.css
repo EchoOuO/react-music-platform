@@ -24,6 +24,59 @@
 }
 
 .player-icon {
+<<<<<<< Updated upstream
+=======
+  width: 30px;
+  height: 30px;
+}
+
+.player {
+  width: 40%;
+  border-radius: 0;
+}
+
+.player::-webkit-media-controls-play-button,
+.player::-webkit-media-controls-fullscreen-button {
+  display: none !important;
+}
+
+
+.player-info-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 20px;
+  gap: 20px;
+}
+
+.player-text {
+  width: fit-content;
+  white-space: nowrap;
+  margin-bottom: 0px;
+  font-size: 15px;
+}
+
+.player-text-music{
+  font-weight: 700;
+}
+
+.player-text-artist{
+  color: #b1b1b1;
+}
+
+.player-icon-playing {
+  width: 20px;
+  height: 20px;
+}
+
+.player-text-small-container{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.player-music-img {
+>>>>>>> Stashed changes
   width: 40px;
   height: 40px;
 }
