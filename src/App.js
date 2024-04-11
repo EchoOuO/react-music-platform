@@ -23,6 +23,8 @@ function App() {
   const [users, setUsers] = useState(null);
   const [loginUser, setLoginUser] = useState(null);
   const [uploadedMusic, setUploadedMusic] = useState([]);
+  const [playerStatus, setPlayerStatus] = useState({ play: false });
+  const [loginError, setLoginError] = useState(null);
 
   const loginKey = (newKey) => {
     //loginKey = null = not logged in
@@ -58,22 +60,28 @@ function App() {
 
   const Auth = (userObj) => {
     //userObj = Information entered by users
-    for (let user of users) {
-      if (user.email === userObj.email && user.password === userObj.password) {
-        const cipherUser = AES.encrypt(
-          JSON.stringify(user),
-          "groupc"
-        ).toString(); //AESkey = groupc
-        sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
-        // console.log(user)
-        setLoginUser(user);
-        loginKey(user.email);
-        return true; // Returns true if login succeeds
-      }
-    }
-    return false; // Returns false if login fails
-  };
+    const usersFromLocalStorage = JSON.parse(
+      localStorage.getItem("users") || "[]"
+    );
+    const user = usersFromLocalStorage.find(
+      (user) =>
+        user.email === userObj.email && user.password === userObj.password
+    );
 
+    if (user) {
+      const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
+      sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
+      setLoginUser(user);
+      loginKey(user.email);
+      setPlayerStatus({ play: false });
+      return true; // Returns true if login succeeds
+    } else {
+      // Invalid email or password
+      alert("Invalid email or password");
+      return false; // Returns false if login fails
+    }
+  };
+  
   // import "music.json" data
   const [music, setMusic] = useState([]);
   const [musicdisplay, setMusicdisplay] = useState([]);

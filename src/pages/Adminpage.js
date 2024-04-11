@@ -25,31 +25,25 @@ function AdminPage() {
       setUsers([JSON.parse(decryptedUser)]);
     }
 
-    const localUsers = localStorage.getItem("users");
-
-    if (localUsers) {
-      setUsers(JSON.parse(localUsers));
-    } else {
-      FileService.read("user").then(
-        (response) => {
-          if (Array.isArray(response.data)) {
-            const loadedUsers = response.data.map((user) => ({
-              id: user.uid,
-              name: user.uname,
-              email: user.email,
-              password: user.password,
-            }));
-            setUsers(loadedUsers);
-            localStorage.setItem("users", JSON.stringify(loadedUsers));
-          } else {
-            console.error("Error: response data is not an array");
-          }
-        },
-        (rej) => {
-          console.log(rej);
+    FileService.read("user").then(
+      (response) => {
+        if (Array.isArray(response.data)) {
+          const loadedUsers = response.data.map((user) => ({
+            id: user.uid,
+            name: user.uname,
+            email: user.email,
+            password: user.password,
+          }));
+          setUsers(loadedUsers);
+          localStorage.setItem("users", JSON.stringify(loadedUsers));
+        } else {
+          console.error("Error: response data is not an array");
         }
-      );
-    }
+      },
+      (rej) => {
+        console.log(rej);
+      }
+    );
   }, []);
 
   const handleAddUser = () => {
