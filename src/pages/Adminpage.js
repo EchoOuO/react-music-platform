@@ -83,6 +83,8 @@ function AdminPage() {
     setShowForm(false);
   };
 
+  console.log(users)
+
   return (
     <div>
       <h1>Admin Page</h1>
@@ -97,9 +99,9 @@ function AdminPage() {
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
+            <tr key={user.uid}>
+              <td>{user.uid}</td>
+              <td>{user.uname}</td>
               <td>{user.email}</td>
               <td>
                 <Button variant="success" onClick={handleAddUser}>
