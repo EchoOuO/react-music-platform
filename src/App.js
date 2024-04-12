@@ -23,8 +23,6 @@ function App() {
   const [users, setUsers] = useState(null);
   const [loginUser, setLoginUser] = useState(null);
   const [uploadedMusic, setUploadedMusic] = useState([]);
-  const [playerStatus, setPlayerStatus] = useState({ play: false });
-  const [loginError, setLoginError] = useState(null);
 
   const loginKey = (newKey) => {
     //loginKey = null = not logged in
@@ -33,6 +31,8 @@ function App() {
 
   const authMenu = [
     { url: "/", text: "Home" },
+    { url: "/allmusic", text: "All Music" },
+    { url: "/allartist", text: "All Artist" },
     { url: "/userpage", text: "User Page" },
     { url: "/upload", text: "Upload Music" },
     { url: "/artist", text: "Artist Page" },
@@ -42,15 +42,28 @@ function App() {
 
   const noAuthMenu = [
     { url: "/", text: "Home" },
+    { url: "/allmusic", text: "All Music" },
+    { url: "/allartist", text: "All Artist" },
     { url: "/login", text: "Login" },
     { url: "/reg", text: "Register" },
   ];
 
   useEffect(() => {
+    // Check if there's a logged in user in session storage
+    const storedUser = sessionStorage.getItem("LoginUser");
+    if (storedUser) {
+      const decryptedUser = AES.decrypt(storedUser, "groupc").toString(
+        enc.Utf8
+      );
+      setLoginUser(JSON.parse(decryptedUser));
+      setKey(JSON.parse(decryptedUser).email); // Assuming email can uniquely identify a user
+    }
+
     //import user json data
     FileService.read("user").then(
       (response) => {
         setUsers(response.data);
+        // console.log(response.data)
       },
       (rej) => {
         console.log(rej);
@@ -81,7 +94,7 @@ function App() {
       return false; // Returns false if login fails
     }
   };
-  
+
   // import "music.json" data
   const [music, setMusic] = useState([]);
   const [musicdisplay, setMusicdisplay] = useState([]);
@@ -100,7 +113,7 @@ function App() {
 
         while (randomNumber.length < 6) {
           const tmpNumber = Math.floor(Math.random() * 49.99);
-          if (!randomNumber.includes(randomNumber)) {
+          if (!randomNumber.includes(tmpNumber)) {
             randomNumber.push(tmpNumber);
           }
         }
@@ -191,26 +204,31 @@ function App() {
   // Current playing music management & Play music function
   const [currentPlay, setCurrentPlay] = useState(new Map());
   const [currentMid, setCurrentMid] = useState(null);
+  const [playerStatus, setPlayerStatus] = useState({ play: false, end: false });
+
+  // console.log(playerStatus)
+
   const playMusic = (e) => {
+    // console.log('play!!')
     const tmpmid = e.target.attributes.mid.value;
     const tmpdata = music.find((obj) => {
       // console.log(obj.mid);
       return obj.mid == tmpmid;
     });
-
     const tmpplaylist = new Map();
     tmpplaylist.set(tmpmid, tmpdata);
+
+    // if(tmpplaylist.values == currentPlay.values) {
+    //   alert('Playing now!')
+    // }else {
     // console.log(tmpplaylist)
     setCurrentPlay(tmpplaylist);
     setCurrentMid(tmpmid);
+    setPlayerStatus({ play: true });
 
     // console.log(playlist);
 
-    // const tmpArray = []
-    // for (let data of tmpplaylist){
-    //   tmpArray.push(data)
-    // }
-
+    // save music data in local storage
     localStorage.setItem(
       loginUser ? `${loginUser.uid} curMusic` : "Guest curMusic",
       JSON.stringify(Object.fromEntries(tmpplaylist))
@@ -220,7 +238,9 @@ function App() {
       tmpmid
     );
     // remove current play time
-    localStorage.removeItem("Guest curMusicTime");
+    // localStorage.removeItem("Guest curMusicTime")
+
+    // change playstatus to control music player
   };
 
   // retrieve current play music from local storage
@@ -240,6 +260,10 @@ function App() {
         setCurrentMid(tmpmid);
         // console.log(currentPlay);
         // console.log(currentMid);
+      } else {
+        setCurrentPlay(new Map());
+        setCurrentMid(null);
+        setPlayerStatus({ play: false, end: false });
       }
     }
     // for login users
@@ -254,6 +278,10 @@ function App() {
         // console.log(tmpplaylist)
         setCurrentPlay(tmpplaylist);
         setCurrentMid(tmpmid);
+      } else {
+        setCurrentPlay(new Map());
+        setCurrentMid(null);
+        setPlayerStatus({ play: false });
       }
     }
   }, [loginUser]);
@@ -274,12 +302,14 @@ function App() {
     const tmpplaylist = new Map(playlist);
     tmpplaylist.set(tmpmid, tmpdata);
     setPlaylist(tmpplaylist);
-    console.log(playlist);
+    // console.log(playlist)
 
     if (loginUser) {
       // Save playlist in local storage with key = login user id
       const tmpArray = [];
       for (let data of tmpplaylist) {
+        console.log(tmpplaylist);
+        console.log(data);
         tmpArray.push(data);
       }
       localStorage.setItem(loginUser.uid, JSON.stringify(tmpArray));
@@ -287,13 +317,40 @@ function App() {
     } else {
       alert("Please log in!");
     }
-
     // console.log(playlist);
   };
 
+  // play music based on user's playlist
+  const [curPlaylist, setCurPlaylist] = useState({});
+  const [curPlaylistIdx, setCurPlaylistIdx] = useState(0);
+  const playplaylist = () => {
+    if (loginUser) {
+      let tmpdata = localStorage.getItem(loginUser.uid);
+      let tmpplaylist = new Map(JSON.parse(tmpdata));
+      let tmpplaylistkey = tmpplaylist.keys();
+      // console.log(tmpplaylist)
+      // console.log(tmpplaylistkey)
+      let tmpArray = [];
+      for (let idx of tmpplaylistkey) {
+        // console.log(idx)
+        tmpArray.push(idx);
+      }
+      // console.log(tmpArray)
+      let tmpplaymid;
+      tmpplaymid = tmpArray[curPlaylistIdx];
+      if (tmpplaylist) {
+        setCurrentPlay(tmpplaylist);
+        setCurrentMid(tmpplaymid);
+        setPlayerStatus({ play: true });
+      }
+    }
+  };
+
   const logout = () => {
+    sessionStorage.removeItem("LoginUser"); // Remove user from session storage on logout
     setLoginUser(null);
     loginKey(null);
+    setPlayerStatus({ play: false, end: false });
   };
 
   return (
@@ -301,7 +358,12 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Links menu={key !== null ? authMenu : noAuthMenu} />}
+          element={
+            <Links
+              menu={key !== null ? authMenu : noAuthMenu}
+              displayInfo={displayInfo}
+            />
+          }
         >
           <Route
             index
@@ -322,6 +384,9 @@ function App() {
                 artistMusicData={artistMusicData}
                 setUploadedMusic={setUploadedMusic}
                 uploadedMusic={uploadedMusic}
+                loginUser={loginUser}
+                CurPlaylist={curPlaylist}
+                setCurPlaylist={setCurPlaylist}
               />
             }
           />
@@ -338,6 +403,7 @@ function App() {
                 musicdisplay={musicdisplay}
                 displayInfo={displayInfo}
                 artistMusicData={artistMusicData}
+                loginUser={loginUser}
               />
             }
           />
@@ -357,18 +423,7 @@ function App() {
               />
             }
           />
-          <Route
-            index
-            element={
-              <Home
-                music={music}
-                addToPlayList={addToPlayList}
-                playlist={playlist}
-                mid={mid}
-                musicdisplay={musicdisplay}
-              />
-            }
-          />
+
           <Route
             path="/upload"
             element={<Uploadmusic setUploadedMusic={setUploadedMusic} />}
@@ -383,12 +438,16 @@ function App() {
               />
             }
           />
-          <Route path="allmusic" element={<Allmusic music={music} />}></Route>
-          <Route path="allartist" element={<Allartist music={music} />}></Route>
           <Route
             path="userpage"
-            element={<Userpage loginUser={loginUser} />}
-          ></Route>
+            element={
+              <Userpage
+                loginUser={loginUser}
+                playMusic={playMusic}
+                playplaylist={playplaylist}
+              ></Userpage>
+            }
+          />
           <Route path="reg" element={<Register />}></Route>
           <Route
             path="login"
@@ -407,6 +466,16 @@ function App() {
         currentPlay={currentPlay}
         currentMid={currentMid}
         loginUser={loginUser}
+        playerStatus={playerStatus}
+        setPlayerStatus={setPlayerStatus}
+        artistMusicData={artistMusicData}
+        curPlaylist={curPlaylist}
+        setCurPlaylist={setCurPlaylist}
+        curPlaylistIdx={curPlaylistIdx}
+        setCurPlaylistIdx={setCurPlaylistIdx}
+        setCurrentPlay={setCurrentPlay}
+        setCurrentMid={setCurrentMid}
+        playplaylist={playplaylist}
       />
     </BrowserRouter>
   );
