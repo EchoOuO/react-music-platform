@@ -17,11 +17,14 @@ import MusicPlayerClass from "./classes/MusicPlayerClass";
 import Adminpage from "./pages/Adminpage";
 import Uploadmusic from "./pages/Uploadmusic";
 import Artistpage from "./pages/Artistpage";
+import Footer from "./pages/Footer";
+
 
 function App() {
   // Log in & display links in nav bar
   const [key, setKey] = useState(null);
   const [users, setUsers] = useState(null);
+  const [userType, setUserType] = useState(null)
   const [loginUser, setLoginUser] = useState(null);
   const [uploadedMusic, setUploadedMusic] = useState([]);
 
@@ -30,13 +33,28 @@ function App() {
     setKey(newKey);
   };
 
-  const authMenu = [
+  const userMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
     { url: "/userpage", text: "User Page" },
-    { url: "/upload", text: "Upload Music" },
+    { url: "/logout", text: "Log out" },
+  ];
+
+  const artistMenu = [
+    { url: "/", text: "Home" },
+    { url: "/allmusic", text: "All Music" },
+    { url: "/allartist", text: "All Artist" },
+    { url: "/userpage", text: "User Page" },
     { url: "/artist", text: "Artist Page" },
+    { url: "/upload", text: "Upload Music" },
+    { url: "/logout", text: "Log out" },
+  ];
+
+  const adminMenu = [
+    { url: "/", text: "Home" },
+    { url: "/allmusic", text: "All Music" },
+    { url: "/allartist", text: "All Artist" },
     { url: "/admin", text: "Admin Page" },
     { url: "/logout", text: "Log out" },
   ];
@@ -46,7 +64,6 @@ function App() {
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
     { url: "/login", text: "Login" },
-    { url: "/reg", text: "Register" },
   ];
 
   useEffect(() => {
@@ -62,6 +79,7 @@ function App() {
     FileService.read("user").then(
       (response) => {
         setUsers(response.data);
+        localStorage.setItem("users",JSON.stringify(response.data))
         // console.log(response.data)
       },
       (rej) => {
@@ -70,23 +88,49 @@ function App() {
     );
   }, []);
 
+  useEffect(()=>{
+    // initial nav bar links
+    if (userType) {
+      setUserType("")
+    } else {
+      setUserType(noAuthMenu)
+    } 
+  },[])
+
   const Auth = (userObj) => {
     //userObj = Information entered by users
-    for (let user of users) {
-      if (user.email === userObj.email && user.password === userObj.password) {
-        const cipherUser = AES.encrypt(
-          JSON.stringify(user),
-          "groupc"
-        ).toString(); //AESkey = groupc
-        sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
-        // console.log(user)
-        setLoginUser(user);
-        loginKey(user.email);
-        setPlayerStatus({play:false})
-        return true; // Returns true if login succeeds
+    const usersFromLocalStorage = JSON.parse(
+      localStorage.getItem("users") || "[]"
+    );
+    const user = usersFromLocalStorage.find(
+      (user) =>
+        user.email === userObj.email && user.password === userObj.password
+    );
+
+    if (user) {
+      const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
+      sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
+      setLoginUser(user);
+      loginKey(user.email);
+      setPlayerStatus({ play: false });
+      if (user.user) {
+        setUserType(userMenu)
+        // console.log("user!")
       }
+      if(user.artist) {
+        setUserType(artistMenu)
+        // console.log("artist!")
+      }
+      if(user.admin) {
+        setUserType(adminMenu)
+        // console.log("admin!")
+      }
+      return true; // Returns true if login succeeds
+    } else {
+      // Invalid email or password
+      alert("Invalid email or password");
+      return false; // Returns false if login fails
     }
-    return false; // Returns false if login fails
   };
 
   // import "music.json" data
@@ -342,6 +386,7 @@ function App() {
     setLoginUser(null);
     loginKey(null);
     setPlayerStatus({play:false, end:false})
+    setUserType(noAuthMenu)
   };
 
   return (
@@ -349,7 +394,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Links menu={key !== null ? authMenu : noAuthMenu} displayInfo={displayInfo}
+          element={<Links menu={userType} displayInfo={displayInfo} playMusic={playMusic}
           />}
         >
           <Route
@@ -436,6 +481,7 @@ function App() {
           <Route path="*" element={<Nopage />} />
         </Route>
       </Routes>
+      <Footer />
 
       {/* music player won't be stoped even user being navigated to another browser */}
       <Musicplayer

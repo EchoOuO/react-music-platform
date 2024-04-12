@@ -16,19 +16,10 @@ function AdminPage() {
   const [editingUser, setEditingUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = sessionStorage.getItem("LoginUser");
+    let storedUsers = localStorage.getItem("users");
 
-    if (storedUser) {
-      const decryptedUser = AES.decrypt(storedUser, "groupc").toString(
-        enc.Utf8
-      );
-      setUsers([JSON.parse(decryptedUser)]);
-    }
-
-    const localUsers = localStorage.getItem("users");
-
-    if (localUsers) {
-      setUsers(JSON.parse(localUsers));
+    if (storedUsers) {
+      setUsers(JSON.parse(storedUsers));
     } else {
       FileService.read("user").then(
         (response) => {
@@ -179,4 +170,4 @@ function AdminPage() {
   );
 }
 
-export default AdminPage;
+export default AdminPage;

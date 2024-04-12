@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Formcompo from "./components/Formcompo";
 import { useNavigate } from "react-router-dom";
+import FileService from "../services/FileService";
 
 export default function Login(props) {
   const passInput = useRef();
@@ -11,6 +12,32 @@ export default function Login(props) {
     { type: "submit", text: "Login" },
     { type: "button", text: "Show Password" }
   ]);
+
+  useEffect(() => {
+    let storedUsers = localStorage.getItem("users");
+
+    if (!storedUsers) {
+      FileService.read("user").then(
+        (response) => {
+          if (Array.isArray(response.data)) {
+            const loadedUsers = response.data.map((user) => ({
+              id: user.uid,
+              name: user.uname,
+              email: user.email,
+              password: user.password,
+            }));
+            localStorage.setItem("users", JSON.stringify(loadedUsers));
+          } else {
+            console.error("Error: response data is not an array");
+          }
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
+  }, []);
+
 
   const elements = [
     { name: "email", type: "email", text: "Email", req: true },

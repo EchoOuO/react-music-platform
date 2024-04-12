@@ -89,7 +89,6 @@ export default function Home(props) {
         addToPlayList={props.addToPlayList}
         artistMusicData={props.artistMusicData}
         loginUser={props.loginUser} />
-      <Footer />
     </>
   );
 }

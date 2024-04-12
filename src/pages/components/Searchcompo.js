@@ -83,7 +83,7 @@ export default function SearchList(props) {
         </div>
       </div>
       <Displaywindow selectedItem={selectedItem} />
-      <SearchModal selectedItem={selectedItem} />
+      <SearchModal selectedItem={selectedItem} playMusic={props.playMusic} />
     </div>
   ) : null;
 }
