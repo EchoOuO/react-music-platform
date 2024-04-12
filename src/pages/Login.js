@@ -38,7 +38,6 @@ export default function Login(props) {
     }
   }, []);
 
-
   const elements = [
     { name: "email", type: "email", text: "Email", req: true },
     { name: "password", type: "password", text: "Password", req: true },
