@@ -63,6 +63,17 @@ export default function Displayblock(props) {
                       <button
                         type="button"
                         className="btn btn-outline-primary"
+                        mid={musicObj.mid}
+                        mname={musicObj.mname}
+                        artist={musicObj.artist}
+                        album={musicObj.album}
+                        address={musicObj.address}
+                        image={musicObj.image}
+                        onClick={props.playMusic}>Play</button>
+
+                      <button
+                        type="button"
+                        className="btn btn-outline-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#modalId"
 
