@@ -25,7 +25,6 @@ function App() {
   // Log in & display links in nav bar
   const [key, setKey] = useState(null);
   const [users, setUsers] = useState(null);
-  const [userType, setUserType] = useState(null)
   const [loginUser, setLoginUser] = useState(null);
   const [uploadedMusic, setUploadedMusic] = useState([]);
 
@@ -41,7 +40,6 @@ function App() {
     { url: "/userpage", text: "User Page" },
     { url: "/logout", text: "Log out" },
   ];
-
   const artistMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
@@ -51,7 +49,6 @@ function App() {
     { url: "/upload", text: "Upload Music" },
     { url: "/logout", text: "Log out" },
   ];
-
   const adminMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
@@ -59,7 +56,6 @@ function App() {
     { url: "/admin", text: "Admin Page" },
     { url: "/logout", text: "Log out" },
   ];
-
   const noAuthMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
@@ -67,6 +63,7 @@ function App() {
     { url: "/login", text: "Login" },
     { url: "/reg", text: "Registration" },
   ];
+  const [userType, setUserType] = useState(noAuthMenu)
 
   useEffect(() => {
     // Check if there's a logged in user in session storage
@@ -104,10 +101,6 @@ function App() {
       }
     );
   }, []);
-
-  useEffect(()=>{
-    
-  },[])
 
   const Auth = (userObj) => {
     //userObj = Information entered by users
