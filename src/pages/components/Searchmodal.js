@@ -19,10 +19,11 @@ export default function SearchModal(props) {
     
     
      {(props.selectedItem) ? 
-      <div className="modal fade" id="modalId" tabIndex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true" data-bs-backdrop="false">
+      <div className="modal fade" id="modalId2" tabIndex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true" data-bs-backdrop="false">
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md"role="document"
         >
           <div className="modal-content">
+            {/* music */}
             {(props.selectedItem.mid) ? 
               <>
               <div className="modal-body text-center">
@@ -68,6 +69,7 @@ export default function SearchModal(props) {
               </div>
               </> : null}
 
+            {/* artist */}
             {(props.selectedItem.aid) ? 
               <>
               <div className="modal-body text-center">
@@ -76,7 +78,7 @@ export default function SearchModal(props) {
                   className="btn btn-close window-close-btn"
                   data-bs-dismiss="modal"></button>
                 <img className="window-img" src={props.selectedItem.image} alt=""/>
-                <h3>Artist: {props.selectedItem.artist}</h3>
+                <h3>Artist: {props.selectedItem.aname}</h3>
                 <p>{props.selectedItem.description}</p>
               </div>
 
