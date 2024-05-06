@@ -26,6 +26,7 @@ function App() {
   const [key, setKey] = useState(null);
   const [users, setUsers] = useState(null);
   const [loginUser, setLoginUser] = useState(null);
+  const [loginUserType, setLoginUserType] = useState(null);
   const [uploadedMusic, setUploadedMusic] = useState([]);
 
   const loginKey = (newKey) => {
@@ -38,6 +39,7 @@ function App() {
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
     { url: "/userpage", text: "User Page" },
+    { url: "/reg", text: "Sign Up" },
     { url: "/logout", text: "Log out" },
   ];
   const artistMenu = [
@@ -47,6 +49,7 @@ function App() {
     { url: "/userpage", text: "User Page" },
     { url: "/artist", text: "Artist Page" },
     { url: "/upload", text: "Upload Music" },
+    { url: "/reg", text: "Sign Up" },
     { url: "/logout", text: "Log out" },
   ];
   const adminMenu = [
@@ -54,6 +57,7 @@ function App() {
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
     { url: "/admin", text: "Admin Page" },
+    { url: "/reg", text: "Sign Up" },
     { url: "/logout", text: "Log out" },
   ];
   const noAuthMenu = [
@@ -61,7 +65,7 @@ function App() {
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
     { url: "/login", text: "Login" },
-    { url: "/reg", text: "Registration" },
+    { url: "/reg", text: "Sign Up" },
   ];
   const [userType, setUserType] = useState(noAuthMenu)
 
@@ -78,14 +82,17 @@ function App() {
       if (JSON.parse(decryptedUser).user) {
         setUserType(userMenu)
         // console.log("user!")
+        setLoginUserType("Audience");
       }
       if(JSON.parse(decryptedUser).artist) {
         setUserType(artistMenu)
         // console.log("artist!")
+        setLoginUserType("Artist");
       }
       if(JSON.parse(decryptedUser).admin) {
         setUserType(adminMenu)
         // console.log("admin!")
+        setLoginUserType("Admin");
       }
     }
     
@@ -141,62 +148,62 @@ function App() {
   const [artist, setArtist] = useState([]);
   const [artistdisplay, setArtistdisplay] = useState([]);
   useEffect(() => {
-    FileService.read("music").then(
-      (response) => {
-        // console.log(response.data);
-        setMusic(response.data);
-        // console.log(music)
+    // FileService.read("music").then(
+    //   (response) => {
+    //     // console.log(response.data);
+    //     setMusic(response.data);
+    //     // console.log(music)
 
-        // create 6 random and different numbers
-        let randomNumber = [];
-        let randomMusic = [];
+    //     // create 6 random and different numbers
+    //     let randomNumber = [];
+    //     let randomMusic = [];
 
-        while (randomNumber.length < 6) {
-          const tmpNumber = Math.floor(Math.random() * 49.99);
-          if (!randomNumber.includes(tmpNumber)) {
-            randomNumber.push(tmpNumber);
-          }
-        }
-        // console.log(randomNumber);
-        for (let idx of randomNumber) {
-          // console.log(idx);
-          randomMusic.push(response.data[idx]);
-        }
-        // console.log(randomMusic)
-        setMusicdisplay(randomMusic);
-      },
-      (rej) => {
-        console.log(rej);
-      }
-    );
+    //     while (randomNumber.length < 6) {
+    //       const tmpNumber = Math.floor(Math.random() * 49.99);
+    //       if (!randomNumber.includes(tmpNumber)) {
+    //         randomNumber.push(tmpNumber);
+    //       }
+    //     }
+    //     // console.log(randomNumber);
+    //     for (let idx of randomNumber) {
+    //       // console.log(idx);
+    //       randomMusic.push(response.data[idx]);
+    //     }
+    //     // console.log(randomMusic)
+    //     setMusicdisplay(randomMusic);
+    //   },
+    //   (rej) => {
+    //     console.log(rej);
+    //   }
+    // );
 
-    // import "artist" data
-    FileService.read("artist").then(
-      (response) => {
-        // console.log(response.data);
-        setArtist(response.data);
+    // // import "artist" data
+    // FileService.read("artist").then(
+    //   (response) => {
+    //     // console.log(response.data);
+    //     setArtist(response.data);
 
-        // create 6 random and different numbers
-        let randomNumber = [];
-        let randomArtist = [];
+    //     // create 6 random and different numbers
+    //     let randomNumber = [];
+    //     let randomArtist = [];
 
-        while (randomNumber.length < 6) {
-          const tmpNumber = Math.floor(Math.random() * 49.99);
-          if (!randomNumber.includes(tmpNumber)) {
-            randomNumber.push(tmpNumber);
-          }
-        }
-        // console.log(randomNumber);
-        for (let idx of randomNumber) {
-          // console.log(idx);
-          randomArtist.push(response.data[idx]);
-        }
-        setArtistdisplay(randomArtist);
-      },
-      (rej) => {
-        console.log(rej);
-      }
-    );
+    //     while (randomNumber.length < 6) {
+    //       const tmpNumber = Math.floor(Math.random() * 49.99);
+    //       if (!randomNumber.includes(tmpNumber)) {
+    //         randomNumber.push(tmpNumber);
+    //       }
+    //     }
+    //     // console.log(randomNumber);
+    //     for (let idx of randomNumber) {
+    //       // console.log(idx);
+    //       randomArtist.push(response.data[idx]);
+    //     }
+    //     setArtistdisplay(randomArtist);
+    //   },
+    //   (rej) => {
+    //     console.log(rej);
+    //   }
+    // );
 
     const postData = {};
 
@@ -530,7 +537,7 @@ function App() {
           />
           <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist}>
               <Playlistcompo loginUser={loginUser}/></Userpage>} />
-          <Route path="reg" element={<Register />}></Route>
+          <Route path="reg" element={<Register loginUserType={loginUserType} loginUser={loginUser}/>}></Route>
           <Route
             path="login"
             element={<Login auth={Auth} loginKey={loginKey} />}

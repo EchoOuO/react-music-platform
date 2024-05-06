@@ -2,8 +2,8 @@ import http from "../http-database";
 
 class PostService {
   //register
-  reg(regData) {
-    return http.post("/reg", regData);
+  reg(postData) {
+    return http.post("/reg", postData);
   }
 
   database(url,postData){

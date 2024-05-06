@@ -34,31 +34,36 @@
                 // retrieve data from database (music / artist), exception: can't get data
             break;
             
-            case "/reg":
+            case "/reg": // In Postman, sholud use raw not form-data to test
                 // keys = uname, email, password, usertype, exception: can't get key
-                check_key(["uname", "email", "pass"], $_POST);
+                // print_r($_POST);
+                $data = json_decode(file_get_contents("php://input"), true);
+                print_r($data);
+                check_key(["uname", "email", "pass", "image", "user", "artist", "admin"], $data);
 
                  // PHP + Database! Get data from database
                 $dbObj = new DB(DB_SERVER_NAME,DB_USER,DB_PASSWORD,DB_NAME); // the order depends on the order in class
                 $dbCon = $dbObj -> connect();
                 // SELECT col_names or * from user WHERE condition
-                $selectCmd = "SELECT email FROM user_tb WHERE email = '".$_POST["email"]."'";
+                $selectCmd = "SELECT email FROM user_tb WHERE email = '".$data["email"]."'";
                 $result = $dbCon->query($selectCmd);  // must use variable
                 if($result->num_rows > 0){
                     $dbObj->db_close();
                     // Audit_generator("registeration","failed","User email already exists",$_POST["email"]);
                     sendHttp_Code(500,"Server problem!");
-                    throw new Exception("Registration Failed", 406);
+                    echo("Server problem! Registration Failed!");
+                    throw new Exception("Registration Failed!", 406);
                 }
-                $pass = password_hash($_POST["pass"],PASSWORD_BCRYPT,["cost"=>10]);
+                $pass = password_hash($data["pass"],PASSWORD_BCRYPT,["cost"=>10]);
 
                 $insertCmd = $dbCon->prepare("INSERT INTO user_tb (uname, email, password, image, user, artist, admin) VALUES (?,?,?,?,?,?,?)");
-                $insertCmd->bind_param("ssssiii", $_POST["uname"], $_POST["email"], $pass, $_POST["img"], $_POST["user"], $_POST["artist"], $_POST["admin"]); // define datatype, s = string ; i = integer ; d decimal ; b = blob ...
+                $insertCmd->bind_param("ssssiii", $data["uname"], $data["email"], $pass, $data["image"], $data["user"], $data["artist"], $data["admin"]); // define datatype, s = string ; i = integer ; d decimal ; b = blob ...
                 $insertCmd->execute();
 
                 $dbObj->db_close();
                 // Audit_generator("Registration","Success","User Registered",$_POST["email"]);
-                sendHttp_Code(201,"users added");
+                echo("User added!");
+                sendHttp_Code(201,"users added!");
             break;
 
             // case "/login":
