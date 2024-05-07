@@ -6,9 +6,9 @@
     header('Access-Control-Allow-Credentials: true');
     // Respond to preflight requests
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    // Should return HTTP 200 status code
-    http_response_code(200);
-    exit;
+        // Should return HTTP 200 status code
+        http_response_code(200);
+        exit;
     }
 
     ini_set('display_errors', 1);
@@ -38,7 +38,7 @@
                 // keys = uname, email, password, usertype, exception: can't get key
                 // print_r($_POST);
                 $data = json_decode(file_get_contents("php://input"), true);
-                print_r($data);
+                // print_r($data);
                 check_key(["uname", "email", "pass", "image", "user", "artist", "admin"], $data);
 
                  // PHP + Database! Get data from database
@@ -50,8 +50,6 @@
                 if($result->num_rows > 0){
                     $dbObj->db_close();
                     // Audit_generator("registeration","failed","User email already exists",$_POST["email"]);
-                    sendHttp_Code(500,"Server problem!");
-                    echo("Server problem! Registration Failed!");
                     throw new Exception("Registration Failed!", 406);
                 }
                 $pass = password_hash($data["pass"],PASSWORD_BCRYPT,["cost"=>10]);
@@ -62,8 +60,7 @@
 
                 $dbObj->db_close();
                 // Audit_generator("Registration","Success","User Registered",$_POST["email"]);
-                echo("User added!");
-                sendHttp_Code(201,"users added!");
+                sendHttp_Code(201,"User added!");
             break;
 
             // case "/login":
