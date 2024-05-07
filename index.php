@@ -64,23 +64,30 @@ try {
             break;
 
 
+
         case "/login":
-            try {
+            session_start();
+           try {
                 check_key(["email", "password"], $_POST);
                 $db = new DB(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
                 $db->connect();
 
                 $userObj = new User($_POST["email"], $db);
                 if ($userObj->authenticate($_POST["password"])) {
+                    $_SESSION['time_out'] = time() + TIME_OUT;
+                    $_SESSION['attempt_count'] = 0; 
                     echo "Login successful!";
                 } else {
                     echo "Login failed";
                 }
             } catch (Exception $e) {
+               
                 echo "Error: " . $e->getMessage();
             }
             $db->db_close();
             break;
+
+
 
         case "/allmusic":
             // keys = bid?, exception: can't get key
