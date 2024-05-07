@@ -1,0 +1,30 @@
+.reguser-btn-container{
+    margin: 10px 0px;
+}
+
+.reguser-btn{
+    width: 150px;
+}
+
+.profile-container{
+    display: flex;
+    gap: 15px;
+}
+
+.profile-img{
+    width: 100px;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.profile-img-selected{
+    width: 100px;
+    cursor: pointer;
+    border-radius: 20px;
+    border: solid 2px grey;
+}
+
+
+.profile-img:hover{
+    border: solid 2px grey;
+}

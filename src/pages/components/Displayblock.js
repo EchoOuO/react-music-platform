@@ -75,7 +75,7 @@ export default function Displayblock(props) {
                         type="button"
                         className="btn btn-outline-primary"
                         data-bs-toggle="modal"
-                        data-bs-target="#modalId"
+                        data-bs-target="#modalId1"
 
                         mid={musicObj.mid}
                         mname={musicObj.mname}
@@ -110,7 +110,7 @@ export default function Displayblock(props) {
                       type="button"
                       className="btn btn-outline-primary col-6"
                       data-bs-toggle="modal"
-                      data-bs-target="#modalId"
+                      data-bs-target="#modalId1"
                    
                       aid={artistObj.aid}
                       artist={artistObj.artist}

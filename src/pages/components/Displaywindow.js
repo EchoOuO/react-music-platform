@@ -17,7 +17,7 @@ export default function Displaywindow(props) {
   return (
     <>
     {(props.window) ? 
-      <div className="modal fade" id="modalId" tabIndex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+      <div className="modal fade" id="modalId1" tabIndex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md"role="document"
         >
           <div className="modal-content">
@@ -59,7 +59,7 @@ export default function Displaywindow(props) {
                     image={props.window.image}
                     onClick={props.addToPlayList}>Add to Playlist!</button>
 
-                    <img onClick={toPlaylist} className="window-playlist-img" data-bs-toggle="modal" data-bs-target="#modalId" src="./icon/playlist.png" />
+                    <img onClick={toPlaylist} className="window-playlist-img" data-bs-toggle="modal" data-bs-target="#modalId1" src="./icon/playlist.png" />
                   </>
         
                 : <p className="window-footer-text">Log in to get your own playlist!</p>}

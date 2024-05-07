@@ -27,5 +27,17 @@
 }
 
 .nav-search-bar {
-    margin-right: 50px;
+    padding-right: 50px;
+    position: relative;
+}
+
+.search-clear-btn{
+    position: absolute;
+    top: 6.5px;
+    right: 60px;
+}
+
+.searchbar{
+    width: 300px;
+    margin: 0;
 }

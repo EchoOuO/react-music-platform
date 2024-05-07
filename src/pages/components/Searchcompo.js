@@ -10,31 +10,42 @@ export default function SearchList(props) {
 
   useEffect(() => {
     if (props.searchWord.length >= 2) {
-      // import "music" data
-      FileService.read("music").then(
-        (response) => {
-          const filteredMusic = response.data.filter(item =>
-            item.mname.toLowerCase().includes(props.searchWord.toLowerCase())
-          );
-          setSearchMusic(filteredMusic);
-        },
-        (rej) => {
-          console.log(rej);
-        }
-      );
+      // // import "music" data
+      // FileService.read("music").then(
+      //   (response) => {
+      //     const filteredMusic = response.data.filter(item =>
+      //       item.mname.toLowerCase().includes(props.searchWord.toLowerCase())
+      //     );
+      //     setSearchMusic(filteredMusic);
+      //   },
+      //   (rej) => {
+      //     console.log(rej);
+      //   }
+      // );
     
-      // import "artist" data
-      FileService.read("artist").then(
-        (response) => {
-          const filteredArtist = response.data.filter(item =>
-            item.artist.toLowerCase().includes(props.searchWord.toLowerCase())
-          );
-          setSearchArtist(filteredArtist);
-        },
-        (rej) => {
-          console.log(rej);
-        }
+      // // import "artist" data
+      // FileService.read("artist").then(
+      //   (response) => {
+      //     const filteredArtist = response.data.filter(item =>
+      //       item.artist.toLowerCase().includes(props.searchWord.toLowerCase())
+      //     );
+      //     setSearchArtist(filteredArtist);
+      //   },
+      //   (rej) => {
+      //     console.log(rej);
+      //   }
+      // );
+
+      const filteredMusic = props.music.filter(item =>
+        item.mname.toLowerCase().includes(props.searchWord.toLowerCase())
       );
+      const filteredArtist = props.artist.filter(item =>
+        item.aname.toLowerCase().includes(props.searchWord.toLowerCase())
+      );
+
+      setSearchMusic(filteredMusic);
+      setSearchArtist(filteredArtist)
+
     } else {
       setSearchMusic([]);
       setSearchArtist([]);
@@ -42,7 +53,7 @@ export default function SearchList(props) {
   }, [props.searchWord]);
 
   const openModal = (item) => {
-    console.log(selectedItem);
+    // console.log(selectedItem);
     setSelectedItem(item);
   };
 
@@ -56,7 +67,7 @@ export default function SearchList(props) {
               type="button" 
               className="btn btn-outline-primary btn-sm m-2" 
               data-bs-toggle="modal" 
-              data-bs-target="#modalId" 
+              data-bs-target="#modalId2" 
               key={index}
               onClick={() => openModal(music)}
             >
@@ -73,16 +84,15 @@ export default function SearchList(props) {
               type="button" 
               className="btn btn-outline-primary btn-sm m-2" 
               data-bs-toggle="modal" 
-              data-bs-target="#modalId" 
+              data-bs-target="#modalId2" 
               key={index}
               onClick={() => openModal(artist)}
             >
-              {artist.artist}
+              {artist.aname}
             </button>
           ))}
         </div>
       </div>
-      <Displaywindow selectedItem={selectedItem} />
       <SearchModal selectedItem={selectedItem} playMusic={props.playMusic} />
     </div>
   ) : null;

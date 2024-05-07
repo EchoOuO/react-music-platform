@@ -14,7 +14,7 @@ export default function Playlistcompo(props) {
 
   const deleteHandler = (mid) => {
     const storedValue = JSON.parse(localStorage.getItem(props.uid));
-    console.log(storedValue);
+    // console.log(storedValue);
 
     if (storedValue) {
       const index = storedValue.findIndex((idx) => idx[0] === mid.toString()); // Find the key corresponding to mid
@@ -25,10 +25,10 @@ export default function Playlistcompo(props) {
       }
 
       // モーダルを閉じ、削除されたデータをフィルタリングする
-      setModal(null);
       const updatedMusicData = props.musicData.filter((musicObj) => musicObj[0] !== mid);
       props.onDelete(updatedMusicData); // Update musicData in Userpage component
     }
+    setModal(null);
   };
 
   return (

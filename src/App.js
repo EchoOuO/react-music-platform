@@ -18,13 +18,13 @@ import Adminpage from "./pages/Adminpage";
 import Uploadmusic from "./pages/Uploadmusic";
 import Artistpage from "./pages/Artistpage";
 import Footer from "./pages/Footer";
+import PostService from "./services/PostService";
 
 
 function App() {
   // Log in & display links in nav bar
   const [key, setKey] = useState(null);
   const [users, setUsers] = useState(null);
-  const [userType, setUserType] = useState(null)
   const [loginUser, setLoginUser] = useState(null);
   const [uploadedMusic, setUploadedMusic] = useState([]);
 
@@ -40,7 +40,6 @@ function App() {
     { url: "/userpage", text: "User Page" },
     { url: "/logout", text: "Log out" },
   ];
-
   const artistMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
@@ -50,7 +49,6 @@ function App() {
     { url: "/upload", text: "Upload Music" },
     { url: "/logout", text: "Log out" },
   ];
-
   const adminMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
@@ -58,21 +56,37 @@ function App() {
     { url: "/admin", text: "Admin Page" },
     { url: "/logout", text: "Log out" },
   ];
-
   const noAuthMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
     { url: "/login", text: "Login" },
+    { url: "/reg", text: "Registration" },
   ];
+  const [userType, setUserType] = useState(noAuthMenu)
 
   useEffect(() => {
     // Check if there's a logged in user in session storage
     const storedUser = sessionStorage.getItem("LoginUser");
     if (storedUser) {
       const decryptedUser = AES.decrypt(storedUser, 'groupc').toString(enc.Utf8);
+      // console.log(JSON.parse(decryptedUser))
       setLoginUser(JSON.parse(decryptedUser));
       setKey(JSON.parse(decryptedUser).email); // Assuming email can uniquely identify a user
+
+      // initial nav bar links based on login user
+      if (JSON.parse(decryptedUser).user) {
+        setUserType(userMenu)
+        // console.log("user!")
+      }
+      if(JSON.parse(decryptedUser).artist) {
+        setUserType(artistMenu)
+        // console.log("artist!")
+      }
+      if(JSON.parse(decryptedUser).admin) {
+        setUserType(adminMenu)
+        // console.log("admin!")
+      }
     }
     
     //import user json data
@@ -88,24 +102,10 @@ function App() {
     );
   }, []);
 
-  useEffect(()=>{
-    // initial nav bar links
-    if (userType) {
-      setUserType("")
-    } else {
-      setUserType(noAuthMenu)
-    } 
-  },[])
-
   const Auth = (userObj) => {
     //userObj = Information entered by users
-    const usersFromLocalStorage = JSON.parse(
-      localStorage.getItem("users") || "[]"
-    );
-    const user = usersFromLocalStorage.find(
-      (user) =>
-        user.email === userObj.email && user.password === userObj.password
-    );
+    const usersFromLocalStorage = JSON.parse(localStorage.getItem("users") || "[]");
+    const user = usersFromLocalStorage.find((user) => user.email === userObj.email && user.password === userObj.password);
 
     if (user) {
       const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
@@ -113,6 +113,8 @@ function App() {
       setLoginUser(user);
       loginKey(user.email);
       setPlayerStatus({ play: false });
+
+      // change nav bar
       if (user.user) {
         setUserType(userMenu)
         // console.log("user!")
@@ -195,6 +197,64 @@ function App() {
         console.log(rej);
       }
     );
+
+    const postData = {};
+
+    PostService.database("/allmusic",postData).then(
+      (response) => {
+        // console.log(response.data);
+        setMusic(response.data);
+        // console.log(music)
+
+        // create 6 random and different numbers
+        let randomNumber = [];
+        let randomMusic = [];
+
+        while (randomNumber.length < 6) {
+          const tmpNumber = Math.floor(Math.random() * 49.99);
+          if (!randomNumber.includes(tmpNumber)) {
+            randomNumber.push(tmpNumber);
+          }
+        }
+        // console.log(randomNumber);
+        for (let idx of randomNumber) {
+          // console.log(idx);
+          randomMusic.push(response.data[idx]);
+        }
+        // console.log(randomMusic)
+        setMusicdisplay(randomMusic);
+      },
+      (reg) => {
+        console.log(reg);
+      }
+    )
+
+    PostService.database("/allartist",postData).then(
+      (response) => {
+        // console.log(response.data);
+        setArtist(response.data);
+
+        // create 6 random and different numbers
+        let randomNumber = [];
+        let randomArtist = [];
+
+        while (randomNumber.length < 6) {
+          const tmpNumber = Math.floor(Math.random() * 49.99);
+          if (!randomNumber.includes(tmpNumber)) {
+            randomNumber.push(tmpNumber);
+          }
+        }
+        // console.log(randomNumber);
+        for (let idx of randomNumber) {
+          // console.log(idx);
+          randomArtist.push(response.data[idx]);
+        }
+        setArtistdisplay(randomArtist);
+      },
+      (reg) => {
+        console.log(reg);
+      }
+    )
   }, []);
 
   // get data from button attributes for music/artist dispaly window
@@ -204,10 +264,11 @@ function App() {
     // display music
     if (e.target.attributes.mid) {
       const tmpmid = e.target.attributes.mid.value;
-      // console.log(typeof tmpmid)
+      // console.log(tmpmid)
+      // console.log(music);
       const tmpdata = music.find((obj) => {
         // console.log(typeof obj.mid);
-        return obj.mid === Number(tmpmid);
+        return obj.mid === tmpmid; // id in json responsed by database = string , not a number
       });
       // console.log(tmpdata)
       setWindow(tmpdata);
@@ -219,7 +280,7 @@ function App() {
       // console.log(typeof tmpmid)
       const tmpdata = artist.find((obj) => {
         // console.log(typeof obj.mid);
-        return obj.aid === Number(tmpaid);
+        return obj.aid === tmpaid;
       });
       // console.log(tmpdata)
       setWindow(tmpdata);
@@ -233,7 +294,7 @@ function App() {
       const tmpArtistMusicData = music.find((obj) => {
         return obj.artist === window.artist;
       });
-      // console.log(tmpArtistMusicData)
+      // console.log(tmpArtistMusicData);
       setartistMusicData(tmpArtistMusicData);
       // console.log(artistMusicData)
     }
@@ -378,9 +439,6 @@ function App() {
     }
   }
 
-
-  
-
   const logout = () => {
     sessionStorage.removeItem("LoginUser"); // Remove user from session storage on logout
     setLoginUser(null);
@@ -394,7 +452,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Links menu={userType} displayInfo={displayInfo} playMusic={playMusic}
+          element={<Links menu={userType} displayInfo={displayInfo} playMusic={playMusic} music={music} artist={artist}
           />}
         >
           <Route
@@ -481,6 +539,7 @@ function App() {
           <Route path="*" element={<Nopage />} />
         </Route>
       </Routes>
+
       <Footer />
 
       {/* music player won't be stoped even user being navigated to another browser */}
