@@ -1,0 +1,332 @@
+[
+  {
+    "uid": 1000,
+    "uname": "Joe",
+    "email": "window9995@gmail.com",
+    "password": "admin",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": true
+  },
+  {
+    "uid": 1001,
+    "uname": "Isaac",
+    "email": "isaacchapermannneto@gmail.com",
+    "password": "admin",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": true
+  },
+  {
+    "uid": 1002,
+    "uname": "Ayana",
+    "email": "ayn96ac.ca@gmail.com",
+    "password": "admin",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": true
+  },
+  {
+    "uid": 1003,
+    "uname": "Sergent Peggs",
+    "email": "speggs0@ocn.ne.jp",
+    "password": "d6a2/a<gSc!Ii<I",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1004,
+    "uname": "Beth Mabee",
+    "email": "bmabee1@about.com",
+    "password": "g5*XPpFr2zZj{\"~",
+    "image": "http://dummyimage.com/250x250.png/ff4444/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1005,
+    "uname": "Nancey Sellen",
+    "email": "nsellen2@godaddy.com",
+    "password": "test12",
+    "image": "http://dummyimage.com/250x250.png/5fa2dd/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1006,
+    "uname": "Fraze Teesdale",
+    "email": "fteesdale3@devhub.com",
+    "password": "f8b+?lN\"%(&o1V9N",
+    "image": "http://dummyimage.com/250x250.png/ff4444/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1007,
+    "uname": "Jackson Piddletown",
+    "email": "jpiddletown4@merriam-webster.com",
+    "password": "test12",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1008,
+    "uname": "Jobey Garrish",
+    "email": "jgarrish5@blog.com",
+    "password": "k8k1>zkCH!yMX",
+    "image": "http://dummyimage.com/250x250.png/ff4444/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1009,
+    "uname": "Tybie Ezzy",
+    "email": "tezzy6@fema.gov",
+    "password": "v6?F@Rb=,SQP_EIm",
+    "image": "http://dummyimage.com/250x250.png/5fa2dd/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1010,
+    "uname": "Arliene Fullerton",
+    "email": "afullerton7@netlog.com",
+    "password": "t7bD}$X/'t\\Y",
+    "image": "http://dummyimage.com/250x250.png/dddddd/000000",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1011,
+    "uname": "Dev Uwins",
+    "email": "duwins8@intel.com",
+    "password": "q9lM*NbB32$I},O",
+    "image": "http://dummyimage.com/250x250.png/5fa2dd/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1012,
+    "uname": "Joceline Dmitrienko",
+    "email": "jdmitrienko9@e-recht24.de",
+    "password": "l4OqnVx1V",
+    "image": "http://dummyimage.com/250x250.png/dddddd/000000",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1013,
+    "uname": "Ethelbert Meininger",
+    "email": "emeiningera@princeton.edu",
+    "password": "d1`(<_@PM",
+    "image": "http://dummyimage.com/250x250.png/5fa2dd/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1014,
+    "uname": "Valida Mitcheson",
+    "email": "vmitchesonb@ted.com",
+    "password": "n8$VQ)2?`ZG",
+    "image": "http://dummyimage.com/250x250.png/dddddd/000000",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1015,
+    "uname": "Welsh Petz",
+    "email": "wpetzc@cbc.ca",
+    "password": "h3oN'S~\\eAg",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1016,
+    "uname": "Stormy Newbery",
+    "email": "snewberyd@gravatar.com",
+    "password": "w6'4Lzl5Oz",
+    "image": "http://dummyimage.com/250x250.png/dddddd/000000",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1017,
+    "uname": "Clio Jewks",
+    "email": "cjewkse@nbcnews.com",
+    "password": "d7`>7k5Z8\"1",
+    "image": "http://dummyimage.com/250x250.png/dddddd/000000",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1018,
+    "uname": "Delilah Henriksson",
+    "email": "dhenrikssonf@washington.edu",
+    "password": "r5IcOVQJ(r4y?!z_",
+    "image": "http://dummyimage.com/250x250.png/5fa2dd/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1019,
+    "uname": "Dyanna Dickons",
+    "email": "ddickonsg@sourceforge.net",
+    "password": "y95<L'QooZW&.w\\f",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1020,
+    "uname": "Doralia Ferrari",
+    "email": "dferrarih@360.cn",
+    "password": "j9(RKzs`)wuSQJfQ",
+    "image": "http://dummyimage.com/250x250.png/dddddd/000000",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1021,
+    "uname": "Grant Salzen",
+    "email": "gsalzeni@nhs.uk",
+    "password": "m9ST>W#D{ZPoO",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1022,
+    "uname": "Gaspard Freshwater",
+    "email": "gfreshwaterj@facebook.com",
+    "password": "l9hK5ct#'{3zIU<",
+    "image": "http://dummyimage.com/250x250.png/5fa2dd/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1023,
+    "uname": "Sula Castell",
+    "email": "scastellk@purevolume.com",
+    "password": "j3E5to4q'GauPC's",
+    "image": "http://dummyimage.com/250x250.png/ff4444/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1024,
+    "uname": "Sher Striker",
+    "email": "sstrikerl@bigcartel.com",
+    "password": "g5`pWV>r",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1025,
+    "uname": "Mort Shilvock",
+    "email": "mshilvockm@google.pl",
+    "password": "a2fhiLx>mB",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1026,
+    "uname": "Joseph Oldis",
+    "email": "joldisn@facebook.com",
+    "password": "z7*S8MN\\CrMaJuW",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1027,
+    "uname": "Terrijo McAllester",
+    "email": "tmcallestero@ox.ac.uk",
+    "password": "v4NQoK2\\m5,y",
+    "image": "http://dummyimage.com/250x250.png/ff4444/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1028,
+    "uname": "Mikol Arbor",
+    "email": "marborp@ehow.com",
+    "password": "w2\"BCkI/7+RE",
+    "image": "http://dummyimage.com/250x250.png/ff4444/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  },
+  {
+    "uid": 1029,
+    "uname": "Van Boucher",
+    "email": "vboucherq@twitter.com",
+    "password": "c1RD0AS?7d",
+    "image": "http://dummyimage.com/250x250.png/dddddd/000000",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1030,
+    "uname": "Mitchel Underhill",
+    "email": "munderhillr@rambler.ru",
+    "password": "r5>!*.kb7`",
+    "image": "http://dummyimage.com/250x250.png/cc0000/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1031,
+    "uname": "Zola Orford",
+    "email": "zorfords@imgur.com",
+    "password": "w50/H#(=IPcgul",
+    "image": "http://dummyimage.com/250x250.png/ff4444/ffffff",
+    "user": true,
+    "artist": false,
+    "admin": false
+  },
+  {
+    "uid": 1032,
+    "uname": "Katherine Alten",
+    "email": "kaltent@washingtonpost.com",
+    "password": "f5wdg!t%>bIutb",
+    "image": "http://dummyimage.com/250x250.png/5fa2dd/ffffff",
+    "user": true,
+    "artist": true,
+    "admin": false
+  }
+]
