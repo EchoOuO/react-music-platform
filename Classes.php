@@ -130,6 +130,58 @@ class fileUplaod{
     }
 }
 
+class User {
+    private $db;
+    private $email;
+
+    public function __construct($email, $db) {
+        $this->email = $email;
+        $this->db = $db;
+    }
+    
+    function authenticate($password) {
+
+        if (!isset($_SESSION['attempt_count'])) {
+            $_SESSION['attempt_count'] = 0;
+            $_SESSION['last_attempt_time'] = time();  
+        }
+
+        if ($_SESSION['attempt_count'] >= ATTEMPT_LIMIT) {
+            if ((time() - $_SESSION['last_attempt_time']) < 300) {
+                Audit_generator("Login", "Failed", "Too many attempts", $this->email);
+                throw new Exception("Login failed due to too many attempts. Please try again later.");
+            } else {
+                $_SESSION['attempt_count'] = 0;
+                $_SESSION['last_attempt_time'] = time();
+            }
+        }
+
+        $query = "SELECT password FROM user_tb WHERE email = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("s", $this->email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result && $result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+
+            if ($user['password'] === $password) {
+                $_SESSION['attempt_count'] = 0;  
+                Audit_generator("Login", "Successful", "User authenticated", $this->email);
+                return true;
+            } else {
+                $_SESSION['attempt_count']++;  
+                Audit_generator("Login", "Failed", "Invalid password", $this->email);
+                throw new Exception("Invalid password.");
+            }
+        } else {
+            $_SESSION['attempt_count']++;  
+            Audit_generator("Login", "Failed", "Invalid login details", $this->email);
+            throw new Exception("Invalid login details", 401);
+        }
+    }
+}
+
 class jsonUpload{
     private $src_addr;
     private $file_addr;
