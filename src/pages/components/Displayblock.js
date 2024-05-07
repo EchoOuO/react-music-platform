@@ -1,5 +1,3 @@
-import Displaywindow from "./Displaywindow";
-import Musicplayer from "./Musicplayer";
 import "./css/Displayblock.css";
 import LazyLoad from 'react-lazyload';
 export default function Displayblock(props) {

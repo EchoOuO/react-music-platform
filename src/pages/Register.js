@@ -2,8 +2,11 @@ import Formcompo from "./components/Formcompo";
 import PostService from "../services/PostService";
 import "./Register.css";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Register(props) {
+  const navigate = useNavigate();
+
   const elements = [
     { name: "uname", type: "text", text: "Full Name", req: true },
     { name: "email", type: "email", text: "Email", req: true },
@@ -79,19 +82,32 @@ export default function Register(props) {
   const submitHandler = (e) => {
     e.preventDefault();
 
-    if (!userTypeFormData) {
+    if (userTypeFormData == []) {
       alert('please choose your user type!')
       return false
     }
 
-    // why always get "invalid keys" from backend  - -????
-    console.log(regData);
+    // console.log(regData);
     PostService.reg((regData)).then(
       (response) => {
-        console.log(response);
+        // console.log(response.data);
+
+        if (response.data == "User added!"){
+          alert("Sign up succeed, please log in.")
+          navigate("/login");
+        }
       },
       (rej) => {
-        console.log(rej);
+        console.log(rej.response.data);
+
+        switch(rej.response.data){
+          case "Invalid keys":
+            alert("Please choose your type/profile and fill out the form.")
+            break;
+          case "Registration Failed!":
+            alert("Please choose another email to sign up.")
+            break;
+        }
       }
     );
   };

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export default function SearchModal(props) {
-  console.log(props.selectedItem?.mid);
+  // console.log(props.selectedItem?.mid);
 
   const navigate = useNavigate();
 

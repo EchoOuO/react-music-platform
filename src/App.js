@@ -38,27 +38,19 @@ function App() {
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
-    { url: "/userpage", text: "User Page" },
     { url: "/reg", text: "Sign Up" },
-    { url: "/logout", text: "Log out" },
   ];
   const artistMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
-    { url: "/userpage", text: "User Page" },
-    { url: "/artist", text: "Artist Page" },
-    { url: "/upload", text: "Upload Music" },
     { url: "/reg", text: "Sign Up" },
-    { url: "/logout", text: "Log out" },
   ];
   const adminMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
-    { url: "/admin", text: "Admin Page" },
     { url: "/reg", text: "Sign Up" },
-    { url: "/logout", text: "Log out" },
   ];
   const noAuthMenu = [
     { url: "/", text: "Home" },
@@ -68,6 +60,26 @@ function App() {
     { url: "/reg", text: "Sign Up" },
   ];
   const [userType, setUserType] = useState(noAuthMenu)
+
+  const userDropMenu = [
+    { url: "/userpage", text: "User Page" },
+    { url: "/logout", text: "Log out" },
+  ];
+  const artistDropMenu = [
+    { url: "/userpage", text: "User Page" },
+    { url: "/artist", text: "Artist Page" },
+    { url: "/upload", text: "Upload Music" },
+    { url: "/logout", text: "Log out" },
+  ];
+  const adminDropMenu = [
+    { url: "/userpage", text: "User Page" },
+    { url: "/artist", text: "Artist Page" },
+    { url: "/upload", text: "Upload Music" },
+    { url: "/admin", text: "Admin Page" },
+    { url: "/logout", text: "Log out" },
+  ];
+  const [dropMenu, setDropMenu] = useState([])
+
 
   useEffect(() => {
     // Check if there's a logged in user in session storage
@@ -83,16 +95,19 @@ function App() {
         setUserType(userMenu)
         // console.log("user!")
         setLoginUserType("Audience");
+        setDropMenu(userDropMenu)
       }
       if(JSON.parse(decryptedUser).artist) {
         setUserType(artistMenu)
         // console.log("artist!")
         setLoginUserType("Artist");
+        setDropMenu(artistDropMenu)
       }
       if(JSON.parse(decryptedUser).admin) {
         setUserType(adminMenu)
         // console.log("admin!")
         setLoginUserType("Admin");
+        setDropMenu(adminDropMenu)
       }
     }
     
@@ -134,6 +149,7 @@ function App() {
         setUserType(adminMenu)
         // console.log("admin!")
       }
+
       return true; // Returns true if login succeeds
     } else {
       // Invalid email or password
@@ -459,7 +475,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Links menu={userType} displayInfo={displayInfo} playMusic={playMusic} music={music} artist={artist}
+          element={<Links menu={userType} displayInfo={displayInfo} playMusic={playMusic} music={music} artist={artist} loginUser={loginUser} loginUserType={loginUserType} setLoginUserType={setLoginUserType} dropMenu={dropMenu} setDropMenu={setDropMenu} 
           />}
         >
           <Route
