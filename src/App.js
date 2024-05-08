@@ -112,50 +112,83 @@ function App() {
     }
     
     //import user json data
-    FileService.read("user").then(
+    // FileService.read("user").then(
+    //   (response) => {
+    //     setUsers(response.data);
+    //     localStorage.setItem("users",JSON.stringify(response.data))
+    //     // console.log(response.data)
+    //   },
+    //   (rej) => {
+    //     console.log(rej);
+    //   }
+    // );
+
+    const postData = {};
+    PostService.database("/",postData).then(
       (response) => {
+        // console.log(response.data);
         setUsers(response.data);
-        localStorage.setItem("users",JSON.stringify(response.data))
-        // console.log(response.data)
       },
-      (rej) => {
-        console.log(rej);
+      (reg) => {
+        console.log(reg);
       }
-    );
+    )
   }, []);
 
   const Auth = (userObj) => {
     //userObj = Information entered by users
-    const usersFromLocalStorage = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = usersFromLocalStorage.find((user) => user.email === userObj.email && user.password === userObj.password);
+    // console.log(userObj)
+    // const usersFromLocalStorage = JSON.parse(users);
 
-    if (user) {
-      const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
-      sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
-      setLoginUser(user);
-      loginKey(user.email);
-      setPlayerStatus({ play: false });
+    // user useState已經跟database連接上了
+    // 這後面要改成從跟database PK，主要authentication 靠 backend，但frontend的一些資料連結要保留
+    const postData = userObj;
+    PostService.database("/login",postData).then(
+      (response) => {
+        // console.log(response)
+        console.log(response.data);
 
-      // change nav bar
-      if (user.user) {
-        setUserType(userMenu)
-        // console.log("user!")
-      }
-      if(user.artist) {
-        setUserType(artistMenu)
-        // console.log("artist!")
-      }
-      if(user.admin) {
-        setUserType(adminMenu)
-        // console.log("admin!")
-      }
+        if (response.data === "Login succeeded!"){
+          
 
-      return true; // Returns true if login succeeds
-    } else {
-      // Invalid email or password
-      alert("Invalid email or password");
-      return false; // Returns false if login fails
-    }
+        }else if (response.data === "Login failed!" || response.data === "Error: Invalid password."){
+
+        }
+      },
+      (reg) => {
+        console.log(reg);
+      }
+    )
+
+    // const user = usersFromLocalStorage.find((user) => user.email === userObj.email && user.password === userObj.password);
+
+    // if (user) {
+    //   const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
+    //   sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
+    //   setLoginUser(user);
+    //   loginKey(user.email);
+    //   setPlayerStatus({ play: false });
+
+    //   // change nav bar
+    //   if (user.user) {
+    //     setUserType(userMenu)
+    //     // console.log("user!")
+    //   }
+    //   if(user.artist) {
+    //     setUserType(artistMenu)
+    //     // console.log("artist!")
+    //   }
+    //   if(user.admin) {
+    //     setUserType(adminMenu)
+    //     // console.log("admin!")
+    //   }
+
+    //   return true; // Returns true if login succeeds
+    // } else {
+    //   // Invalid email or password
+    //   alert("Invalid email or password");
+    //   return false; // Returns false if login fails
+    // }
   };
 
   // import "music.json" data
@@ -538,12 +571,12 @@ function App() {
           />
           
           <Route
-            path="/upload"
+            path="upload"
             element={<Uploadmusic setUploadedMusic={setUploadedMusic} />}
           />
           <Route path="/admin" element={<Adminpage />} />
           <Route
-            path="/artist"
+            path="artist"
             element={
               <Artistpage
                 uploadedMusic={uploadedMusic}

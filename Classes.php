@@ -64,6 +64,13 @@ class DB{
             throw new Exception("Server problem!",500);
         }
     }
+
+    public function prepare($query) {
+        if ($this->db_connect) {
+            return $this->db_connect->prepare($query);
+        }
+        throw new Exception("Database connection not established.");
+    }
 }
 class fileUplaod{
     private $srcFile; // user's request, $_FILES["file1"], just lije $_POST["key1"]

@@ -73,7 +73,7 @@ export default function Login(props) {
       <div className="row justify-content-center align-items-center g-2 m-3">
         <div className="col-6 ">
           <h1 className="text-center">Login</h1>
-          <Formcompo elements={elements} buttons={buttons} onChange={changeHandler} submit={submitHandler} showPass={showPassHandler} passInput={passInput} showPassBtn={showPassBtn}/>
+          <Formcompo elements={elements} buttons={buttons} onChange={changeHandler} submit={submitHandler} showPass={showPassHandler} passInput={passInput} showPassBtn={showPassBtn} action={"http://127.0.0.1/react-music-platform-server/index.php/login"} method={"POST"}/>
         </div>
       </div>
     </>

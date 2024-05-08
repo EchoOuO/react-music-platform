@@ -4,19 +4,7 @@ export default function Formcompo(props) {
 
   return (
     <>    
-    <form onSubmit={props.submit} className="d-flex flex-column align-items-center">
-      {/* user type (for register) */}
-      {/* {props.type ? ( //check if type exist      
-      <select onChange={regUserTypeHandler} className="form-select m-3">
-        {props.type.map((type, idx) => {
-          return (
-            <option key={idx} value={type.value}>{type.value}</option>
-          );
-        })}
-      </select>
-      ) : null} */}
-
-
+    <form action={props.action} method={props.method} onSubmit={props.submit} className="d-flex flex-column align-items-center">
       {props.elements.map((element, idx) => {
         return (
           // input
