@@ -24,7 +24,7 @@ import PostService from "./services/PostService";
 function App() {
   // Log in & display links in nav bar
   const [key, setKey] = useState(null);
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState(null);  // array of object
   const [loginUser, setLoginUser] = useState(null);
   const [loginUserType, setLoginUserType] = useState(null);
   const [uploadedMusic, setUploadedMusic] = useState([]);
@@ -80,7 +80,6 @@ function App() {
   ];
   const [dropMenu, setDropMenu] = useState([])
 
-
   useEffect(() => {
     // Check if there's a logged in user in session storage
     const storedUser = sessionStorage.getItem("LoginUser");
@@ -123,6 +122,11 @@ function App() {
     //   }
     // );
 
+    
+  }, []);
+
+  const [reg, setReg] = useState([]);
+  useEffect(()=>{
     const postData = {};
     PostService.database("/",postData).then(
       (response) => {
@@ -133,12 +137,11 @@ function App() {
         console.log(reg);
       }
     )
-  }, []);
+  },[reg])
 
   const Auth = (userObj) => {
     //userObj = Information entered by users
     // console.log(userObj)
-    // const usersFromLocalStorage = JSON.parse(users);
 
     // user useState已經跟database連接上了
     // 這後面要改成從跟database PK，主要authentication 靠 backend，但frontend的一些資料連結要保留
@@ -149,46 +152,53 @@ function App() {
         console.log(response.data);
 
         if (response.data === "Login succeeded!"){
-          
+          alert ("Login succeeded!")
+          // console.log(users) // array of object
+          // console.log(userObj);
+  
+          const user = users.find((user) => user.email === userObj.email);
+
+          // console.log(user)
+
+          // 目前這邊有bug，user = undefined ??????
+          if (user) {
+            const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
+            sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
+            setLoginUser(user);
+            loginKey(user.email);
+            setPlayerStatus({ play: false });
+
+            // change nav bar
+            if (user.user) {
+              setUserType(userMenu)
+              // console.log("user!")
+            }
+            if(user.artist) {
+              setUserType(artistMenu)
+              // console.log("artist!")
+            }
+            if(user.admin) {
+              setUserType(adminMenu)
+              // console.log("admin!")
+            }
+
+            return true; // Returns true if login succeeds
+          } else {
+            // Invalid email or password
+            alert("Invalid email or password");
+            return false; // Returns false if login fails
+          }
 
         }else if (response.data === "Login failed!" || response.data === "Error: Invalid password."){
-
+          alert ("Login failed!")
+        }else if (response.data === "Error: There is a problem logging in, please contact the system admin."){
+          alert ("Error: There is a problem logging in, please contact the system admin.")
         }
       },
       (reg) => {
         console.log(reg);
       }
     )
-
-    // const user = usersFromLocalStorage.find((user) => user.email === userObj.email && user.password === userObj.password);
-
-    // if (user) {
-    //   const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
-    //   sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
-    //   setLoginUser(user);
-    //   loginKey(user.email);
-    //   setPlayerStatus({ play: false });
-
-    //   // change nav bar
-    //   if (user.user) {
-    //     setUserType(userMenu)
-    //     // console.log("user!")
-    //   }
-    //   if(user.artist) {
-    //     setUserType(artistMenu)
-    //     // console.log("artist!")
-    //   }
-    //   if(user.admin) {
-    //     setUserType(adminMenu)
-    //     // console.log("admin!")
-    //   }
-
-    //   return true; // Returns true if login succeeds
-    // } else {
-    //   // Invalid email or password
-    //   alert("Invalid email or password");
-    //   return false; // Returns false if login fails
-    // }
   };
 
   // import "music.json" data
@@ -312,6 +322,20 @@ function App() {
       }
     )
   }, []);
+
+  // const [sessionid, setSessionSid] = useState(null);
+  // useEffect(()=>{
+  //   PostService.database("/loginid").then(
+  //     (response) => {
+  //       console.log(response.data);
+  //       setSessionSid(response.data);
+  //     },
+  //     (reg) => {
+  //       console.log(reg);
+  //     }
+  //   )
+  // },[loginUser])
+
 
   // get data from button attributes for music/artist dispaly window
   const [window, setWindow] = useState([]);
@@ -501,6 +525,7 @@ function App() {
     loginKey(null);
     setPlayerStatus({play:false, end:false})
     setUserType(noAuthMenu)
+    setReg(false);
   };
 
   return (
@@ -584,9 +609,9 @@ function App() {
               />
             }
           />
-          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist}>
+          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist} logout={logout}>
               <Playlistcompo loginUser={loginUser}/></Userpage>} />
-          <Route path="reg" element={<Register loginUserType={loginUserType} loginUser={loginUser}/>}></Route>
+          <Route path="reg" element={<Register loginUserType={loginUserType} loginUser={loginUser} setReg={setReg}/>}></Route>
           <Route
             path="login"
             element={<Login auth={Auth} loginKey={loginKey} />}

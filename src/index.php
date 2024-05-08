@@ -26,8 +26,11 @@
         if($_SERVER["REQUEST_METHOD"]!="POST"){
             throw new Exception("Invalid request method!",405);
         }
-        if(isset($_POST["sid"])){
-            Session_Handler($_POST["sid"]);
+        $post_sid = json_decode(file_get_contents("php://input"), true);
+        // print_r($post_sid);
+        // 這邊沒東西QQ  ?????
+        if(isset($post_sid["sid"])){
+            Session_Handler($post_sid["sid"]);
         }
         switch($_SERVER["PATH_INFO"]){
             case "/":
@@ -49,6 +52,7 @@
                 // keys = uname, email, password, usertype, exception: can't get key
                 // print_r($_POST);
                 $data = json_decode(file_get_contents("php://input"), true);
+                // print_r($data);
                 // print_r($data);
                 check_key(["uname", "email", "pass", "image", "user", "artist", "admin"], $data);
 
@@ -75,7 +79,7 @@
             break;
 
             case "/login":
-                session_start();
+                // session_start();
 
                 $data = json_decode(file_get_contents("php://input"), true);
                 // print_r($data);
@@ -86,9 +90,8 @@
                     $db->connect();
     
                     $userObj = new User($data["email"], $db);
-                    if ($userObj->authenticate($data["password"])) {
-                        $_SESSION['time_out'] = time() + TIME_OUT;
-                        $_SESSION['attempt_count'] = 0; 
+                    if ($sid = $userObj->authenticate($data["password"])) {
+                        // Session_Handler($sid);
                         sendHttp_Code(200,"Login succeeded!");
                     } else {
                         sendHttp_Code(200,"Login failed!");
@@ -98,6 +101,12 @@
                 }
                 // $db->db_close();
             break;
+
+            // 這邊還有問題，為啥事回傳 music data = =..... ?????
+            // case "/loginid":
+            //     // print_r($_SESSION);
+            //     echo session_id();
+            // break;
 
             case "/allmusic":
                 // keys = bid?, exception: can't get key
@@ -125,17 +134,22 @@
                 echo json_encode($output);
             break;
 
-            // case "/admin":
+            case "/admin":
                 // keys = sid or check session_status(), exception: can't get key, forbiden request
-            // break;
+                if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            break;
 
-            // case "/userpage":
+            case "/userpage":
                 // keys = sid or check session_status(), exception: can't get key, forbiden request
-            // break;
+                print_r($_SESSION);  // $_SESSION 沒東西????
+                print_r(PHP_SESSION_NONE); 
+                if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            break;
 
-            // case "/artist":
+            case "/artist":
                 // keys = sid or check session_status(), exception: can't get key, forbiden request
-            // break;
+                if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            break;
 
             default:
                 throw new Exception("Invalid path",400);

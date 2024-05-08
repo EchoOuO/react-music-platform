@@ -2,8 +2,9 @@
     // require("./config.php");
 
     function Session_Handler($sid){
-        session_id($sid);
+        // session_id($sid);
         session_start();
+        // print_r($_SESSION);
         if(isset($_SESSION["time_out"]) && $_SESSION["time_out"] > time()){
             $_SESSION["time_out"] = time() + TIME_OUT;
         }else{

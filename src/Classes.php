@@ -138,7 +138,9 @@ class fileUplaod{
 }
 
 class User {
+    private $id;
     private $db;
+    private $uname;
     private $email;
 
     public function __construct($email, $db) {
@@ -146,12 +148,17 @@ class User {
         $this->db = $db;
     }
     
-    function authenticate($password) {
+    function authenticate($pass) {
+
+        $dbObj = new DB(DB_SERVER_NAME,DB_USER,DB_PASSWORD,DB_NAME);
+        $dbCon = $dbObj->connect();
 
         if (!isset($_SESSION['attempt_count'])) {
             $_SESSION['attempt_count'] = 0;
             $_SESSION['last_attempt_time'] = time();  
         }
+
+        // print_r($this);
 
         if ($_SESSION['attempt_count'] >= ATTEMPT_LIMIT) {
             if ((time() - $_SESSION['last_attempt_time']) < 300) {
@@ -163,39 +170,58 @@ class User {
             }
         }
 
-        $query = "SELECT password FROM user_tb WHERE email = ?";
+        $query = "SELECT * FROM user_tb WHERE email = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("s", $this->email);
         $stmt->execute();
         $result = $stmt->get_result();
         // print_r($result);
-        
-        $queryAll = "SELECT * FROM user_tb WHERE email = ?";
-        $stmtAll = $this->db->prepare($queryAll);
-        $stmtAll->bind_param("s", $this->email);
-        $stmtAll->execute();
-        $resultAll = $stmtAll->get_result();
-        // print_r($resultAll);
-        
-        if ($result && $result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-            $userAll = $resultAll->fetch_assoc();
-            // print_r($userAll);
 
-            if ($user['password'] === $password) {
-                $_SESSION['attempt_count'] = 0;  
-                Audit_generator("Login", "Successful", "User authenticated", $this->email);
-                return true;
-            } else {
-                $_SESSION['attempt_count']++;  
-                Audit_generator("Login", "Failed", "Invalid password", $this->email);
-                throw new Exception("Invalid password.");
+        if($result->num_rows > 0) {  
+            $row = $result -> fetch_assoc(); // fetch_assoc() return one row as associated array, access value by keys
+            // print_r($row);
+            $attempt = $row['attempt'];
+            if($row['attempt'] == 0){
+                Audit_generator("login","failed","User account locked.",$this->email);
+                throw new Exception("There is a problem logging in, please contact the system admin.",401);
             }
-        } else {
-            $_SESSION['attempt_count']++;  
-            Audit_generator("Login", "Failed", "Invalid login details", $this->email);
-            throw new Exception("Invalid login details", 401);
+            if(password_verify($pass,$row['password'])){
+                $loginFlag = true;
+                $attempt = 5;
+                $this->uname = $row['uname'];
+                $this->email = $row['email'];
+                $this->id = $row['uid'];
+                session_start();
+                $_SESSION["login_user"] = $this;
+                $_SESSION["time_out"] = time() + TIME_OUT;
+                Audit_generator("login","success","User login via password.",$this->email);
+            }else{
+                $attempt -= 1;
+                $loginFlag = "pass";
+                Audit_generator("login","failed","Invalid password.",$this->email);
+                sendHttp_Code(401,"Username/Password Wrong. ");
+            }
+            // UPDATE [table_name] SET [col_name] = new value, [col_name2] = new value2, .... WHERE condition
+            $updateCmd = "UPDATE user_tb SET attempt = $attempt WHERE uid=".$row['uid'];
+            $dbCon->query($updateCmd); // use $dbCon for query
+            $dbObj->db_close(); // $dbObj is main source of connect, so use $dbOjb to close main source of connection
+        }else {
+            $loginFlag = "email"; // 會觸發下面的 exception
         }
+
+        if(!$loginFlag){ // if $loginFlag is not "true", which means user log in succeed
+            switch($loginFlag){
+                case "email":
+                    Audit_generator("login","failed","Invalid email address.",$this->email);
+                    throw new Exception("Username/Password Wrong. ",401);
+                    break;
+                case "pass":
+                    Audit_generator("login","failed","Invalid password. Attempts(".$attempt.")",$this->email);
+                    throw new Exception("Username/Password Wrong. ",401);
+                break;
+            } 
+        }
+        return session_id();
     }
 }
 

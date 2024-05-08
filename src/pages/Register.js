@@ -87,12 +87,13 @@ export default function Register(props) {
       return false
     }
 
-    // console.log(regData);
+    console.log(regData);
     PostService.reg((regData)).then(
       (response) => {
         // console.log(response.data);
 
         if (response.data == "User added!"){
+          props.setReg(true);
           alert("Sign up succeed, please log in.")
           navigate("/login");
         }
