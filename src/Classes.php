@@ -168,9 +168,19 @@ class User {
         $stmt->bind_param("s", $this->email);
         $stmt->execute();
         $result = $stmt->get_result();
-
+        // print_r($result);
+        
+        $queryAll = "SELECT * FROM user_tb WHERE email = ?";
+        $stmtAll = $this->db->prepare($queryAll);
+        $stmtAll->bind_param("s", $this->email);
+        $stmtAll->execute();
+        $resultAll = $stmtAll->get_result();
+        // print_r($resultAll);
+        
         if ($result && $result->num_rows > 0) {
             $user = $result->fetch_assoc();
+            $userAll = $resultAll->fetch_assoc();
+            // print_r($userAll);
 
             if ($user['password'] === $password) {
                 $_SESSION['attempt_count'] = 0;  

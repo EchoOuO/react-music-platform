@@ -31,7 +31,18 @@
         }
         switch($_SERVER["PATH_INFO"]){
             case "/":
-                // retrieve data from database (music / artist), exception: can't get data
+                // keys = bid?, exception: can't get key
+                // return user data to frontend 
+                $db->connect();
+                $db_select_result = $db->select(["*"],"user_tb",null);
+                // print_r($db_select_result);
+                $output = [];
+                while($row = $db_select_result->fetch_assoc()){
+                    array_push($output,$row);
+                }
+                $db->db_close();
+                echo json_encode($output);
+
             break;
             
             case "/reg": // In Postman, sholud use raw not form-data to test
@@ -65,25 +76,28 @@
 
             case "/login":
                 session_start();
-               try {
-                    check_key(["email", "password"], $_POST);
+
+                $data = json_decode(file_get_contents("php://input"), true);
+                // print_r($data);
+
+                try {
+                    check_key(["email", "password"], $data);
                     $db = new DB(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
                     $db->connect();
     
-                    $userObj = new User($_POST["email"], $db);
-                    if ($userObj->authenticate($_POST["password"])) {
+                    $userObj = new User($data["email"], $db);
+                    if ($userObj->authenticate($data["password"])) {
                         $_SESSION['time_out'] = time() + TIME_OUT;
                         $_SESSION['attempt_count'] = 0; 
-                        echo "Login successful!";
+                        sendHttp_Code(200,"Login succeeded!");
                     } else {
-                        echo "Login failed";
+                        sendHttp_Code(200,"Login failed!");
                     }
                 } catch (Exception $e) {
-                   
                     echo "Error: " . $e->getMessage();
                 }
-                $db->db_close();
-                break;
+                // $db->db_close();
+            break;
 
             case "/allmusic":
                 // keys = bid?, exception: can't get key
