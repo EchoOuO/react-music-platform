@@ -3,8 +3,27 @@ import FileService from "../services/FileService";
 import "../pages/Table.css";
 import { AES, enc } from "crypto-js";
 import { Button, Form, Table } from "react-bootstrap";
+import { useNavigate } from 'react-router-dom'; 
+import PostService from "../services/PostService";
 
-function AdminPage() {
+function AdminPage(props) {
+  const nevigate = useNavigate();
+
+  // check session timeout from php
+  useEffect(()=>{
+    PostService.database("/adminpage",{ sid: props.sessionid }).then(
+      (response) => {
+        console.log(response.data);
+      },
+      (reg) => {
+        nevigate("../login")
+        props.logout();
+        alert("Session Timeout! Please log in again.");
+        console.log(reg);
+      }
+    )
+  },[])
+
   const [users, setUsers] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [newUser, setNewUser] = useState({

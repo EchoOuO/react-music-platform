@@ -67,15 +67,15 @@ function App() {
   ];
   const artistDropMenu = [
     { url: "/userpage", text: "User Page" },
-    { url: "/artist", text: "Artist Page" },
+    { url: "/artistpage", text: "Artist Page" },
     { url: "/upload", text: "Upload Music" },
     { url: "/logout", text: "Log out" },
   ];
   const adminDropMenu = [
     { url: "/userpage", text: "User Page" },
-    { url: "/artist", text: "Artist Page" },
+    { url: "/artistpage", text: "Artist Page" },
     { url: "/upload", text: "Upload Music" },
-    { url: "/admin", text: "Admin Page" },
+    { url: "/adminpage", text: "Admin Page" },
     { url: "/logout", text: "Log out" },
   ];
   const [dropMenu, setDropMenu] = useState([])
@@ -85,44 +85,25 @@ function App() {
     const storedUser = sessionStorage.getItem("LoginUser");
     if (storedUser) {
       const decryptedUser = AES.decrypt(storedUser, 'groupc').toString(enc.Utf8);
-      // console.log(JSON.parse(decryptedUser))
+      console.log(JSON.parse(decryptedUser))
       setLoginUser(JSON.parse(decryptedUser));
       setKey(JSON.parse(decryptedUser).email); // Assuming email can uniquely identify a user
 
       // initial nav bar links based on login user
-      if (JSON.parse(decryptedUser).user) {
-        setUserType(userMenu)
-        // console.log("user!")
-        setLoginUserType("Audience");
-        setDropMenu(userDropMenu)
-      }
-      if(JSON.parse(decryptedUser).artist) {
-        setUserType(artistMenu)
-        // console.log("artist!")
-        setLoginUserType("Artist");
-        setDropMenu(artistDropMenu)
-      }
-      if(JSON.parse(decryptedUser).admin) {
+      if(JSON.parse(decryptedUser).admin === "1") {
         setUserType(adminMenu)
         // console.log("admin!")
-        setLoginUserType("Admin");
-        setDropMenu(adminDropMenu)
+      }
+      else if(JSON.parse(decryptedUser).artist ==="1") {
+        setUserType(artistMenu)
+        // console.log("artist!")
+      }
+      else if (JSON.parse(decryptedUser).user ==="1") {
+        setUserType(userMenu)
+        // console.log("user!")
+ 
       }
     }
-    
-    //import user json data
-    // FileService.read("user").then(
-    //   (response) => {
-    //     setUsers(response.data);
-    //     localStorage.setItem("users",JSON.stringify(response.data))
-    //     // console.log(response.data)
-    //   },
-    //   (rej) => {
-    //     console.log(rej);
-    //   }
-    // );
-
-    
   }, []);
 
   const [reg, setReg] = useState([]);
@@ -139,6 +120,7 @@ function App() {
     )
   },[reg])
 
+  const [sessionid, setSessionSid] = useState(null);
   const Auth = (userObj) => {
     //userObj = Information entered by users
     // console.log(userObj)
@@ -149,9 +131,14 @@ function App() {
     PostService.database("/login",postData).then(
       (response) => {
         // console.log(response)
-        console.log(response.data);
+        // console.log(response.data); // session id
 
-        if (response.data === "Login succeeded!"){
+        if(response.data === "Login failed!" || response.data === "Error: Invalid password." || response.data === "Username/Password Wrong. Login failed!"){
+          alert ("Login failed!")
+        }else if (response.data === "Error: There is a problem logging in, please contact the system admin."){
+          alert ("Error: There is a problem logging in, please contact the system admin.");
+        }else if (response.data){
+          setSessionSid(response.data)
           alert ("Login succeeded!")
           // console.log(users) // array of object
           // console.log(userObj);
@@ -188,11 +175,6 @@ function App() {
             alert("Invalid email or password");
             return false; // Returns false if login fails
           }
-
-        }else if (response.data === "Login failed!" || response.data === "Error: Invalid password."){
-          alert ("Login failed!")
-        }else if (response.data === "Error: There is a problem logging in, please contact the system admin."){
-          alert ("Error: There is a problem logging in, please contact the system admin.")
         }
       },
       (reg) => {
@@ -323,20 +305,6 @@ function App() {
     )
   }, []);
 
-  // const [sessionid, setSessionSid] = useState(null);
-  // useEffect(()=>{
-  //   PostService.database("/loginid").then(
-  //     (response) => {
-  //       console.log(response.data);
-  //       setSessionSid(response.data);
-  //     },
-  //     (reg) => {
-  //       console.log(reg);
-  //     }
-  //   )
-  // },[loginUser])
-
-
   // get data from button attributes for music/artist dispaly window
   const [window, setWindow] = useState([]);
   const [artistMusicData, setartistMusicData] = useState([]);
@@ -457,6 +425,15 @@ function App() {
         setPlayerStatus({play:false})
       }
     }
+
+    // PostService.database("/loginid").then(
+    //   (response) => {
+    //     console.log(response.data);
+    //   },
+    //   (reg) => {
+    //     console.log(reg);
+    //   }
+    // )
   },[loginUser])
 
   // Add to playlist
@@ -597,19 +574,21 @@ function App() {
           
           <Route
             path="upload"
-            element={<Uploadmusic setUploadedMusic={setUploadedMusic} />}
+            element={<Uploadmusic setUploadedMusic={setUploadedMusic} sessionid={sessionid} logout={logout} />}
           />
-          <Route path="/admin" element={<Adminpage />} />
+          <Route path="adminpage" element={<Adminpage sessionid={sessionid} logout={logout}/>} />
           <Route
-            path="artist"
+            path="artistpage"
             element={
               <Artistpage
                 uploadedMusic={uploadedMusic}
                 setUploadedMusic={setUploadedMusic}
+                sessionid={sessionid}
+                logout={logout}
               />
             }
           />
-          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist} logout={logout}>
+          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist} logout={logout} sessionid={sessionid}>
               <Playlistcompo loginUser={loginUser}/></Userpage>} />
           <Route path="reg" element={<Register loginUserType={loginUserType} loginUser={loginUser} setReg={setReg}/>}></Route>
           <Route

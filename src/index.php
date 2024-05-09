@@ -1,9 +1,10 @@
 <?php 
-    // Allow requests from any origin - not recommended for production
+    // Allow requests from any origin
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, X-Requested-With, Authorization');
     header('Access-Control-Allow-Credentials: true');
+
     // Respond to preflight requests
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         // Should return HTTP 200 status code
@@ -23,6 +24,7 @@
     $db->db_close();
 
     try{
+        $sid;
         if($_SERVER["REQUEST_METHOD"]!="POST"){
             throw new Exception("Invalid request method!",405);
         }
@@ -92,7 +94,8 @@
                     $userObj = new User($data["email"], $db);
                     if ($sid = $userObj->authenticate($data["password"])) {
                         // Session_Handler($sid);
-                        sendHttp_Code(200,"Login succeeded!");
+                        // echo $sid;
+                        sendHttp_Code(200,$sid);
                     } else {
                         sendHttp_Code(200,"Login failed!");
                     }
@@ -104,7 +107,7 @@
 
             // 這邊還有問題，為啥事回傳 music data = =..... ?????
             // case "/loginid":
-            //     // print_r($_SESSION);
+            //     print_r($_SESSION);
             //     echo session_id();
             // break;
 
@@ -134,20 +137,21 @@
                 echo json_encode($output);
             break;
 
-            case "/admin":
+            case "/adminpage":
                 // keys = sid or check session_status(), exception: can't get key, forbiden request
                 if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
             break;
 
             case "/userpage":
-                // keys = sid or check session_status(), exception: can't get key, forbiden request
-                print_r($_SESSION);  // $_SESSION 沒東西????
-                print_r(PHP_SESSION_NONE); 
+                // echo "userpage";
                 if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
             break;
 
-            case "/artist":
-                // keys = sid or check session_status(), exception: can't get key, forbiden request
+            case "/artistpage":
+                if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            break;
+
+            case "/upload":
                 if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
             break;
 

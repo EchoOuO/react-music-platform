@@ -14,7 +14,7 @@ export default function Register(props) {
   ];
   const buttons = [{ type: "submit", text: "Register" }];
 
-  const [userType, setUserType] = useState([{ value: "Audience" }, { value: "Artist" }]);
+  const [userType, setUserType] = useState([]);
   const [typeSelected, setTypeSelected] = useState(null);
   const [userTypeFormData, setUserTypeFormData] = useState([]);
 

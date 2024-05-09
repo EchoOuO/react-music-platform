@@ -194,6 +194,8 @@ class User {
                 session_start();
                 $_SESSION["login_user"] = $this;
                 $_SESSION["time_out"] = time() + TIME_OUT;
+                // $_SESSION["session_id"] = session_id();
+                // print_r($_SESSION);
                 Audit_generator("login","success","User login via password.",$this->email);
             }else{
                 $attempt -= 1;
