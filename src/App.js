@@ -24,8 +24,9 @@ import PostService from "./services/PostService";
 function App() {
   // Log in & display links in nav bar
   const [key, setKey] = useState(null);
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState(null);  // array of object
   const [loginUser, setLoginUser] = useState(null);
+  const [loginUserType, setLoginUserType] = useState(null);
   const [uploadedMusic, setUploadedMusic] = useState([]);
 
   const loginKey = (newKey) => {
@@ -37,102 +38,149 @@ function App() {
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
-    { url: "/userpage", text: "User Page" },
-    { url: "/logout", text: "Log out" },
+    { url: "/reg", text: "Sign Up" },
   ];
   const artistMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
-    { url: "/userpage", text: "User Page" },
-    { url: "/artist", text: "Artist Page" },
-    { url: "/upload", text: "Upload Music" },
-    { url: "/logout", text: "Log out" },
+    { url: "/reg", text: "Sign Up" },
   ];
   const adminMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
-    { url: "/admin", text: "Admin Page" },
-    { url: "/logout", text: "Log out" },
+    { url: "/reg", text: "Sign Up" },
   ];
   const noAuthMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
     { url: "/login", text: "Login" },
-    { url: "/reg", text: "Registration" },
+    { url: "/reg", text: "Sign Up" },
   ];
   const [userType, setUserType] = useState(noAuthMenu)
+
+  const userDropMenu = [
+    { url: "/userpage", text: "User Page" },
+    { url: "/logout", text: "Log out" },
+  ];
+  const artistDropMenu = [
+    { url: "/userpage", text: "User Page" },
+    { url: "/artistpage", text: "Artist Page" },
+    { url: "/upload", text: "Upload Music" },
+    { url: "/logout", text: "Log out" },
+  ];
+  const adminDropMenu = [
+    { url: "/userpage", text: "User Page" },
+    { url: "/artistpage", text: "Artist Page" },
+    { url: "/upload", text: "Upload Music" },
+    { url: "/adminpage", text: "Admin Page" },
+    { url: "/logout", text: "Log out" },
+  ];
+  const [dropMenu, setDropMenu] = useState([])
 
   useEffect(() => {
     // Check if there's a logged in user in session storage
     const storedUser = sessionStorage.getItem("LoginUser");
     if (storedUser) {
       const decryptedUser = AES.decrypt(storedUser, 'groupc').toString(enc.Utf8);
-      // console.log(JSON.parse(decryptedUser))
+      console.log(JSON.parse(decryptedUser))
       setLoginUser(JSON.parse(decryptedUser));
       setKey(JSON.parse(decryptedUser).email); // Assuming email can uniquely identify a user
 
       // initial nav bar links based on login user
-      if (JSON.parse(decryptedUser).user) {
-        setUserType(userMenu)
-        // console.log("user!")
-      }
-      if(JSON.parse(decryptedUser).artist) {
-        setUserType(artistMenu)
-        // console.log("artist!")
-      }
-      if(JSON.parse(decryptedUser).admin) {
+      if(JSON.parse(decryptedUser).admin === "1") {
         setUserType(adminMenu)
         // console.log("admin!")
       }
-    }
-    
-    //import user json data
-    FileService.read("user").then(
-      (response) => {
-        setUsers(response.data);
-        localStorage.setItem("users",JSON.stringify(response.data))
-        // console.log(response.data)
-      },
-      (rej) => {
-        console.log(rej);
+      else if(JSON.parse(decryptedUser).artist ==="1") {
+        setUserType(artistMenu)
+        // console.log("artist!")
       }
-    );
+      else if (JSON.parse(decryptedUser).user ==="1") {
+        setUserType(userMenu)
+        // console.log("user!")
+ 
+      }
+    }
   }, []);
 
+  const [reg, setReg] = useState([]);
+  useEffect(()=>{
+    const postData = {};
+    PostService.database("/",postData).then(
+      (response) => {
+        // console.log(response.data);
+        setUsers(response.data);
+      },
+      (reg) => {
+        console.log(reg);
+      }
+    )
+  },[reg])
+
+  const [sessionid, setSessionSid] = useState(null);
   const Auth = (userObj) => {
     //userObj = Information entered by users
-    const usersFromLocalStorage = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = usersFromLocalStorage.find((user) => user.email === userObj.email && user.password === userObj.password);
+    // console.log(userObj)
 
-    if (user) {
-      const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
-      sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
-      setLoginUser(user);
-      loginKey(user.email);
-      setPlayerStatus({ play: false });
+    // user useState已經跟database連接上了
+    // 這後面要改成從跟database PK，主要authentication 靠 backend，但frontend的一些資料連結要保留
+    const postData = userObj;
+    PostService.database("/login",postData).then(
+      (response) => {
+        // console.log(response)
+        // console.log(response.data); // session id
 
-      // change nav bar
-      if (user.user) {
-        setUserType(userMenu)
-        // console.log("user!")
+        if(response.data === "Login failed!" || response.data === "Error: Invalid password." || response.data === "Username/Password Wrong. Login failed!"){
+          alert ("Login failed!")
+        }else if (response.data === "Error: There is a problem logging in, please contact the system admin."){
+          alert ("Error: There is a problem logging in, please contact the system admin.");
+        }else if (response.data){
+          setSessionSid(response.data)
+          alert ("Login succeeded!")
+          // console.log(users) // array of object
+          // console.log(userObj);
+  
+          const user = users.find((user) => user.email === userObj.email);
+
+          // console.log(user)
+
+          // 目前這邊有bug，user = undefined ??????
+          if (user) {
+            const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
+            sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
+            setLoginUser(user);
+            loginKey(user.email);
+            setPlayerStatus({ play: false });
+
+            // change nav bar
+            if (user.user) {
+              setUserType(userMenu)
+              // console.log("user!")
+            }
+            if(user.artist) {
+              setUserType(artistMenu)
+              // console.log("artist!")
+            }
+            if(user.admin) {
+              setUserType(adminMenu)
+              // console.log("admin!")
+            }
+
+            return true; // Returns true if login succeeds
+          } else {
+            // Invalid email or password
+            alert("Invalid email or password");
+            return false; // Returns false if login fails
+          }
+        }
+      },
+      (reg) => {
+        console.log(reg);
       }
-      if(user.artist) {
-        setUserType(artistMenu)
-        // console.log("artist!")
-      }
-      if(user.admin) {
-        setUserType(adminMenu)
-        // console.log("admin!")
-      }
-      return true; // Returns true if login succeeds
-    } else {
-      // Invalid email or password
-      alert("Invalid email or password");
-      return false; // Returns false if login fails
-    }
+    )
   };
 
   // import "music.json" data
@@ -141,62 +189,62 @@ function App() {
   const [artist, setArtist] = useState([]);
   const [artistdisplay, setArtistdisplay] = useState([]);
   useEffect(() => {
-    FileService.read("music").then(
-      (response) => {
-        // console.log(response.data);
-        setMusic(response.data);
-        // console.log(music)
+    // FileService.read("music").then(
+    //   (response) => {
+    //     // console.log(response.data);
+    //     setMusic(response.data);
+    //     // console.log(music)
 
-        // create 6 random and different numbers
-        let randomNumber = [];
-        let randomMusic = [];
+    //     // create 6 random and different numbers
+    //     let randomNumber = [];
+    //     let randomMusic = [];
 
-        while (randomNumber.length < 6) {
-          const tmpNumber = Math.floor(Math.random() * 49.99);
-          if (!randomNumber.includes(tmpNumber)) {
-            randomNumber.push(tmpNumber);
-          }
-        }
-        // console.log(randomNumber);
-        for (let idx of randomNumber) {
-          // console.log(idx);
-          randomMusic.push(response.data[idx]);
-        }
-        // console.log(randomMusic)
-        setMusicdisplay(randomMusic);
-      },
-      (rej) => {
-        console.log(rej);
-      }
-    );
+    //     while (randomNumber.length < 6) {
+    //       const tmpNumber = Math.floor(Math.random() * 49.99);
+    //       if (!randomNumber.includes(tmpNumber)) {
+    //         randomNumber.push(tmpNumber);
+    //       }
+    //     }
+    //     // console.log(randomNumber);
+    //     for (let idx of randomNumber) {
+    //       // console.log(idx);
+    //       randomMusic.push(response.data[idx]);
+    //     }
+    //     // console.log(randomMusic)
+    //     setMusicdisplay(randomMusic);
+    //   },
+    //   (rej) => {
+    //     console.log(rej);
+    //   }
+    // );
 
-    // import "artist" data
-    FileService.read("artist").then(
-      (response) => {
-        // console.log(response.data);
-        setArtist(response.data);
+    // // import "artist" data
+    // FileService.read("artist").then(
+    //   (response) => {
+    //     // console.log(response.data);
+    //     setArtist(response.data);
 
-        // create 6 random and different numbers
-        let randomNumber = [];
-        let randomArtist = [];
+    //     // create 6 random and different numbers
+    //     let randomNumber = [];
+    //     let randomArtist = [];
 
-        while (randomNumber.length < 6) {
-          const tmpNumber = Math.floor(Math.random() * 49.99);
-          if (!randomNumber.includes(tmpNumber)) {
-            randomNumber.push(tmpNumber);
-          }
-        }
-        // console.log(randomNumber);
-        for (let idx of randomNumber) {
-          // console.log(idx);
-          randomArtist.push(response.data[idx]);
-        }
-        setArtistdisplay(randomArtist);
-      },
-      (rej) => {
-        console.log(rej);
-      }
-    );
+    //     while (randomNumber.length < 6) {
+    //       const tmpNumber = Math.floor(Math.random() * 49.99);
+    //       if (!randomNumber.includes(tmpNumber)) {
+    //         randomNumber.push(tmpNumber);
+    //       }
+    //     }
+    //     // console.log(randomNumber);
+    //     for (let idx of randomNumber) {
+    //       // console.log(idx);
+    //       randomArtist.push(response.data[idx]);
+    //     }
+    //     setArtistdisplay(randomArtist);
+    //   },
+    //   (rej) => {
+    //     console.log(rej);
+    //   }
+    // );
 
     const postData = {};
 
@@ -377,6 +425,15 @@ function App() {
         setPlayerStatus({play:false})
       }
     }
+
+    // PostService.database("/loginid").then(
+    //   (response) => {
+    //     console.log(response.data);
+    //   },
+    //   (reg) => {
+    //     console.log(reg);
+    //   }
+    // )
   },[loginUser])
 
   // Add to playlist
@@ -481,13 +538,13 @@ const playplaylist = () => {
   //     }
   //   }
   // }
-
   const logout = () => {
     sessionStorage.removeItem("LoginUser"); // Remove user from session storage on logout
     setLoginUser(null);
     loginKey(null);
     setPlayerStatus({play:false, end:false})
     setUserType(noAuthMenu)
+    setReg(false);
   };
 
   return (
@@ -495,7 +552,7 @@ const playplaylist = () => {
       <Routes>
         <Route
           path="/"
-          element={<Links menu={userType} displayInfo={displayInfo} playMusic={playMusic} music={music} artist={artist}
+          element={<Links menu={userType} displayInfo={displayInfo} playMusic={playMusic} music={music} artist={artist} loginUser={loginUser} loginUserType={loginUserType} setLoginUserType={setLoginUserType} dropMenu={dropMenu} setDropMenu={setDropMenu} 
           />}
         >
           <Route
@@ -558,22 +615,24 @@ const playplaylist = () => {
           />
           
           <Route
-            path="/upload"
-            element={<Uploadmusic setUploadedMusic={setUploadedMusic} />}
+            path="upload"
+            element={<Uploadmusic setUploadedMusic={setUploadedMusic} sessionid={sessionid} logout={logout} />}
           />
-          <Route path="/admin" element={<Adminpage />} />
+          <Route path="adminpage" element={<Adminpage sessionid={sessionid} logout={logout}/>} />
           <Route
-            path="/artist"
+            path="artistpage"
             element={
               <Artistpage
                 uploadedMusic={uploadedMusic}
                 setUploadedMusic={setUploadedMusic}
+                sessionid={sessionid}
+                logout={logout}
               />
             }
           />
-          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist}>
+          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist} logout={logout} sessionid={sessionid}>
               <Playlistcompo loginUser={loginUser}/></Userpage>} />
-          <Route path="reg" element={<Register />}></Route>
+          <Route path="reg" element={<Register loginUserType={loginUserType} loginUser={loginUser} setReg={setReg}/>}></Route>
           <Route
             path="login"
             element={<Login auth={Auth} loginKey={loginKey} />}

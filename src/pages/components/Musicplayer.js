@@ -131,7 +131,7 @@ export default function Musicplayer(props) {
         // console.log(playlist)
       }else if(!props.loginUser) {
         currentTime = localStorage.getItem("Guest curMusicTime")
-        console.log(currentTime)
+        // console.log(currentTime)
       }
       audioRef.current.currentTime = currentTime
     }

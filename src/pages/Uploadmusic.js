@@ -1,8 +1,26 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
+import PostService from "../services/PostService";
 
-function FileUpload({ setUploadedMusic }) {
+function FileUpload(props) {
+  const nevigate = useNavigate();
+
+  // check session timeout from php
+  useEffect(()=>{
+    PostService.database("/ ",{ sid: props.sessionid }).then(
+      (response) => {
+        console.log(response.data);
+      },
+      (reg) => {
+        nevigate("../login")
+        props.logout();
+        // alert("Session Timeout! Please log in again.");
+        console.log(reg);
+      }
+    )
+  },[])
+
   const [musicName, setMusicName] = useState("");
   const [artist, setArtist] = useState("");
   const [description, setDescription] = useState("");
@@ -66,7 +84,7 @@ function FileUpload({ setUploadedMusic }) {
       musicFile,
     };
 
-    setUploadedMusic((prevMusic) => [...prevMusic, newMusic]);
+    props.setUploadedMusic((prevMusic) => [...prevMusic, newMusic]);
     navigate("/artist");
   };
 

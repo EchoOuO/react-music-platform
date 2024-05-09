@@ -1,0 +1,59 @@
+.reg-container{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center;     */
+}
+
+.reguser-btn-container{
+    margin: 10px 0px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.reguser-btn{
+    width: 100px;
+    max-width: 200px;
+}
+
+.reguser-btn-selected{
+    background-color: #0d6efd;
+    color: white;
+}
+
+
+.profile-title{
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.profile-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* gap: 15px; */
+}
+
+.profile-img-container{
+    display: flex;
+    gap: 15px;
+}
+
+.profile-img{
+    width: 100px;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.profile-img-selected{
+    width: 100px;
+    cursor: pointer;
+    border-radius: 20px;
+    border: solid 2px grey;
+}
+
+
+.profile-img:hover{
+    border: solid 2px grey;
+}

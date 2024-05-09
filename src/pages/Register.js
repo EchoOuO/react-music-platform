@@ -1,67 +1,156 @@
 import Formcompo from "./components/Formcompo";
 import PostService from "../services/PostService";
-import "./components/Formcompo.css";
-import { useState } from "react";
+import "./Register.css";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Register() {
+export default function Register(props) {
+  const navigate = useNavigate();
+
   const elements = [
     { name: "uname", type: "text", text: "Full Name", req: true },
     { name: "email", type: "email", text: "Email", req: true },
     { name: "pass", type: "password", text: "Password", req: true },
   ];
-
-  const userType = [{ value: "Audience" }, { value: "Artist" }];
-
   const buttons = [{ type: "submit", text: "Register" }];
+
+  const [userType, setUserType] = useState([]);
+  const [typeSelected, setTypeSelected] = useState(null);
+  const [userTypeFormData, setUserTypeFormData] = useState([]);
+
+  function regUserTypeHandler(e) {
+    setTypeSelected(e.target.attributes.number.value);
+    switch(e.target.innerText) {
+      case "Audience":
+        setUserTypeFormData(["1","0","0"]);
+        break;
+      case "Artist":
+        setUserTypeFormData(["1","1","0"]);
+        break;
+      case "Admin":
+        setUserTypeFormData(["1","1","1"]);
+        break;
+    }
+  }
+
+  useEffect(() => {
+    if (props.loginUserType === "Admin") {
+      setUserType([{ value: "Audience" }, { value: "Artist" }, { value: "Admin" }]);
+    } else {
+      setUserType([{ value: "Audience" }, { value: "Artist" }]);
+    }
+  }, [props.loginUserType]);
+
+  const [profileSelected, setProfileSelected] = useState(null);
+  const [profileImg, setProfileImg] = useState(null);
+  function profileSelectHandler(e) {
+    setProfileSelected(e.target.attributes.number.value);
+    setProfileImg(e.target.attributes.src.value);
+  }
+
+  const [regData, setRegData] = useState({
+    uname: '',
+    email: '',
+    pass: '',
+    image: '',
+    user: '',
+    artist: '',
+    admin: '',
+  });
+
+  useEffect(() => {
+    setRegData((prev) => ({
+      ...prev,
+      image: profileImg,
+      user: userTypeFormData[0],
+      artist: userTypeFormData[1],
+      admin: userTypeFormData[2],
+    }));
+  }, [userTypeFormData, profileImg]);
+
+  const changeHandler = (e) => {
+    setRegData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    const regData = new FormData(e.target);
-    console.log(regData);
+
+    if (userTypeFormData.length === 0) {
+      alert('please choose your user type!');
+      return false;
+    }
+
     PostService.reg(regData).then(
       (response) => {
-        if (response.status === 200) {
-          console.log(regData);
+        if (response.data === "User added!") {
+          props.setReg(true);
+          alert("Sign up succeed, please log in.");
+          navigate("/login");
         }
       },
-      (rej) => {
-        console.log(rej);
+      (error) => {
+        if (error.response) {
+          console.log(error.response.data);
+          switch (error.response.data) {
+            case "Invalid keys":
+              alert("Please choose your type/profile and fill out the form.");
+              break;
+            case "Registration Failed!":
+              alert("Please choose another email to sign up.");
+              break;
+            default:
+              alert("An unexpected error occurred. Please try again.");
+          }
+        } else if (error.request) {
+          console.log(error.request);
+          alert("No response from server. Please check your network connection.");
+        } else {
+          console.log('Error', error.message);
+          alert("Error sending request.");
+        }
       }
     );
   };
 
-  const [regUserType, setRegUserType] = useState(null);
-  function regUserTypeHandler (e) {
-    // console.log(e.target.attributes.name.value)
-    setRegUserType(e.target.attributes.name.value)
-    
-  }
-  
+
 
   return (
     <>
       <div className="row justify-content-center align-items-center g-2 m-3">
 
-        <div className="col-6 ">
-          <h1 className="text-center">Sign Up</h1>
-
-          <div className="btn-group reguser-btn-container"  role="group" aria-label="Basic radio toggle button group">
-            <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off" />
-            <label className="btn btn-outline-primary reguser-btn" htmlFor="btnradio1" onClick={regUserTypeHandler} name="Audience">Audiendce</label>
-
-            <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off" />
-            <label className="btn btn-outline-primary reguser-btn" htmlFor="btnradio2" onClick={regUserTypeHandler} name="Artist">Artist</label>
+        <div className="col-6 reg-container">
+          <h1 className="text-center">Sign Up Here!</h1>
+          <p className="text-center mb-0">and you are ...</p>
+          <div className="reguser-btn-container">
+            {userType.map((obj,idx)=>{
+                return(
+                  <button key={idx} className={typeSelected==idx+1 ? `btn btn-outline-primary reguser-btn reguser-btn-selected` : `btn btn-outline-primary reguser-btn`} number={idx+1} onClick={regUserTypeHandler}> {obj.value} </button>
+                )
+            })}
           </div>
 
+          <div className="profile-container">
+             <h5 className="profile-title">Choose Your First Profile!</h5>
+             <div className="profile-img-container">
+              <img onClick={profileSelectHandler} className={profileSelected=="1" ? `profile-img-selected` : `profile-img`} number="1" src="./img/user-profile (1).webp"/>
+              <img onClick={profileSelectHandler} className={profileSelected=="2" ? `profile-img-selected` : `profile-img`} number="2" src="./img/user-profile (2).webp"/>
+              <img onClick={profileSelectHandler} className={profileSelected=="3" ? `profile-img-selected` : `profile-img`} number="3" src="./img/user-profile (3).webp"/>
+             </div>
+          </div>
+     
           <Formcompo
             elements={elements}
             type={userType}
             buttons={buttons}
             submit={submitHandler}
+            onChange={changeHandler}
           />
           
         </div>
       </div>
     </>
   );
-}
+  }

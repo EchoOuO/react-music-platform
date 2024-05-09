@@ -2,9 +2,28 @@
 import { AES, enc } from "crypto-js";
 import { useEffect, useState } from "react";
 import Playlistcompo from "./components/Playlistcompo";
-import { Link } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
+import PostService from "../services/PostService";
 import "./Userpage.css"
 export default function Userpage(props) {
+
+  const nevigate = useNavigate();
+
+  // check session timeout from php
+  useEffect(()=>{
+    PostService.database("/userpage",{ sid: props.sessionid }).then(
+      (response) => {
+        console.log(response.data);
+      },
+      (reg) => {
+        nevigate("../login")
+        props.logout();
+        alert("Session Timeout! Please log in again.");
+        console.log(reg);
+      }
+    )
+  },[])
+
   const [userName, setUserName] = useState(null); // state to hold user name
   const [musicData, setMusicData] = useState(props.musicData);
 

@@ -2,11 +2,39 @@
     z-index: 5;
     width: 100%;
     background-color: rgba(20, 88, 236, 0.8);
-    font-weight: 700;
+    font-weight: 700;;
 }
 
 .nav-bar-container {
-    padding-left: 50px;;
+    padding-left: 50px;
+}
+
+.nav-user-container{
+    margin-right: 20px;
+    margin-bottom: 0px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-user-container li{
+    list-style: none;
+}
+
+.nav-user-container-li {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-user-profile{
+    width: 50px;
+}
+
+.nav-user-name{
+    margin: 0;
+    color: white;
+    opacity: 0.55;
 }
 
 .search-results {
