@@ -40,8 +40,14 @@
         }
     }
 
-    function Audit_generator($eventType, $outcome, $desc, $userEmail="") {
-        $audit = date("Y-m-d H:i:s ", $_SERVER["REQUEST_TIME"]) . $_SERVER["REMOTE_ADDR"] . ":" . $_SERVER["REMOTE_PORT"] . " $userEmail $eventType $outcome $desc \n";
-        // echo $audit;  
+    function Audit_generator($eventType, $outcome, $detail, $userEmail="") {
+        $aduit_column = ["detail","date","email","ip","type","outcome"];
+        $aduit_value = ["'".$detail."'", "'".date("Y-m-d H:i:s ", $_SERVER["REQUEST_TIME"])."'", "'".$userEmail."'", "'".$_SERVER["REMOTE_ADDR"] . ":" . $_SERVER["REMOTE_PORT"]."'", "'".$eventType."'", "'".$outcome."'"];
+        
+        // $audit = date("Y-m-d H:i:s ", $_SERVER["REQUEST_TIME"]) . $_SERVER["REMOTE_ADDR"] . ":" . $_SERVER["REMOTE_PORT"] . " $userEmail $eventType $outcome $detail \n";
+        
+        $db = new DB(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
+        $db->connect();
+        $db->insert("audit_tb", $aduit_value, $aduit_column);
     }
 ?>

@@ -55,7 +55,6 @@
                 // print_r($_POST);
                 $data = json_decode(file_get_contents("php://input"), true);
                 // print_r($data);
-                // print_r($data);
                 check_key(["uname", "email", "pass", "image", "user", "artist", "admin"], $data);
 
                  // PHP + Database! Get data from database
@@ -66,7 +65,7 @@
                 $result = $dbCon->query($selectCmd);  // must use variable
                 if($result->num_rows > 0){
                     $dbObj->db_close();
-                    // Audit_generator("registeration","failed","User email already exists",$_POST["email"]);
+                    Audit_generator("Registration","Failure","User email already exist.",$data["email"]);
                     throw new Exception("Registration Failed!", 406);
                 }
                 $pass = password_hash($data["pass"],PASSWORD_BCRYPT,["cost"=>10]);
@@ -76,7 +75,7 @@
                 $insertCmd->execute();
 
                 $dbObj->db_close();
-                // Audit_generator("Registration","Success","User Registered",$_POST["email"]);
+                Audit_generator("Registration","Success","User registered.",$data["email"]);
                 sendHttp_Code(201,"User added!");
             break;
 
@@ -96,11 +95,14 @@
                         // Session_Handler($sid);
                         // echo $sid;
                         sendHttp_Code(200,$sid);
+                        // Audit_generator("Login","Success","User log in via correct email and password",$data["email"]);
                     } else {
                         sendHttp_Code(200,"Login failed!");
+                        // Audit_generator("Login","Failure","User log in with wrong email or password",$data["email"]);
                     }
                 } catch (Exception $e) {
                     echo "Error: " . $e->getMessage();
+                    // Audit_generator("Login","Failure","Error: " . $e->getMessage(),$data["email"]);
                 }
                 // $db->db_close();
             break;
@@ -152,6 +154,10 @@
 
             case "/upload":
                 if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            break;
+
+            case "/audit":
+                
             break;
 
             default:

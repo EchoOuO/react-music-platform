@@ -35,6 +35,9 @@ class DB{
         $values_part = "(".implode(",",$values_array).")";
 
         $insertCmd = "INSERT INTO $table_name $columns_part VALUES $values_part";
+
+        // echo "<br>".$insertCmd."<br>";
+
         if($this->db_connect->query($insertCmd) === TRUE){
             return true;
         }
@@ -198,12 +201,12 @@ class User {
                 $_SESSION["time_out"] = time() + TIME_OUT;
                 // $_SESSION["session_id"] = session_id();
                 // print_r($_SESSION);
-                Audit_generator("login","success","User login via password.",$this->email);
+                Audit_generator("Login","Success","User log in via correct email and password.",$this->email);
             }else{
                 $attempt -= 1;
                 $loginFlag = "pass";
-                Audit_generator("login","failed","Invalid password.",$this->email);
                 sendHttp_Code(401,"Username/Password Wrong. ");
+                Audit_generator("Login","Failure","User log in with wrong email or password.",$this->email);
             }
             // UPDATE [table_name] SET [col_name] = new value, [col_name2] = new value2, .... WHERE condition
             $updateCmd = "UPDATE user_tb SET attempt = $attempt WHERE uid=".$row['uid'];
