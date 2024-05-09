@@ -380,8 +380,8 @@ function App() {
   },[loginUser])
 
   // Add to playlist
-  // const [playlist, setPlaylist] = useState(new Map());
-  // const [mid, setMid] = useState(null);
+  const [playlist, setPlaylist] = useState(new Map());
+  const [mid, setMid] = useState(null);
 
   function addToPlayList(e) {
     const tmpmid = e.target.getAttribute('mid');  // 버튼에서 mid 속성을 읽어옵니다.
@@ -454,11 +454,11 @@ const playplaylist = () => {
   //     alert("Please log in!");
   //   }
   //   // console.log(playlist);
-  };
+  
 
   // play music based on user's playlist
-  // const [curPlaylist, setCurPlaylist] = useState({})
-  // const [curPlaylistIdx, setCurPlaylistIdx] = useState(0)
+  const [curPlaylist, setCurPlaylist] = useState({})
+  const [curPlaylistIdx, setCurPlaylistIdx] = useState(0)
   // const playplaylist = () => {
   //   if (loginUser) {
   //     let tmpdata = localStorage.getItem(loginUser.uid)
@@ -606,6 +606,6 @@ const playplaylist = () => {
        />
     </BrowserRouter>
   );
-}
+};
 
 export default App;

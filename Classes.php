@@ -305,6 +305,35 @@ class PlaylistManage{
             echo "Error";
         }
     }
-}
+    public function moveTrack($uid, $mid, $newPosition) {
+        try {
+            $orderQuery = $this->db->prepare("SELECT `order` FROM playlist_tb WHERE uid = ? AND mid = ?");
+            $orderQuery->bind_param("ii", $uid, $mid);
+            $orderQuery->execute();
+            $result = $orderQuery->get_result();
+    
+            if ($row = $result->fetch_assoc()) {
+                $currentPosition = $row['order'];
+                
+                // 위치 업데이트 쿼리
+                if ($newPosition > $currentPosition) {
+                    $this->db->query("UPDATE playlist_tb SET `order` = `order` - 1 WHERE `order` > $currentPosition AND `order` <= $newPosition AND uid = $uid");
+                } else {
+                    $this->db->query("UPDATE playlist_tb SET `order` = `order` + 1 WHERE `order` < $currentPosition AND `order` >= $newPosition AND uid = $uid");
+                }
+    
+                // 최종 위치 설정
+                $updateOrder = $this->db->prepare("UPDATE playlist_tb SET `order` = ? WHERE uid = ? AND mid = ?");
+                $updateOrder->bind_param("iii", $newPosition, $uid, $mid);
+                $updateOrder->execute();
+            }
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    
+    
+    }
+
    
 ?>
