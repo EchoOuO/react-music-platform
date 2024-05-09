@@ -94,7 +94,7 @@ try {
                     if ($sid = $userObj->authenticate($data["password"])) {
                         // Session_Handler($sid);
                         // echo $sid;
-                        sendHttp_Code(200,$sid);
+                        sendHttp_Code(200,json_encode($sid));
                     } else {
                         sendHttp_Code(200,"Login failed!");
                     }
@@ -138,19 +138,19 @@ try {
 
         case "/adminpage":
             // keys = sid or check session_status(), exception: can't get key, forbiden request
-            // if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
             break;
 
         case "/userpage":
-            // if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
             break;
 
         case "/artistpage":
-            // if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
             break;
 
         case "/upload":
-            // if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
             break;
 
         case "/admin/addMusic":
