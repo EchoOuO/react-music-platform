@@ -1,11 +1,13 @@
 // Playlistcompo.js
 import { useState} from "react";
 import Playlistmodal from "./Playlistmodal";
-
+import PostService from "../../services/PostService";
+// import { prefix } from "react-bootstrap/lib/utils/bootstrapUtils";
 export default function Playlistcompo(props) {
   // console.log(props.musicData);
 
   const [modal, setModal] = useState(null); 
+  const [loginUser, setLoginUser] = useState(null);
 
   const modalHandler = (musicInfo) => {
     // console.log(musicInfo);
@@ -13,24 +15,21 @@ export default function Playlistcompo(props) {
   };
 
   const deleteHandler = (mid) => {
-    const storedValue = JSON.parse(localStorage.getItem(props.uid));
-    // console.log(storedValue);
-
-    if (storedValue) {
-      const index = storedValue.findIndex((idx) => idx[0] === mid.toString()); // Find the key corresponding to mid
-      //findIndex() is Array instance method
-      if (index !== -1) {
-        storedValue.splice(index, 1); // Delete the element of the corresponding key
-        localStorage.setItem(props.uid, JSON.stringify(storedValue)); // Store updated values in local storage
-      }
-
-      // モーダルを閉じ、削除されたデータをフィルタリングする
+    if(loginUser){
+      PostService.database("/DeletePlaylist",{uid:loginUser.uid,mid:mid})
+    .then(response=>{
       const updatedMusicData = props.musicData.filter((musicObj) => musicObj[0] !== mid);
-      props.onDelete(updatedMusicData); // Update musicData in Userpage component
+        props.onDelete(updatedMusicData); // 부모 컴포넌트에 데이터 업데이트를 알림
+        setModal(null);
+    })
+    .catch(error=>{
+      console.error('Error:',error);
+      alert('Cannot remove music');
+    });
+    }else{
+      alert("please login first");
     }
-    setModal(null);
   };
-
   return (
     <>
       <div className="row">

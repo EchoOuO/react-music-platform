@@ -18,42 +18,34 @@ export default function Register(props) {
   const [typeSelected, setTypeSelected] = useState(null);
   const [userTypeFormData, setUserTypeFormData] = useState([]);
 
-  function regUserTypeHandler (e) {
-    // console.log(e.target.attributes.number.value)
+  function regUserTypeHandler(e) {
     setTypeSelected(e.target.attributes.number.value);
-
-    switch(e.target.innerText){
+    switch(e.target.innerText) {
       case "Audience":
-        setUserTypeFormData(["1","0","0"])
-      break;
-      
+        setUserTypeFormData(["1","0","0"]);
+        break;
       case "Artist":
-        setUserTypeFormData(["1","1","0"])
-      break;
-
+        setUserTypeFormData(["1","1","0"]);
+        break;
       case "Admin":
-        setUserTypeFormData(["1","1","1"])
-      break;
+        setUserTypeFormData(["1","1","1"]);
+        break;
     }
-
-    // console.log(regUserType)
   }
 
-  useEffect(()=>{
-    if(props.loginUserType === "Admin"){
-      setUserType([{ value: "Audience" }, { value: "Artist" }, { value: "Admin" }])
-    }else{
-      setUserType([{ value: "Audience" }, { value: "Artist" }])
+  useEffect(() => {
+    if (props.loginUserType === "Admin") {
+      setUserType([{ value: "Audience" }, { value: "Artist" }, { value: "Admin" }]);
+    } else {
+      setUserType([{ value: "Audience" }, { value: "Artist" }]);
     }
-  },[props.loginUser])
+  }, [props.loginUserType]);
 
   const [profileSelected, setProfileSelected] = useState(null);
   const [profileImg, setProfileImg] = useState(null);
-  function profileSelectHandler (e) {
-    // console.log(e.target.attributes.src.value);
+  function profileSelectHandler(e) {
     setProfileSelected(e.target.attributes.number.value);
-    setProfileImg(e.target.attributes.src.value)
-    // console.log(profileImg)
+    setProfileImg(e.target.attributes.src.value);
   }
 
   const [regData, setRegData] = useState({
@@ -64,64 +56,66 @@ export default function Register(props) {
     user: '',
     artist: '',
     admin: '',
-  })
-  
+  });
+
+  useEffect(() => {
+    setRegData((prev) => ({
+      ...prev,
+      image: profileImg,
+      user: userTypeFormData[0],
+      artist: userTypeFormData[1],
+      admin: userTypeFormData[2],
+    }));
+  }, [userTypeFormData, profileImg]);
+
   const changeHandler = (e) => {
-    setRegData((prev)=>({...prev,  
-      [e.target.attributes.name.value]: e.target.value,
-    }))
-    setRegData((prev)=>({...prev,  
-      ["image"]: profileImg,
-      ["user"]: userTypeFormData["0"],
-      ["artist"]: userTypeFormData["1"],
-      ["admin"]: userTypeFormData["2"],
-    }))
-    // console.log(regData)
-  }
+    setRegData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    if (userTypeFormData == []) {
-      alert('please choose your user type!')
-      return false
+    if (userTypeFormData.length === 0) {
+      alert('please choose your user type!');
+      return false;
     }
 
-    console.log(regData);
-    PostService.reg((regData)).then(
+    PostService.reg(regData).then(
       (response) => {
-        // console.log(response.data);
-
-        if (response.data == "User added!"){
+        if (response.data === "User added!") {
           props.setReg(true);
-          alert("Sign up succeed, please log in.")
+          alert("Sign up succeed, please log in.");
           navigate("/login");
         }
       },
-      (rej) => {
-        console.log(rej.response.data);
-
-        switch(rej.response.data){
-          case "Invalid keys":
-            alert("Please choose your type/profile and fill out the form.")
-            break;
-          case "Registration Failed!":
-            alert("Please choose another email to sign up.")
-            break;
+      (error) => {
+        if (error.response) {
+          console.log(error.response.data);
+          switch (error.response.data) {
+            case "Invalid keys":
+              alert("Please choose your type/profile and fill out the form.");
+              break;
+            case "Registration Failed!":
+              alert("Please choose another email to sign up.");
+              break;
+            default:
+              alert("An unexpected error occurred. Please try again.");
+          }
+        } else if (error.request) {
+          console.log(error.request);
+          alert("No response from server. Please check your network connection.");
+        } else {
+          console.log('Error', error.message);
+          alert("Error sending request.");
         }
       }
     );
   };
 
-  useEffect(()=>{
-    setRegData((prev)=>({...prev,  
-      ["image"]: profileImg,
-      ["user"]: userTypeFormData["0"],
-      ["artist"]: userTypeFormData["1"],
-      ["admin"]: userTypeFormData["2"],
-    }))
-  },[userTypeFormData, profileImg])
-  
+
 
   return (
     <>
@@ -159,4 +153,4 @@ export default function Register(props) {
       </div>
     </>
   );
-}
+  }

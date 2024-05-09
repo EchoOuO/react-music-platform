@@ -440,62 +440,101 @@ function App() {
   const [playlist, setPlaylist] = useState(new Map());
   const [mid, setMid] = useState(null);
 
-  const addToPlayList = (e) => {
-    // get data from button's arrtributes
-    const tmpmid = e.target.attributes.mid.value;
-    const tmpdata = music.find((obj) => {
-      // console.log(obj.mid);
-      return obj.mid == tmpmid;
-    });
-    // console.log(tmpmid);
-    // console.log(tmpdata);
-    const tmpplaylist = new Map(playlist);
-    tmpplaylist.set(tmpmid, tmpdata);
-    setPlaylist(tmpplaylist);
-    // console.log(playlist)
+  // const addToPlayList = (e) => {
+  //   // get data from button's arrtributes
+  //   const tmpmid = e.target.attributes.mid.value;
+  //   const tmpdata = music.find((obj) => {
+  //     // console.log(obj.mid);
+  //     return obj.mid == tmpmid;
+  //   });
+  //   // console.log(tmpmid);
+  //   // console.log(tmpdata);
+  //   const tmpplaylist = new Map(playlist);
+  //   tmpplaylist.set(tmpmid, tmpdata);
+  //   setPlaylist(tmpplaylist);
+  //   // console.log(playlist)
 
-    if (loginUser) {
-      // Save playlist in local storage with key = login user id
-      const tmpArray = [];
-      for (let data of tmpplaylist) {
-        console.log(tmpplaylist)
-        console.log(data)
-        tmpArray.push(data);
-      }
-      localStorage.setItem(loginUser.uid, JSON.stringify(tmpArray));
-      setMid(tmpmid);
-    } else {
-      alert("Please log in!");
+  //   if (loginUser) {
+  //     // Save playlist in local storage with key = login user id
+  //     const tmpArray = [];
+  //     for (let data of tmpplaylist) {
+  //       console.log(tmpplaylist)
+  //       console.log(data)
+  //       tmpArray.push(data);
+  //     }
+  //     localStorage.setItem(loginUser.uid, JSON.stringify(tmpArray));
+  //     setMid(tmpmid);
+  //   } else {
+  //     alert("Please log in!");
+  //   }
+  //   // console.log(playlist);
+  // };
+function addToPlayList(e){
+  const tmpmid=e.target.getAttribute('mid');
+  if(loginUser){
+    const postData={
+      uid:loginUser.uid,
+      mid:tmpmid};
+      PostService.database("/Addplaylist",postData)
+      .then(response=>{
+        alert('Music added to playlist');
+      })
+      .catch(error=>{
+        console.error('Error:',error);
+        alert('Failed to add music');
+      });
+    }else{
+      alert('Please log in to add music');
     }
-    // console.log(playlist);
-  };
+  }
 
   // play music based on user's playlist
   const [curPlaylist, setCurPlaylist] = useState({})
   const [curPlaylistIdx, setCurPlaylistIdx] = useState(0)
+  // const playplaylist = () => {
+  //   if (loginUser) {
+  //     let tmpdata = localStorage.getItem(loginUser.uid)
+  //     let tmpplaylist = new Map(JSON.parse(tmpdata));
+  //     let tmpplaylistkey = tmpplaylist.keys()
+  //     // console.log(tmpplaylist)
+  //     // console.log(tmpplaylistkey)
+  //     let tmpArray = []
+  //     for (let idx of tmpplaylistkey){
+  //       // console.log(idx)
+  //       tmpArray.push(idx)
+  //     }
+  //     // console.log(tmpArray)
+  //     let tmpplaymid
+  //     tmpplaymid = tmpArray[curPlaylistIdx]
+  //     if (tmpplaylist) {
+  //       setCurrentPlay(tmpplaylist)
+  //       setCurrentMid(tmpplaymid)
+  //       setPlayerStatus({play:true})
+  //     }
+  //   }
+  // }
   const playplaylist = () => {
     if (loginUser) {
-      let tmpdata = localStorage.getItem(loginUser.uid)
-      let tmpplaylist = new Map(JSON.parse(tmpdata));
-      let tmpplaylistkey = tmpplaylist.keys()
-      // console.log(tmpplaylist)
-      // console.log(tmpplaylistkey)
-      let tmpArray = []
-      for (let idx of tmpplaylistkey){
-        // console.log(idx)
-        tmpArray.push(idx)
-      }
-      // console.log(tmpArray)
-      let tmpplaymid
-      tmpplaymid = tmpArray[curPlaylistIdx]
-      if (tmpplaylist) {
-        setCurrentPlay(tmpplaylist)
-        setCurrentMid(tmpplaymid)
-        setPlayerStatus({play:true})
-      }
+      PostService.database("/Getplaylist", { uid: loginUser.uid })
+        .then(response => {
+          const data = response.data; // 서버에서 받은 데이터
+          const tmpplaylist = new Map(data.map(item => [item.mid, item])); // Map 객체로 변환
+          const tmpplaylistkeys = Array.from(tmpplaylist.keys()); // 키 배열 생성
+          let tmpplaymid = tmpplaylistkeys[curPlaylistIdx]; // 현재 재생 인덱스에 해당하는 음악 ID
+          if (tmpplaylist.size > 0) {
+            setCurrentPlay(tmpplaylist); // 현재 재생 목록 설정
+            setCurrentMid(tmpplaymid); // 현재 음악 ID 설정
+            setPlayerStatus({ play: true }); // 재생 상태 설정
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error fetching playlist');
+        });
+    } else {
+      alert("Please log in to access your playlist.");
     }
-  }
-
+  };
   const logout = () => {
     sessionStorage.removeItem("LoginUser"); // Remove user from session storage on logout
     setLoginUser(null);
@@ -622,7 +661,5 @@ function App() {
         playplaylist={playplaylist}
        />
     </BrowserRouter>
-  );
-}
-
+  );}
 export default App;
