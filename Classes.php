@@ -64,13 +64,13 @@ class DB{
             throw new Exception("Server problem!",500);
         }
     }
+
     public function prepare($query) {
         if ($this->db_connect) {
             return $this->db_connect->prepare($query);
         }
         throw new Exception("Database connection not established.");
     }
-
 }
 class fileUplaod{
     private $srcFile; // user's request, $_FILES["file1"], just lije $_POST["key1"]
@@ -136,6 +136,7 @@ class fileUplaod{
         return $destAddr;
     }
 }
+
 class User {
     private $db;
     private $email;
@@ -167,9 +168,19 @@ class User {
         $stmt->bind_param("s", $this->email);
         $stmt->execute();
         $result = $stmt->get_result();
-
+        // print_r($result);
+        
+        $queryAll = "SELECT * FROM user_tb WHERE email = ?";
+        $stmtAll = $this->db->prepare($queryAll);
+        $stmtAll->bind_param("s", $this->email);
+        $stmtAll->execute();
+        $resultAll = $stmtAll->get_result();
+        // print_r($resultAll);
+        
         if ($result && $result->num_rows > 0) {
             $user = $result->fetch_assoc();
+            $userAll = $resultAll->fetch_assoc();
+            // print_r($userAll);
 
             if ($user['password'] === $password) {
                 $_SESSION['attempt_count'] = 0;  
@@ -187,9 +198,6 @@ class User {
         }
     }
 }
-
-
-
 
 class jsonUpload{
     private $src_addr;
@@ -255,5 +263,48 @@ class jsonUpload{
         $db->close();
     }
 }
+class PlaylistManage{
+    private $db;
+   
+  
+    public function __construct() {
+        $this->db = new DB(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
+        $this->db->connect();
+    }
 
+ 
+    public function addMusicToPlaylist($uid, $mid) {
+        try {
+            $addPli = $this->db->prepare("INSERT INTO playlist_tb (uid, mid) VALUES (?, ?)");
+           $addPli->execute([$uid,$mid]);
+           echo "Music added to playlist";
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    public function getPlaylistByUserId($uid) {
+        $query = "SELECT music_tb.* FROM playlist_tb JOIN music_tb ON playlist_tb.mid = music_tb.mid WHERE playlist_tb.uid = ?";
+        $getPli = $this->db->prepare($query);
+        $getPli->bind_param("i",$uid);
+        $getPli->execute();
+        $result=$getPli->get_result();
+        $playlist=[];
+
+        while($row=$result->fetch_assoc()){
+            $playlist[]=$row;
+        }
+        return $playlist;
+    }
+    public function removeMusicFromPlaylist($uid,$mid){
+        $query = "DELETE FROM playlist_tb WHERE uid = ? AND mid = ?";
+        $removepli = $this->db->prepare($query);
+        $removepli->bind_param("ii", $uid, $mid); 
+        if ($removepli->execute()) {
+            echo "Music removed successfully from playlist.";
+        } else {
+            echo "Error";
+        }
+    }
+}
+   
 ?>
