@@ -1,5 +1,5 @@
 <?php
-    define("TIME_OUT",500);
+    define("TIME_OUT",200);
     define("ATTEMPT_LIMIT",5);
     define("DB_SERVER_NAME","localhost");
     define("DB_USER","phpAgent");
