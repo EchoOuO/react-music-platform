@@ -11,6 +11,10 @@ export default function Userpage(props) {
 
   // check session timeout from php
   useEffect(()=>{
+    if (!props.loginUser){
+      nevigate("../nopage")
+    }
+
     PostService.database("/userpage",{ sid: props.sessionid }).then(
       (response) => {
         console.log(response.data);

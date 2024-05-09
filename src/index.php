@@ -143,7 +143,6 @@
             break;
 
             case "/userpage":
-                // echo "userpage";
                 if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
             break;
 

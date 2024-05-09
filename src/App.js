@@ -26,7 +26,7 @@ function App() {
   const [key, setKey] = useState(null);
   const [users, setUsers] = useState(null);  // array of object
   const [loginUser, setLoginUser] = useState(null);
-  const [loginUserType, setLoginUserType] = useState(null);
+  const [loginUserType, setLoginUserType] = useState();
   const [uploadedMusic, setUploadedMusic] = useState([]);
 
   const loginKey = (newKey) => {
@@ -34,19 +34,7 @@ function App() {
     setKey(newKey);
   };
 
-  const userMenu = [
-    { url: "/", text: "Home" },
-    { url: "/allmusic", text: "All Music" },
-    { url: "/allartist", text: "All Artist" },
-    { url: "/reg", text: "Sign Up" },
-  ];
-  const artistMenu = [
-    { url: "/", text: "Home" },
-    { url: "/allmusic", text: "All Music" },
-    { url: "/allartist", text: "All Artist" },
-    { url: "/reg", text: "Sign Up" },
-  ];
-  const adminMenu = [
+  const authMenu = [
     { url: "/", text: "Home" },
     { url: "/allmusic", text: "All Music" },
     { url: "/allartist", text: "All Artist" },
@@ -85,23 +73,26 @@ function App() {
     const storedUser = sessionStorage.getItem("LoginUser");
     if (storedUser) {
       const decryptedUser = AES.decrypt(storedUser, 'groupc').toString(enc.Utf8);
-      console.log(JSON.parse(decryptedUser))
+      // console.log(JSON.parse(decryptedUser))
       setLoginUser(JSON.parse(decryptedUser));
       setKey(JSON.parse(decryptedUser).email); // Assuming email can uniquely identify a user
 
       // initial nav bar links based on login user
+      setUserType(authMenu)
       if(JSON.parse(decryptedUser).admin === "1") {
-        setUserType(adminMenu)
+        setLoginUserType("Admin");
+        setDropMenu(adminDropMenu)
         // console.log("admin!")
       }
-      else if(JSON.parse(decryptedUser).artist ==="1") {
-        setUserType(artistMenu)
+      else if(JSON.parse(decryptedUser).artist === "1") {
+        setLoginUserType("Artist");
+        setDropMenu(artistDropMenu)
         // console.log("artist!")
       }
-      else if (JSON.parse(decryptedUser).user ==="1") {
-        setUserType(userMenu)
+      else if (JSON.parse(decryptedUser).user === "1") {
+        setLoginUserType("Audience");
+        setDropMenu(userDropMenu)
         // console.log("user!")
- 
       }
     }
   }, []);
@@ -149,6 +140,7 @@ function App() {
 
           // 目前這邊有bug，user = undefined ??????
           if (user) {
+            // console.log(user)
             const cipherUser = AES.encrypt(JSON.stringify(user), "groupc").toString(); //AESkey = groupc
             sessionStorage.setItem("LoginUser", cipherUser); //Save to session storage as jsondata
             setLoginUser(user);
@@ -156,17 +148,22 @@ function App() {
             setPlayerStatus({ play: false });
 
             // change nav bar
-            if (user.user) {
-              setUserType(userMenu)
-              // console.log("user!")
+            setUserType(authMenu)
+            if(user.admin === "1") {
+              setLoginUserType("Admin");
+              setDropMenu(adminDropMenu)
+              // console.log("admin!")
             }
-            if(user.artist) {
-              setUserType(artistMenu)
+            else if(user.artist === "1") {
+              setLoginUserType("Artist");
+              setDropMenu(artistDropMenu)
               // console.log("artist!")
             }
-            if(user.admin) {
-              setUserType(adminMenu)
-              // console.log("admin!")
+            else if (user.user === "1") {
+              setLoginUserType("Audience");
+              setDropMenu(userDropMenu)
+     
+              // console.log("user!")
             }
 
             return true; // Returns true if login succeeds
@@ -510,7 +507,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Links menu={userType} displayInfo={displayInfo} playMusic={playMusic} music={music} artist={artist} loginUser={loginUser} loginUserType={loginUserType} setLoginUserType={setLoginUserType} dropMenu={dropMenu} setDropMenu={setDropMenu} 
+          element={<Links menu={userType} displayInfo={displayInfo} playMusic={playMusic} music={music} artist={artist} loginUser={loginUser} loginUserType={loginUserType} dropMenu={dropMenu} setDropMenu={setDropMenu} 
           />}
         >
           <Route
@@ -574,9 +571,9 @@ function App() {
           
           <Route
             path="upload"
-            element={<Uploadmusic setUploadedMusic={setUploadedMusic} sessionid={sessionid} logout={logout} />}
+            element={<Uploadmusic setUploadedMusic={setUploadedMusic} sessionid={sessionid} logout={logout} loginUserType={loginUserType} />}
           />
-          <Route path="adminpage" element={<Adminpage sessionid={sessionid} logout={logout}/>} />
+          <Route path="adminpage" element={<Adminpage sessionid={sessionid} logout={logout} loginUserType={loginUserType}/>} />
           <Route
             path="artistpage"
             element={
@@ -585,10 +582,11 @@ function App() {
                 setUploadedMusic={setUploadedMusic}
                 sessionid={sessionid}
                 logout={logout}
+                loginUserType={loginUserType}
               />
             }
           />
-          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist} logout={logout} sessionid={sessionid}>
+          <Route path="userpage" element={<Userpage loginUser={loginUser} playMusic={playMusic} playplaylist={playplaylist} logout={logout} sessionid={sessionid} loginUserType={loginUserType}>
               <Playlistcompo loginUser={loginUser}/></Userpage>} />
           <Route path="reg" element={<Register loginUserType={loginUserType} loginUser={loginUser} setReg={setReg}/>}></Route>
           <Route

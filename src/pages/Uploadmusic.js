@@ -8,14 +8,18 @@ function FileUpload(props) {
 
   // check session timeout from php
   useEffect(()=>{
-    PostService.database("/ ",{ sid: props.sessionid }).then(
+    if (props.loginUserType !== "Admin" && props.loginUserType !== "Artist"){
+      nevigate("../nopage")
+    }
+
+    PostService.database("/upload ",{ sid: props.sessionid }).then(
       (response) => {
         console.log(response.data);
       },
       (reg) => {
         nevigate("../login")
         props.logout();
-        // alert("Session Timeout! Please log in again.");
+        alert("Session Timeout! Please log in again.");
         console.log(reg);
       }
     )

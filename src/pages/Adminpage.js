@@ -6,11 +6,17 @@ import { Button, Form, Table } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom'; 
 import PostService from "../services/PostService";
 
-function AdminPage(props) {
+export default function AdminPage(props) {
+  // console.log(props.loginUserType)
+
   const nevigate = useNavigate();
 
   // check session timeout from php
   useEffect(()=>{
+    if (props.loginUserType !== "Admin"){
+      nevigate("../Nopage")
+    }
+
     PostService.database("/adminpage",{ sid: props.sessionid }).then(
       (response) => {
         console.log(response.data);
@@ -102,7 +108,7 @@ function AdminPage(props) {
     setShowForm(false);
   };
 
-  console.log(users)
+  // console.log(users)
 
   return (
     <div>
@@ -191,4 +197,3 @@ function AdminPage(props) {
   );
 }
 
-export default AdminPage;

@@ -5,6 +5,8 @@ import "./Link.css";
 import { AES, enc } from "crypto-js";
 
 export default function Links(props) {
+  // console.log(props.loginUserType)
+
   const [searchWord, setSearchWord] = useState("");
   const inputRef = useRef();
 
@@ -20,42 +22,12 @@ export default function Links(props) {
   }
 
   let curLoginUser
-  const userDropMenu = [
-    { url: "/userpage", text: "User Page" },
-    { url: "/logout", text: "Log out" },
-  ];
-  const artistDropMenu = [
-    { url: "/userpage", text: "User Page" },
-    { url: "/artistpage", text: "Artist Page" },
-    { url: "/upload", text: "Upload Music" },
-    { url: "/logout", text: "Log out" },
-  ];
-  const adminDropMenu = [
-    { url: "/userpage", text: "User Page" },
-    { url: "/artistpage", text: "Artist Page" },
-    { url: "/upload", text: "Upload Music" },
-    { url: "/adminpage", text: "Admin Page" },
-    { url: "/logout", text: "Log out" },
-  ]
   const storedUser = sessionStorage.getItem("LoginUser");
   if (storedUser) {
     const decryptedUser = AES.decrypt(storedUser, 'groupc').toString(enc.Utf8);
     // console.log(JSON.parse(decryptedUser))
     curLoginUser = JSON.parse(decryptedUser)
     // console.log(curLoginUser)
-
-    if(curLoginUser.admin === "1") {
-      props.setLoginUserType("Admin");
-      props.setDropMenu(adminDropMenu)
-    }
-    else if(curLoginUser.artist === "1") {
-      props.setLoginUserType("Artist");
-      props.setDropMenu(artistDropMenu)
-    }
-    else if (curLoginUser.user === "1") {
-      props.setLoginUserType("Audience");
-      props.setDropMenu(userDropMenu)
-    }
   } 
 
   return (

@@ -8,6 +8,10 @@ function ArtistPage(props) {
 
   // check session timeout from php
   useEffect(()=>{
+    if (props.loginUserType !== "Admin" && props.loginUserType !== "Artist"){
+      nevigate("../nopage")
+    }
+
     PostService.database("/artistpage",{ sid: props.sessionid }).then(
       (response) => {
         console.log(response.data);
