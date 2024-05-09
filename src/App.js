@@ -509,6 +509,28 @@ function App() {
     setReg(false);
   };
 
+
+//Trying to add/delete/modify music to the database
+  const musicData = {
+    mname: "Song Name",
+    artist: "Artist Name",
+    album: "Album Name",
+    description: "Song Description",
+    address: "Song Address",
+    image: "Image URL"
+};
+
+fetch('http://localhost:3000/adminpage/addMusic', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'applicationw/json',
+    },
+    body: JSON.stringify(musicData),
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch((error) => console.error('Error:', error));
+
   return (
     <BrowserRouter>
       <Routes>
