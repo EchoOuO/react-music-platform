@@ -122,19 +122,26 @@ function App() {
     PostService.database("/login",postData).then(
       (response) => {
         // console.log(response)
-        // console.log(response.data); // session id
+        console.log(response.data); // session id
 
         if(response.data === "Login failed!" || response.data === "Error: Invalid password." || response.data === "Username/Password Wrong. Login failed!"){
           alert ("Login failed!")
         }else if (response.data === "Error: There is a problem logging in, please contact the system admin."){
           alert ("Error: There is a problem logging in, please contact the system admin.");
         }else if (response.data){
-          setSessionSid(response.data)
+          
+          // setting sessionSid to the response.data + the sessionId object VINICIUS
+          setSessionSid(response.data.sessionId)
+
+          localStorage.setItem("sessionId", response.data.sessionId)
+          localStorage.setItem("loggedUser", JSON.stringify(response.data.loggedUser))
           alert ("Login succeeded!")
+
           // console.log(users) // array of object
           // console.log(userObj);
   
-          const user = users.find((user) => user.email === userObj.email);
+          // Get the user from the response instead of the users array VINICIUS
+          const user = response.data.loggedUser;
 
           // console.log(user)
 
@@ -149,17 +156,17 @@ function App() {
 
             // change nav bar
             setUserType(authMenu)
-            if(user.admin === "1") {
+            if(user.admin) {
               setLoginUserType("Admin");
               setDropMenu(adminDropMenu)
               // console.log("admin!")
             }
-            else if(user.artist === "1") {
+            else if(user.artist) {
               setLoginUserType("Artist");
               setDropMenu(artistDropMenu)
               // console.log("artist!")
             }
-            else if (user.user === "1") {
+            else if (user.user) {
               setLoginUserType("Audience");
               setDropMenu(userDropMenu)
      

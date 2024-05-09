@@ -1,9 +1,10 @@
 <?php
-// Allow requests from any origin - not recommended for production
+// Allow requests from any origin
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, X-Requested-With, Authorization');
 header('Access-Control-Allow-Credentials: true');
+
 // Respond to preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     // Should return HTTP 200 status code
@@ -23,11 +24,15 @@ $db->connect();
 $db->db_close();
 
 try {
+    $sid;
     if ($_SERVER["REQUEST_METHOD"] != "POST") {
         throw new Exception("Invalid request method!", 405);
     }
-    if (isset($_POST["sid"])) {
-        Session_Handler($_POST["sid"]);
+    $post_sid = json_decode(file_get_contents("php://input"), true);
+    // print_r($post_sid);
+    // 這邊沒東西QQ  ?????
+    if (isset($post_sid["sid"])) {
+        Session_Handler($post_sid["sid"]);
     }
     switch ($_SERVER["PATH_INFO"]) {
         case "/":
@@ -49,6 +54,7 @@ try {
             // keys = uname, email, password, usertype, exception: can't get key
             // print_r($_POST);
             $data = json_decode(file_get_contents("php://input"), true);
+            // print_r($data);
             // print_r($data);
             check_key(["uname", "email", "pass", "image", "user", "artist", "admin"], $data);
 
@@ -75,7 +81,7 @@ try {
             break;
 
         case "/login":
-            session_start();
+            // session_start();
 
             $data = json_decode(file_get_contents("php://input"), true);
             // print_r($data);
@@ -84,12 +90,13 @@ try {
                 check_key(["email", "password"], $data);
                 $db = new DB(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
                 $db->connect();
-
+                // Changed the 
                 $userObj = new User($data["email"], $db);
-                if ($userObj->authenticate($data["password"])) {
-                    $_SESSION['time_out'] = time() + TIME_OUT;
-                    $_SESSION['attempt_count'] = 0;
-                    sendHttp_Code(200, "Login succeeded!");
+                $loggedUserPlusSessionId = $userObj->authenticate($data["password"]);
+                if ($loggedUserPlusSessionId) {
+                    // Session_Handler($sid);
+                    // echo $sid;
+                    sendHttp_Code(200, json_encode($loggedUserPlusSessionId));
                 } else {
                     sendHttp_Code(200, "Login failed!");
                 }
@@ -98,6 +105,12 @@ try {
             }
             // $db->db_close();
             break;
+
+            // 這邊還有問題，為啥事回傳 music data = =..... ?????
+            // case "/loginid":
+            //     print_r($_SESSION);
+            //     echo session_id();
+            // break;
 
         case "/allmusic":
             // keys = bid?, exception: can't get key
@@ -124,35 +137,75 @@ try {
             $db->db_close();
             echo json_encode($output);
             break;
-        case "/Addplaylist":
-            $uid = $_POST['uid'];
-            $mid = $_POST['mid'];
-            $playlistManage = new PlaylistManage('localhost', 'username', 'password', 'database_name');
-            $playlistManage->addMusicToPlaylist($uid, $mid);
-            break;
-        case "/Getplaylist":
-            $uid = $_POST['uid'];
-            $playlistManage = new PlaylistManage('localhost', 'username', 'password', 'database_name');
-            $playlist = $playlistManage->getPlaylistByUserId($uid);
-            echo json_encode($playlist);
-            break;
-        case "/DeletePlaylist":
-            $uid=$_POST['uid'];
-            $mid=$_POST['mid'];
-            $playlistManage = new PlaylistManage('localhost', 'username', 'password', 'database_name');
-            $playlistManage->removeMusicFromPlaylist($uid,$mid);
-            break;
-            // case "/admin":
-            // keys = sid or check session_status(), exception: can't get key, forbiden request
-            // break;
 
-            // case "/userpage":
+        case "/adminpage":
             // keys = sid or check session_status(), exception: can't get key, forbiden request
-            // break;
+            // if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            break;
 
-            // case "/artist":
-            // keys = sid or check session_status(), exception: can't get key, forbiden request
-            // break;
+        case "/userpage":
+            // if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            break;
+
+        case "/artistpage":
+            // if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            break;
+
+        case "/upload":
+            // if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            break;
+
+        case "/admin/addMusic":
+            if (session_status() === PHP_SESSION_NONE) throw new Exception("Forbiden request.", 401);
+            $isAdmin = $_SESSION["admin"];
+            if (!$isAdmin) throw new Exception("Forbiden request.", 401);
+            $data = json_decode(file_get_contents("php://input"), true);
+            // print_r($data);
+            check_key(["mname", "artist", "album", "description", "address", "image"], $data);
+
+            $db = new DB(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
+            $db->connect();
+            $insertCmd = $db->prepare("INSERT INTO music_tb (mname, album, description, address, image) VALUES (?,?,?,?,?)");
+            $insertCmd->bind_param("sssss", $data["mname"], $data["album"], $data["description"], $data["address"], $data["image"]);
+            $insertCmd->execute();
+            $db->db_close();
+            sendHttp_Code(201, "Music added!");
+            break;
+
+        case "/admin/removeMusic":
+            // keys = mid, exception: can't get key
+            if (session_status() === PHP_SESSION_NONE) throw new Exception("Forbiden request.", 401);
+            $isAdmin = $_SESSION["admin"];
+            if (!$isAdmin) throw new Exception("Forbiden request.", 401);
+            $data = json_decode(file_get_contents("php://input"), true);
+            // print_r($data);
+            check_key(["mid"], $data);
+
+            $db = new DB(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
+            $db->connect();
+            $deleteCmd = $db->prepare("DELETE FROM music_tb WHERE mid = ?");
+            $deleteCmd->bind_param("i", $data["mid"]);
+            $deleteCmd->execute();
+            $db->db_close();
+            sendHttp_Code(200, "Music removed!");
+            break;
+
+        case "/admin/modifyMusic":
+            if (session_status() === PHP_SESSION_NONE) throw new Exception("Forbiden request.", 401);
+            $isAdmin = $_SESSION["admin"];
+            if (!$isAdmin) throw new Exception("Forbiden request.", 401);
+            $data = json_decode(file_get_contents("php://input"), true);
+            // print_r($data);
+            check_key(["mid", "mname", "artist", "album", "description", "address", "image"], $data);
+
+            $db = new DB(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
+            $db->connect();
+            $updateCmd = $db->prepare("UPDATE music_tb SET mname = ?, artist = ?, album = ?, description = ?, address = ?, image = ?,  WHERE mid = ?");
+            $updateCmd->bind_param("ssssss", $data["mname"], $data["artist"], $data["album"], $data["description"], $data["address"], $data["image"]);
+            $updateCmd->execute();
+            $db->db_close();
+            sendHttp_Code(200, "Music modified!");
+            break;
 
         default:
             throw new Exception("Invalid path", 400);
