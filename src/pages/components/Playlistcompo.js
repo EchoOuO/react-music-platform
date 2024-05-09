@@ -7,6 +7,7 @@ export default function Playlistcompo(props) {
   // console.log(props.musicData);
 
   const [modal, setModal] = useState(null); 
+  const [loginUser, setLoginUser] = useState(null);
 
   const modalHandler = (musicInfo) => {
     // console.log(musicInfo);

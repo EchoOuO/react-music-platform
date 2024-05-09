@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import "./css/Musicplayer.css";
 export default function Musicplayer(props) {
   // console.log(props.playlist);
@@ -22,29 +23,72 @@ export default function Musicplayer(props) {
     audioRef.current.currentTime = 0;
     play()
   }
-
-  // 要先達成 可以按照playlist撥放歌曲，  才來做next / previous
-  const next = () => {
-    if (props.curPlaylistIdx < props.currentPlay.size -1) {
-      props.setCurPlaylistIdx(props.curPlaylistIdx + 1)
-      console.log(props.curPlaylistIdx)
-      props.setPlayerStatus({play:false})
-      // console.log(props.playerStatus)
-    } else {
-      props.setCurPlaylistIdx(0)
+  const handleMoveTrack = async (direction) => {
+    // direction은 'next' 또는 'prev'
+    try {
+      const response = await fetch('/api/moveTrack', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          uid: props.loginUser.uid,
+          mid: props.currentMid,
+          action: direction
+        })
+      });
+      const data = await response.json();
+      if (data && response.ok) {
+        console.log(data.message); 
+      } else {
+        throw new Error(data.error || 'Failed to move track');
+      }
+    } catch (error) {
+      console.error('Error moving track:', error);
     }
   }
-
+  
+  const next = () => {
+    if (props.curPlaylistIdx < props.currentPlay.size - 1) {
+      props.setCurPlaylistIdx(props.curPlaylistIdx + 1);
+    } else {
+      props.setCurPlaylistIdx(0);
+    }
+    props.setPlayerStatus({play: false});
+    handleMoveTrack('next');
+  }
+  
   const prev = () => {
     if (props.curPlaylistIdx > 0) {
-      props.setCurPlaylistIdx(props.curPlaylistIdx - 1)
-      console.log(props.curPlaylistIdx)
-      props.setPlayerStatus({play:false})
+      props.setCurPlaylistIdx(props.curPlaylistIdx - 1);
     } else {
-      props.setCurPlaylistIdx(props.currentPlay.size -1)
-      props.setPlayerStatus({play:false})
+      props.setCurPlaylistIdx(props.currentPlay.size - 1);
     }
+    props.setPlayerStatus({play: false});
+    handleMoveTrack('prev');
   }
+  // // 要先達成 可以按照playlist撥放歌曲，  才來做next / previous
+  // const next = () => {
+  //   if (props.curPlaylistIdx < props.currentPlay.size -1) {
+  //     props.setCurPlaylistIdx(props.curPlaylistIdx + 1)
+  //     console.log(props.curPlaylistIdx)
+  //     props.setPlayerStatus({play:false})
+  //     // console.log(props.playerStatus)
+  //   } else {
+  //     props.setCurPlaylistIdx(0)
+  //   }
+  // }
+
+  // const prev = () => {
+  //   if (props.curPlaylistIdx > 0) {
+  //     props.setCurPlaylistIdx(props.curPlaylistIdx - 1)
+  //     console.log(props.curPlaylistIdx)
+  //     props.setPlayerStatus({play:false})
+  //   } else {
+  //     props.setCurPlaylistIdx(props.currentPlay.size -1)
+  //     props.setPlayerStatus({play:false})
+  //   }
+  // }
 
   // if music reamining time = 0 , then change status
 
