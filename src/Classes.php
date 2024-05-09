@@ -180,10 +180,11 @@ class User {
         $stmt->bind_param("s", $this->email);
         $stmt->execute();
         $result = $stmt->get_result();
+        $row = $result -> fetch_assoc();
         // print_r($result);
 
         if($result->num_rows > 0) {  
-            $row = $result -> fetch_assoc(); // fetch_assoc() return one row as associated array, access value by keys
+             // fetch_assoc() return one row as associated array, access value by keys
             // print_r($row);
             $attempt = $row['attempt'];
             if($row['attempt'] == 0){
@@ -198,6 +199,7 @@ class User {
                 $this->id = $row['uid'];
                 session_start();
                 $_SESSION["login_user"] = $this;
+                $_SESSION["admin"] = $row['admin'];
                 $_SESSION["time_out"] = time() + TIME_OUT;
                 // $_SESSION["session_id"] = session_id();
                 // print_r($_SESSION);
@@ -228,7 +230,15 @@ class User {
                 break;
             } 
         }
-        return session_id();
+        // return session_id();
+
+        // Remove password from the retuned user VINICIUS
+        unset($row['password']);
+        return [
+            //key => value
+            "sessionId"=>session_id(),
+            "loggedUser"=>$row
+        ];
     }
 }
 

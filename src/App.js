@@ -122,18 +122,28 @@ function App() {
     PostService.database("/login",postData).then(
       (response) => {
         // console.log(response)
-        // console.log(response.data); // session id
+        console.log(response.data); // session id
 
         if(response.data === "Login failed!" || response.data === "Error: Invalid password." || response.data === "Username/Password Wrong. Login failed!"){
           alert ("Login failed!")
         }else if (response.data === "Error: There is a problem logging in, please contact the system admin."){
           alert ("Error: There is a problem logging in, please contact the system admin.");
         }else if (response.data){
-          setSessionSid(response.data)
+          
+          // setting sessionSid to the response.data + the sessionId object VINICIUS
+          
+          setSessionSid(response.data.sessionId)
+
+          localStorage.setItem("sessionId", response.data.sessionId)
+          localStorage.setItem("loggedUser", JSON.stringify(response.data.loggedUser))
           alert ("Login succeeded!")
+
           // console.log(users) // array of object
           // console.log(userObj);
   
+          // Get the user from the response instead of the users array VINICIUS
+          // const user = response.data.loggedUser;
+          console.log(response.data);
           const user = users.find((user) => user.email === userObj.email);
 
           // console.log(user)
@@ -500,7 +510,30 @@ function App() {
     setPlayerStatus({play:false, end:false})
     setUserType(noAuthMenu)
     setReg(false);
+    setLoginUserType(null);
   };
+
+
+//Trying to add/delete/modify music to the database
+  const musicData = {
+    mname: "Song Name",
+    artist: "Artist Name",
+    album: "Album Name",
+    description: "Song Description",
+    address: "Song Address",
+    image: "Image URL"
+};
+
+// fetch('http://localhost:3000/adminpage/addMusic', {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'applicationw/json',
+//     },
+//     body: JSON.stringify(musicData),
+// })
+// .then(response => response.json())
+// .then(data => console.log(data))
+// .catch((error) => console.error('Error:', error));
 
   return (
     <BrowserRouter>

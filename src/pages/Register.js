@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Register(props) {
+  // console.log(props.loginUserType)
+
   const navigate = useNavigate();
 
   const elements = [
