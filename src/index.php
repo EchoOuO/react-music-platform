@@ -190,27 +190,27 @@
                     break;
             }
             break;
-        case "/moveTrack":
-            // POST 데이터에서 필요한 정보를 가져옵니다.
-            $uid = $_POST['uid'];
-            $mid = $_POST['mid'];
-            $action = $_POST['action']; // 'next' 또는 'prev'
+        // case "/moveTrack":
+        //     // POST 데이터에서 필요한 정보를 가져옵니다.
+        //     $uid = $_POST['uid'];
+        //     $mid = $_POST['mid'];
+        //     $action = $_POST['action']; // 'next' 또는 'prev'
 
-            // PlaylistManage 인스턴스를 생성합니다.
-            $playlistManage = new PlaylistManage(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
+        //     // PlaylistManage 인스턴스를 생성합니다.
+        //     $playlistManage = new PlaylistManage(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
 
-            // 'next' 또는 'prev' 액션에 따라 처리
-            if ($action === 'next') {
-                $playlistManage->moveTrack($uid, $mid, $mid + 1);  // 다음 트랙으로 이동
-                echo json_encode(["message" => "Moved to next track"]);
-            } else if ($action === 'prev') {
-                $playlistManage->moveTrack($uid, $mid, $mid - 1);  // 이전 트랙으로 이동
-                echo json_encode(["message" => "Moved to previous track"]);
-            } else {
-                http_response_code(400);
-                echo json_encode(["error" => "Invalid action"]);
-            }
-            break;
+        //     // 'next' 또는 'prev' 액션에 따라 처리
+        //     if ($action === 'next') {
+        //         $playlistManage->moveTrack($uid, $mid, $mid + 1);  // 다음 트랙으로 이동
+        //         echo json_encode(["message" => "Moved to next track"]);
+        //     } else if ($action === 'prev') {
+        //         $playlistManage->moveTrack($uid, $mid, $mid - 1);  // 이전 트랙으로 이동
+        //         echo json_encode(["message" => "Moved to previous track"]);
+        //     } else {
+        //         http_response_code(400);
+        //         echo json_encode(["error" => "Invalid action"]);
+        //     }
+        //     break;
 
 
         default:
