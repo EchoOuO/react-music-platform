@@ -121,8 +121,30 @@ try {
             }
             $db->db_close();
             echo json_encode($output);
+        case "/allmusic":
+            // keys = bid?, exception: can't get key
+            $db->connect();
+            $db_select_result = $db->select(["*"], "music_tb", null);
+            // print_r($db_select_result);
+            $output = [];
+            while ($row = $db_select_result->fetch_assoc()) {
+                array_push($output, $row);
+            }
+            $db->db_close();
+            echo json_encode($output);
             break;
 
+        case "/allartist":
+            // keys = aid?, exception: can't get key
+            $db->connect();
+            $db_select_result = $db->select(["*"], "artist_tb", null);
+            // print_r($db_select_result);
+            $output = [];
+            while ($row = $db_select_result->fetch_assoc()) {
+                array_push($output, $row);
+            }
+            $db->db_close();
+            echo json_encode($output);
         case "/allartist":
             // keys = aid?, exception: can't get key
             $db->connect();
@@ -150,8 +172,38 @@ try {
             break;
 
         case "/upload":
-            if(session_status()===PHP_SESSION_NONE) throw new Exception("Forbiden request.",401);
+            if (session_status() === PHP_SESSION_NONE) throw new Exception("Forbiden request.", 401);
             break;
+        case "/playlist":
+            $uid = $_POST['uid'];
+            $mid = $_POST['mid'] ?? null;  // mid가 필요없는 경우를 고려하여 null을 기본값으로 설정
+            $action = $_POST['action'];  // 'add', 'get', 'delete' 중 하나
+
+            $playlistManage = new PlaylistManage(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
+
+            switch ($action) {
+                case 'add':
+                    if (!$mid) {
+                        echo json_encode(["error" => "Missing music ID for adding to playlist."]);
+                        break;
+                    }
+                    $playlistManage->addMusicToPlaylist($uid, $mid);
+                    echo json_encode(["message" => "Music added to playlist."]);
+                    break;
+
+                case 'get':
+                    $playlist = $playlistManage->getPlaylistByUserId($uid);
+                    echo json_encode($playlist);
+                    break;
+
+                case 'delete':
+                    if (!$mid) {
+                        echo json_encode(["error" => "Missing music ID for removing from playlist."]);
+                        break;
+                    }
+                    $playlistManage->removeMusicFromPlaylist($uid, $mid);
+                    echo json_encode(["message" => "Music removed from playlist."]);
+                    break;
 
         case "/admin/addMusic":
             if (session_status() === PHP_SESSION_NONE) throw new Exception("Forbiden request.", 401);
@@ -205,9 +257,27 @@ try {
             sendHttp_Code(200, "Music modified!");
             break;
 
-            case "/audit":
-                
-            break;
+// case "/moveTrack":
+        //     // POST 데이터에서 필요한 정보를 가져옵니다.
+        //     $uid = $_POST['uid'];
+        //     $mid = $_POST['mid'];
+        //     $action = $_POST['action']; // 'next' 또는 'prev'
+
+        //     // PlaylistManage 인스턴스를 생성합니다.
+        //     $playlistManage = new PlaylistManage(DB_SERVER_NAME, DB_USER, DB_PASSWORD, DB_NAME);
+
+        //     // 'next' 또는 'prev' 액션에 따라 처리
+        //     if ($action === 'next') {
+        //         $playlistManage->moveTrack($uid, $mid, $mid + 1);  // 다음 트랙으로 이동
+        //         echo json_encode(["message" => "Moved to next track"]);
+        //     } else if ($action === 'prev') {
+        //         $playlistManage->moveTrack($uid, $mid, $mid - 1);  // 이전 트랙으로 이동
+        //         echo json_encode(["message" => "Moved to previous track"]);
+        //     } else {
+        //         http_response_code(400);
+        //         echo json_encode(["error" => "Invalid action"]);
+        //     }
+        //     break;
 
         default:
             throw new Exception("Invalid path", 400);
