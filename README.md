@@ -4,8 +4,6 @@ Empowering artists through a robust music platform with music/artist displays an
 
 Created by Joe, Ayana, Issac
 
-# Getting Started with Create React App
-
 ## Installation
 
 If you'd like to run this project locally, follow these steps:
