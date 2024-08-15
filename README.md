@@ -11,13 +11,13 @@ If you'd like to run this project locally, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/EchoOuO/joe-react-portfolio.git
+   git clone https://github.com/EchoOuO/react-music-platform
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd joe-react-portfolio
+   cd react-music-platform
    ```
 
 3. Install dependencies:
